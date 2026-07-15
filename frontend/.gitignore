@@ -1,0 +1,58 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing
+/coverage
+
+# Next.js build and export outputs
+/.next/
+/out/
+/build
+
+# Typescript build cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment files
+.env*
+
+# Vercel deployments
+.vercel
+
+# System files (OS-specific)
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.pem
+
+# IDEs & Editor configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Agent logs and caches
+.agents/
+.agent/
+
+# Microsoft Office Temp Files (e.g. from template folders if any)
+~$*.docx
+~$*.doc

@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  --color-clinical-bg: var(--clinical-bg, oklch(0.12 0.015 195));
+  --color-clinical-panel: var(--clinical-panel, oklch(0.16 0.018 195));
+  --color-clinical-panel-light: var(--clinical-panel-light, oklch(0.20 0.022 195));
+  --color-clinical-teal: var(--clinical-teal, oklch(0.70 0.13 185));
+  --color-clinical-teal-dim: var(--clinical-teal-dim, oklch(0.55 0.10 195));
+  --color-clinical-text: oklch(0.97 0.005 195);
+  --color-clinical-text-muted: oklch(0.65 0.015 195);
+  
+  --font-montserrat: var(--font-montserrat);
+}
+
+:root {
+  background-color: var(--color-clinical-bg);
+  color: var(--color-clinical-text);
+  font-size: 108%; /* Aumenta el tamaño global de las fuentes y espaciados rem para mejorar legibilidad */
+}
+
+body {
+  font-family: var(--font-montserrat), sans-serif;
+  min-height: 100vh;
+}
+
+/* Scrollbar personalizado de aspecto clínico */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-clinical-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-clinical-panel-light);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-clinical-teal);
+}
+
+/* Visor de informe simulación de hoja impresa (Arial 11) */
+.report-paper {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 11pt;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+.report-title {
+  font-size: 12pt;
+  font-weight: bold;
+  text-decoration: underline;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #000000;
+}
+
+.report-paragraph {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #000000;
+}
+
+.report-section {
+  margin-top: 16px;
+  font-weight: bold;
+}
+
+/* Micro-animación de onda de audio durante el dictado */
+@keyframes audio-wave-pulse {
+  0%, 100% {
+    transform: scaleY(0.2);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.audio-bar {
+  animation: audio-wave-pulse 1.2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.audio-bar:nth-child(2) { animation-delay: 0.15s; }
+.audio-bar:nth-child(3) { animation-delay: 0.3s; }
+.audio-bar:nth-child(4) { animation-delay: 0.45s; }
+.audio-bar:nth-child(5) { animation-delay: 0.6s; }
+.audio-bar:nth-child(6) { animation-delay: 0.75s; }
+.audio-bar:nth-child(7) { animation-delay: 0.9s; }
+.audio-bar:nth-child(8) { animation-delay: 0.45s; }
+.audio-bar:nth-child(9) { animation-delay: 0.3s; }
+.audio-bar:nth-child(10) { animation-delay: 0.15s; }
+
+/* Efecto de pulso en el botón de dictar/grabar */
+@keyframes pulse-record {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.animate-record-pulse {
+  animation: pulse-record 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Efecto de pulso en el indicador LED verde */
+@keyframes led-glow {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 1);
+  }
+}
+
+.animate-led-glow {
+  animation: led-glow 2s ease-in-out infinite;
+}
