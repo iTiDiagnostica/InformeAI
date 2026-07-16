@@ -87,7 +87,8 @@ export async function POST(req: NextRequest) {
 
       if (templateDocs.length > 0) {
         const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
-        const activeAiModel = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemma';
+        const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
+        const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
         
         const finalDoctorId = docIdNum || templateDocs[0].doctor_id;
         let doctorProfile: any = null;
@@ -141,7 +142,8 @@ export async function POST(req: NextRequest) {
     }
 
     const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
-    const activeAiModel = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemma';
+    const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
+    const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
     const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, activeAiModel);
 

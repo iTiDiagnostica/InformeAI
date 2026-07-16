@@ -334,7 +334,7 @@ export default function DoctorsPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [userRole, setUserRole] = useState<string>("");
   const [companyId, setCompanyId] = useState<number | null>(null);
-  const [activeAiModel, setActiveAiModel] = useState<string>("gemma");
+  const [activeAiModel, setActiveAiModel] = useState<string>("gemini");
 
   const router = useRouter();
 
@@ -420,20 +420,7 @@ export default function DoctorsPage() {
     }
   }, [API_URL]);
 
-  const handleAiModelChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setActiveAiModel(val);
-    try {
-      await fetch(`${API_URL}/api/settings`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ activeAiModel: val }),
-      });
-    } catch (err) {
-      console.error("Error al guardar configuración de IA:", err);
-    }
-  };
-
+  
   useEffect(() => {
     const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
     const role = localStorage.getItem("role");
@@ -763,12 +750,12 @@ export default function DoctorsPage() {
             <Link
               href="/templates"
               className="flex items-center justify-center lg:justify-start gap-3 px-3 py-3 lg:px-4 rounded-lg text-sm font-semibold text-clinical-text-muted hover:bg-slate-800/50 hover:text-clinical-text transition-all"
-              title="Plantillas RAG"
+              title="Plantillas"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 shrink-0">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
               </svg>
-              <span className="hidden lg:inline">Plantillas RAG</span>
+              <span className="hidden lg:inline">Plantillas</span>
             </Link>
 
             <Link
@@ -851,20 +838,7 @@ export default function DoctorsPage() {
               </div>
             )}
 
-            {/* Selector de Conexión IA */}
-            <div className="flex items-center gap-2 mr-2">
-              <span className="text-xs text-clinical-text-muted font-semibold">Conexión IA:</span>
-              <select
-                value={activeAiModel}
-                onChange={handleAiModelChange}
-                className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
-              >
-                <option value="gemma">Gemma (Local)</option>
-                <option value="gemini-3.1-flash-lite">Gemini 3.1</option>
-                <option value="groq-llama-3.1-8b-instant">Groq Llama 3.1 8B</option>
-              </select>
-            </div>
-
+            
             {/* Botón Registrar Médico (Oculto para médicos normales, visible para Admin y Moderadores) */}
             {(userRole === "admin" || userRole === "moderator") && (
               <button

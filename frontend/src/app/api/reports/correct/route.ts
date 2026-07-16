@@ -49,7 +49,8 @@ export async function POST(req: NextRequest) {
     const normalizedInstruction = normalizeDictatedPunctuation(correctionInstruction);
 
     const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
-    const activeAiModel = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemma';
+    const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
+    const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
     const updatedReport = await llmService.correctReport(originalReport, normalizedInstruction, doctorProfile, activeAiModel);
 
