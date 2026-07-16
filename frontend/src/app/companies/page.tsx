@@ -205,7 +205,7 @@ export default function CompaniesPage() {
   };
 
   // Resolver API_URL
-  const API_URL = "/api";
+  const API_URL = "";
 
   const fetchCompanies = useCallback(async () => {
     try {

@@ -62,7 +62,7 @@ export default function ModeratorsPage() {
   const router = useRouter();
 
   // Resolve API_URL
-  const API_URL = "/api";
+  const API_URL = "";
 
   const applyTheme = (theme: any) => {
     const root = document.documentElement;
@@ -193,7 +193,7 @@ export default function ModeratorsPage() {
 
       const checkHealth = async () => {
         try {
-          const res = await fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(3000) });
+          const res = await fetch(`${API_URL}/api/health`, { signal: AbortSignal.timeout(3000) });
           setIsServerOnline(res.ok);
         } catch {
           setIsServerOnline(false);

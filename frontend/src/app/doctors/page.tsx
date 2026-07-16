@@ -339,7 +339,7 @@ export default function DoctorsPage() {
   const router = useRouter();
 
   // Resolver API_URL
-  const API_URL = "/api";
+  const API_URL = "";
 
   const fetchDoctors = useCallback(async () => {
     try {
@@ -472,7 +472,7 @@ export default function DoctorsPage() {
 
       const checkHealth = async () => {
         try {
-          const res = await fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(3000) });
+          const res = await fetch(`${API_URL}/api/health`, { signal: AbortSignal.timeout(3000) });
           setIsServerOnline(res.ok);
         } catch {
           setIsServerOnline(false);

@@ -251,7 +251,7 @@ const getInitials = (name: string): string => {
 export default function DictationPage() {
   const router = useRouter();
   // Resolver API_URL de forma dinámica en red local para evitar fallas al conectar desde otros dispositivos
-  const API_URL = "/api";
+  const API_URL = "";
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const isRecordingRef = useRef(false);

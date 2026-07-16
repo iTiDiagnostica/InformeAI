@@ -47,7 +47,7 @@ export default function HistorialPage() {
   const [selectedPreviewCompanyId, setSelectedPreviewCompanyId] = useState<string>("base");
 
   // Resolver API_URL dinámicamente
-  const API_URL = "/api";
+  const API_URL = "";
 
   const fetchCompanies = useCallback(async () => {
     try {

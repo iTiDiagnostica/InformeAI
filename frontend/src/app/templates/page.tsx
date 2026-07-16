@@ -102,7 +102,7 @@ const convertMarkdownToEditorHtml = (text: string): string => {
 export default function TemplatesPage() {
   const router = useRouter();
   // Resolver API_URL de forma dinámica en red local para evitar fallas al conectar desde otros dispositivos
-  const API_URL = "/api";
+  const API_URL = "";
 
 
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
@@ -687,7 +687,7 @@ export default function TemplatesPage() {
       // Health check del backend
       const checkHealth = async () => {
         try {
-          const res = await fetch(`${API_URL}/health`, { signal: AbortSignal.timeout(3000) });
+          const res = await fetch(`${API_URL}/api/health`, { signal: AbortSignal.timeout(3000) });
           setIsServerOnline(res.ok);
         } catch {
           setIsServerOnline(false);

@@ -14,7 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   // Obtener API_URL dinámico compatible con red local
-  const API_URL = "/api";
+  const API_URL = "";
 
   useEffect(() => {
     // Limpiar tema de empresa al cargar login
