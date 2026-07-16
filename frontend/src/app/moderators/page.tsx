@@ -62,10 +62,7 @@ export default function ModeratorsPage() {
   const router = useRouter();
 
   // Resolve API_URL
-  const configApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-  const API_URL = typeof window !== "undefined" && configApiUrl.includes("localhost") && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
-    ? `http://${window.location.hostname}:5000`
-    : configApiUrl;
+  const API_URL = "/api";
 
   const applyTheme = (theme: any) => {
     const root = document.documentElement;
@@ -797,3 +794,4 @@ export default function ModeratorsPage() {
     </div>
   );
 }
+

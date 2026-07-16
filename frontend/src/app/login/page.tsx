@@ -14,10 +14,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   // Obtener API_URL dinámico compatible con red local
-  const configApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-  const API_URL = typeof window !== "undefined" && configApiUrl.includes("localhost") && window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1"
-    ? `http://${window.location.hostname}:5000`
-    : configApiUrl;
+  const API_URL = "/api";
 
   useEffect(() => {
     // Limpiar tema de empresa al cargar login
@@ -249,3 +246,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
