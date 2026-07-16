@@ -119,10 +119,15 @@ export async function POST(req: NextRequest) {
         );
 
         return NextResponse.json({
+          id: repRes.rows[0].id,
           reportId: repRes.rows[0].id,
+          structuredText: emptyTemplate,
           structuredReport: emptyTemplate,
           contextUsed: `Plantilla(s) en blanco cargada(s): ${templateDocs.map(d => d.title).join(', ')}`,
-          isTemplateLoad: true
+          isTemplateLoad: true,
+          doctorId: finalDoctorId,
+          doctorName: doctorProfile?.name || null,
+          doctorSpecialty: doctorProfile?.specialty || null
         });
       }
     }
@@ -153,10 +158,14 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({
+      id: insertRes.rows[0].id,
       reportId: insertRes.rows[0].id,
+      structuredText: structuredReport,
       structuredReport,
-      contextUsed: matchFound ? context : 'No se utilizÃ³ contexto.',
-      doctorId: finalDoctorId
+      contextUsed: matchFound ? context : 'No se utilizó contexto.',
+      doctorId: finalDoctorId,
+      doctorName: doctorProfile?.name || null,
+      doctorSpecialty: doctorProfile?.specialty || null
     });
   } catch (error: any) {
     console.error(error);

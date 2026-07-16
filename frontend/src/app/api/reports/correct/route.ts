@@ -61,7 +61,14 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ updatedReport });
+    return NextResponse.json({
+      id: reportId ? parseInt(reportId, 10) : null,
+      updatedReport,
+      structuredText: updatedReport,
+      doctorId: docIdNum,
+      doctorName: doctorProfile?.name || null,
+      doctorSpecialty: doctorProfile?.specialty || null
+    });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({ error: error.message || 'Error corrigiendo el informe.' }, { status: 500 });
