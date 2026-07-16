@@ -1,25 +1,35 @@
 import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 
+let poolInstance: Pool | null = null;
 
-if (!process.env.DATABASE_URL) {
-  console.error('❌ DATABASE_URL no está configurada en .env. El servidor no puede arrancar sin conexión a la base de datos.');
-  process.exit(1);
+function getPoolInstance(): Pool {
+  if (!poolInstance) {
+    if (!process.env.DATABASE_URL) {
+      console.warn('⚠️ DATABASE_URL no está configurada en las variables de entorno.');
+      throw new Error('DATABASE_URL no está configurada.');
+    }
+    
+    // Configuración optimizada para Serverless (Vercel + Supabase)
+    poolInstance = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: process.env.NODE_ENV === 'production' ? 2 : 10, // Límite de conexiones para evitar agotar la base de datos en Vercel
+      idleTimeoutMillis: 15000,                            // Cerrar conexiones inactivas rápidamente
+      connectionTimeoutMillis: 3000,                       // Timeout rápido para responder en caso de fallo
+    });
+
+    poolInstance.on('error', (err) => {
+      console.error('Error inesperado en el cliente de PostgreSQL:', err);
+    });
+  }
+  return poolInstance;
 }
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-// Registrar manejadores de error globales del pool
-pool.on('error', (err) => {
-  console.error('Error inesperado en el cliente de PostgreSQL:', err);
-});
-
 export const db = {
-  query: (text: string, params?: any[]) => pool.query(text, params),
-  getPool: () => pool,
+  query: (text: string, params?: any[]) => getPoolInstance().query(text, params),
+  getPool: () => getPoolInstance(),
 };
+
 
 // Función para testear y asegurar que la base de datos está activa
 export async function testConnection(retries = 5, delay = 2000): Promise<boolean> {

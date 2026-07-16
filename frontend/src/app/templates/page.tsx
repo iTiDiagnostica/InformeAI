@@ -5,14 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../../components/ConfirmationModal";
 import { Eye, Copy, Pencil, Trash2, Maximize, Minimize, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
-
-interface DocumentItem {
-  id: number;
-  title: string;
-  length: number;
-  created_at: string;
-  doctorId: number | null;
-}
+import { Company, Doctor, DocumentItem } from "@/types";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 const convertHtmlToMarkdown = (html: string): string => {
   if (!html) return "";
@@ -109,21 +103,7 @@ export default function TemplatesPage() {
   const router = useRouter();
   // Resolver API_URL de forma dinámica en red local para evitar fallas al conectar desde otros dispositivos
   const API_URL = "/api";
-  interface Doctor {
-    id: number;
-    name: string;
-    specialty: string;
-  }
 
-  interface Company {
-    id: number;
-    name: string;
-    logoBase64?: string;
-    faviconBase64?: string;
-    colorPrimary: string;
-    colorSecondary: string;
-    colorAccent: string;
-  }
 
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [title, setTitle] = useState("");
@@ -558,7 +538,7 @@ export default function TemplatesPage() {
 
       const html = convertMarkdownToEditorHtml(content);
       if (editorRef.current.innerHTML !== html) {
-        editorRef.current.innerHTML = html;
+        editorRef.current.innerHTML = sanitizeHtml(html);
       }
       
       if (updateSourceRef.current === "history_nav") {
@@ -1405,6 +1385,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => handleOpenPreview(doc)}
                         className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                         title="Previsualizar plantilla"
+                        aria-label="Previsualizar plantilla"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
@@ -1412,6 +1393,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => handleQuickCopy(doc)}
                         className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                         title="Copiar contenido"
+                        aria-label="Copiar contenido de la plantilla"
                       >
                         <Copy className="w-4 h-4" />
                       </button>
@@ -1427,6 +1409,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                             onClick={() => handleEdit(doc)}
                             className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                             title="Editar plantilla"
+                            aria-label="Editar plantilla"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
@@ -1434,6 +1417,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                             onClick={() => handleDeleteClick(doc)}
                             className="p-2 rounded-xl bg-slate-900 hover:bg-rose-950/30 text-slate-500 hover:text-rose-400 border border-slate-800 hover:border-rose-900/50 transition-all cursor-pointer animate-none"
                             title="Eliminar plantilla"
+                            aria-label="Eliminar plantilla"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -1617,6 +1601,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       onClick={() => setIsEditorMaximized(!isEditorMaximized)}
                       className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text transition-colors flex items-center justify-center cursor-pointer"
                       title={isEditorMaximized ? "Restaurar tamaño" : "Maximizar editor"}
+                      aria-label={isEditorMaximized ? "Restaurar tamaño" : "Maximizar editor"}
                     >
                       {isEditorMaximized ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                     </button>
@@ -1634,9 +1619,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         disabled={historyIndex <= 0}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                         title="Deshacer (Ctrl+Z)"
+                        aria-label="Deshacer"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
                         </svg>
                       </button>
                       <button
@@ -1645,9 +1631,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         disabled={historyIndex >= templateHistory.length - 1}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                         title="Rehacer (Ctrl+Y)"
+                        aria-label="Rehacer"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
+                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
                         </svg>
                       </button>
                       <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
@@ -1657,6 +1644,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('bold', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Negrita"
+                        aria-label="Formato negrita"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h4.5a3.75 3.75 0 0 1 0 7.5h-4.5m0-7.5v7.5m0-7.5h3.75M6.75 11.25h6a3.75 3.75 0 0 1 0 7.5h-6m0-7.5v7.5m0-7.5h3" />
@@ -1668,6 +1656,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('italic', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Cursiva"
+                        aria-label="Formato cursiva"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 4.5l-4 15m-1.5-15h4m-6 15h4" />
@@ -1679,6 +1668,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('underline', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Subrayado"
+                        aria-label="Formato subrayado"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16" />
@@ -1691,6 +1681,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('justifyLeft', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Alinear Izquierda"
+                        aria-label="Alinear a la izquierda"
                       ><AlignLeft className="w-4 h-4" /></button>
                       <button
                         type="button"
@@ -1698,6 +1689,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('justifyCenter', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Centrar"
+                        aria-label="Centrar texto"
                       ><AlignCenter className="w-4 h-4" /></button>
                       <button
                         type="button"
@@ -1705,6 +1697,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('justifyRight', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Alinear Derecha"
+                        aria-label="Alinear a la derecha"
                       ><AlignRight className="w-4 h-4" /></button>
                       <button
                         type="button"
@@ -1712,6 +1705,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         onClick={() => { document.execCommand('justifyFull', false); handleEditorInput(); }}
                         className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Justificar"
+                        aria-label="Justificar texto"
                       ><AlignJustify className="w-4 h-4" /></button>
                     </div>
                     
@@ -1894,7 +1888,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 <div
                   className="report-paper p-8 overflow-y-auto max-h-[450px] outline-none select-text cursor-text border border-slate-200"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                  dangerouslySetInnerHTML={{ __html: convertReportToHtml(previewTemplate.content) }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(convertReportToHtml(previewTemplate.content)) }}
                 ></div>
               </div>
             </div>

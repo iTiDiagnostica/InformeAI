@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
-const pdfParse = require('pdf-parse');
 import mammoth from 'mammoth';
 import WordExtractor from 'word-extractor';
 import { parseRTF, toHTML } from '@jonahschulte/rtf-toolkit';
@@ -32,6 +31,7 @@ export async function POST(req: NextRequest) {
     let parsedText = '';
 
     if (mimetype === 'application/pdf' || filename.endsWith('.pdf')) {
+      const pdfParse = require('pdf-parse');
       const data = await pdfParse(buffer);
       parsedText = data.text;
     } 

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { llmService } from '@/services/llmService';
 import { ragService } from '@/services/ragService';
@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
         }
 
         const repRes = await db.query(
-          'INSERT INTO reports (raw_text, structured_content, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
+          'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
           [rawText, emptyTemplate, finalDoctorId, companyIdVal]
         );
 
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
     const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, activeAiModel);
 
     const insertRes = await db.query(
-      'INSERT INTO reports (raw_text, structured_content, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
+      'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
       [rawText, structuredReport, finalDoctorId, companyIdVal]
     );
 

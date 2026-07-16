@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 
 export async function GET() {
@@ -13,3 +13,23 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+
+export async function PUT(req: NextRequest) {
+  try {
+    const { activeAiModel } = await req.json();
+    if (activeAiModel !== 'gemma' && activeAiModel !== 'gemini' && !activeAiModel.startsWith('gemini-')) {
+      return NextResponse.json({ error: 'Modelo de IA inválido. Debe ser "gemma", "gemini" o comenzar con "gemini-".' }, { status: 400 });
+    }
+    
+    await db.query(
+      "INSERT INTO system_settings (key, value) VALUES ('active_ai_model', $1) ON CONFLICT (key) DO UPDATE SET value = $1",
+      [activeAiModel]
+    );
+    console.log(`⚙️ Configuración de IA cambiada a: ${activeAiModel}`);
+    return NextResponse.json({ activeAiModel });
+  } catch (error: any) {
+    console.error('Error al actualizar configuración:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+

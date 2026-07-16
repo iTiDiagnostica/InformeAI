@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/api/reports/structure/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/reports/correct/route.ts": {
+      "maxDuration": 60
+    }
+  }
+}

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
 
@@ -62,7 +62,10 @@ export async function GET(req: NextRequest) {
     const totalPages = Math.ceil(totalItems / limit);
 
     const dataQuery = `
-      SELECT r.id, r.created_at, r.doctor_id, r.company_id, d.name as doctor_name, c.name as company_name 
+      SELECT r.id, r.raw_text, r.structured_text, r.created_at, 
+             r.doctor_id as "doctorId", d.name as "doctorName", d.specialty as "doctorSpecialty",
+             r.report_type as "reportType", r.created_by_role as "createdByRole", r.ai_type as "aiType",
+             r.company_id as "companyId", c.name as "companyName"
       FROM reports r 
       LEFT JOIN doctors d ON r.doctor_id = d.id 
       LEFT JOIN companies c ON r.company_id = c.id 
@@ -75,7 +78,7 @@ export async function GET(req: NextRequest) {
     const dataRes = await db.query(dataQuery, queryParams);
 
     return NextResponse.json({
-      data: dataRes.rows,
+      reports: dataRes.rows,
       pagination: {
         totalItems,
         totalPages,

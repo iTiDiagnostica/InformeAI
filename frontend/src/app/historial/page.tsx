@@ -4,41 +4,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-interface Report {
-  id: number;
-  rawText: string;
-  structuredText: string;
-  createdAt: string;
-  doctorId: number | null;
-  doctorName: string | null;
-  doctorSpecialty: string | null;
-  reportType: string;
-  createdByRole: string;
-  aiType: string;
-}
-
-interface PaginationMetadata {
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
-}
-
-interface Doctor {
-  id: number;
-  name: string;
-  specialty: string;
-}
-
-interface Company {
-  id: number;
-  name: string;
-  logoBase64?: string;
-  faviconBase64?: string;
-  colorPrimary: string;
-  colorSecondary: string;
-  colorAccent: string;
-}
+import { Company, Doctor, Report, PaginationMetadata } from "@/types";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 export default function HistorialPage() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -596,7 +563,8 @@ export default function HistorialPage() {
     return "bg-slate-800 text-clinical-text-muted border-slate-700";
   };
 
-  const formatDate = (isoString: string) => {
+  const formatDate = (isoString?: string) => {
+    if (!isoString) return "Sin fecha";
     try {
       const date = new Date(isoString);
       return date.toLocaleDateString("es-AR", {
@@ -1049,7 +1017,7 @@ export default function HistorialPage() {
                           </button>
                         </td>
                         <td className="py-4 px-6">
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border ${getstudyTypeColor(report.reportType)}`}>
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide uppercase border ${getstudyTypeColor(report.reportType || "")}`}>
                             {report.reportType}
                           </span>
                         </td>
@@ -1070,7 +1038,7 @@ export default function HistorialPage() {
                         </td>
                         <td className="py-4 px-6">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            report.aiType.includes('Nube') || report.aiType.includes('Gemini')
+                            (report.aiType || '').includes('Nube') || (report.aiType || '').includes('Gemini')
                               ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                               : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
                           }`}>
@@ -1089,6 +1057,7 @@ export default function HistorialPage() {
                               }}
                               className="p-2 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-clinical-text border border-slate-800 transition-all cursor-pointer"
                               title="Visualizar Reporte"
+                              aria-label="Visualizar reporte"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -1099,6 +1068,7 @@ export default function HistorialPage() {
                               onClick={() => handleLoadReport(report)}
                               className="p-2 rounded bg-slate-900 hover:bg-clinical-teal/15 text-slate-400 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer"
                               title="Cargar en Dictador principal"
+                              aria-label="Cargar reporte en el dictador principal"
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-.75m-6-6h1.5m2.25-2.25h2.25m-2.25 2.25v2.25m3-3H21m0 0v5.25m0-5.25L12 14.25" />
@@ -1207,7 +1177,7 @@ export default function HistorialPage() {
                 <div
                   className="report-paper p-8 overflow-y-auto max-h-[350px] outline-none select-text cursor-text"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                  dangerouslySetInnerHTML={{ __html: convertReportToHtml(selectedReport.structuredText) }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHtml(convertReportToHtml(selectedReport.structuredText)) }}
                 ></div>
               </div>
 

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { llmService } from '@/services/llmService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     if (reportId) {
       await db.query(
-        'UPDATE reports SET structured_content = $1 WHERE id = $2',
+        'UPDATE reports SET structured_text = $1 WHERE id = $2',
         [updatedReport, parseInt(reportId, 10)]
       );
     }

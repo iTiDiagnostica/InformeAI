@@ -6,65 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
 
-interface SpeechRecognitionResultList {
-  length: number;
-  item(index: number): { isFinal: boolean; [key: number]: { transcript: string } };
-  [index: number]: {
-    isFinal: boolean;
-    length: number;
-    [key: number]: {
-      transcript: string;
-    };
-  };
-}
-
-interface SpeechRecognitionEvent {
-  resultIndex: number;
-  results: SpeechRecognitionResultList;
-}
-
-interface SpeechRecognitionInstance {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onstart: () => void;
-  onresult: (event: SpeechRecognitionEvent) => void;
-  onerror: (event: { error: string }) => void;
-  onend: () => void;
-  start: () => void;
-  stop: () => void;
-}
-
-interface Report {
-  id?: number;
-  rawText: string;
-  structuredText: string;
-  createdAt?: string;
-  doctorId?: number | null;
-  doctorName?: string | null;
-  doctorSpecialty?: string | null;
-  reportType?: string;
-  createdByRole?: string;
-  aiType?: string;
-}
-
-interface Doctor {
-  id: number;
-  name: string;
-  specialty: string;
-  style_directives?: string;
-  folder_name?: string;
-}
-
-interface Company {
-  id: number;
-  name: string;
-  logoBase64?: string;
-  faviconBase64?: string;
-  colorPrimary: string;
-  colorSecondary: string;
-  colorAccent: string;
-}
+import { Company, Doctor, Report, SpeechRecognitionInstance, SpeechRecognitionEvent } from "@/types";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 /**
  * Convierte el contenido HTML enriquecido del editor contentEditable de vuelta a Markdown estándar (con **)
@@ -848,7 +791,7 @@ export default function DictationPage() {
 
       // structuredReport ya es HTML — inyectarlo directamente
       if (editorRef.current.innerHTML !== structuredReport) {
-        editorRef.current.innerHTML = structuredReport;
+        editorRef.current.innerHTML = sanitizeHtml(structuredReport);
       }
     }
   }, [structuredReport]);
@@ -1312,7 +1255,7 @@ export default function DictationPage() {
 
     // Extraer texto plano del HTML para enviar al backend de IA
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = structuredReport;
+    tempDiv.innerHTML = sanitizeHtml(structuredReport);
     // Convertir <strong> a ** para que la IA reconozca la estructura
     tempDiv.querySelectorAll('strong, b').forEach(el => {
       el.replaceWith(`**${el.textContent}**`);
@@ -1405,7 +1348,7 @@ export default function DictationPage() {
 
     // Extraer texto plano del HTML
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = structuredReport;
+    tempDiv.innerHTML = sanitizeHtml(structuredReport);
     const plainText = "\n" + (tempDiv.innerText || tempDiv.textContent || '').replace(/\t/g, " ");
 
     /**
@@ -2043,6 +1986,7 @@ export default function DictationPage() {
               {isEditorOpen && (
                 <div className="flex items-center gap-1.5 p-2 bg-slate-900 border-b border-slate-800 shrink-0 font-sans select-none">
                   {/* Bold Button */}
+                  {/* Bold Button */}
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => {
@@ -2051,6 +1995,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Negrita"
+                    aria-label="Formato negrita"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h4.5a3.75 3.75 0 0 1 0 7.5h-4.5m0-7.5v7.5m0-7.5h3.75M6.75 11.25h6a3.75 3.75 0 0 1 0 7.5h-6m0-7.5v7.5m0-7.5h3" />
@@ -2065,6 +2010,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Cursiva"
+                    aria-label="Formato cursiva"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 4.5l-4 15m-1.5-15h4m-6 15h4" />
@@ -2080,6 +2026,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Subrayado"
+                    aria-label="Formato subrayado"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16" />
@@ -2097,6 +2044,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Alinear a la izquierda"
+                    aria-label="Alinear a la izquierda"
                   >
                     <AlignLeft className="w-4 h-4" />
                   </button>
@@ -2109,6 +2057,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Centrar"
+                    aria-label="Centrar texto"
                   >
                     <AlignCenter className="w-4 h-4" />
                   </button>
@@ -2121,6 +2070,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Alinear a la derecha"
+                    aria-label="Alinear a la derecha"
                   >
                     <AlignRight className="w-4 h-4" />
                   </button>
@@ -2133,6 +2083,7 @@ export default function DictationPage() {
                     }}
                     className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Justificar"
+                    aria-label="Justificar texto"
                   >
                     <AlignJustify className="w-4 h-4" />
                   </button>
@@ -2152,6 +2103,7 @@ export default function DictationPage() {
                       }}
                       onClick={() => setIsFontSizeOpen(!isFontSizeOpen)}
                       className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-850 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all cursor-pointer"
+                      aria-label="Tamaño de fuente"
                     >
                       <span>{currentFontSize}</span>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 text-clinical-text-muted">
