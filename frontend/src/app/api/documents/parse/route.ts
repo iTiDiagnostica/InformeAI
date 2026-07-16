@@ -1,9 +1,16 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
 const pdfParse = require('pdf-parse');
 import mammoth from 'mammoth';
 import WordExtractor from 'word-extractor';
-import { parseRTF } from '@jonahschulte/rtf-toolkit';
+import { parseRTF, toHTML } from '@jonahschulte/rtf-toolkit';
+
+function cleanHTML(html: string): string {
+  let text = html.replace(/<[^>]+>/g, '\n');
+  text = text.replace(/&nbsp;/g, ' ');
+  text = text.replace(/\n\s*\n/g, '\n\n');
+  return text.trim();
+}
 
 export async function POST(req: NextRequest) {
   const user = authenticate(req);
@@ -14,7 +21,7 @@ export async function POST(req: NextRequest) {
     const file = formData.get('file') as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: 'No se recibiÃ³ ningÃºn archivo.' }, { status: 400 });
+      return NextResponse.json({ error: 'No se recibió ningún archivo.' }, { status: 400 });
     }
 
     const arrayBuffer = await file.arrayBuffer();
@@ -24,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     let parsedText = '';
 
-    if (mimetype === 'application/pdf') {
+    if (mimetype === 'application/pdf' || filename.endsWith('.pdf')) {
       const data = await pdfParse(buffer);
       parsedText = data.text;
     } 
@@ -38,7 +45,9 @@ export async function POST(req: NextRequest) {
       parsedText = extracted.getBody();
     }
     else if (mimetype === 'text/rtf' || filename.endsWith('.rtf')) {
-      parsedText = parseRTF(buffer.toString('utf-8'));
+      const parsed = parseRTF(buffer.toString('utf-8'));
+      const html = toHTML(parsed);
+      parsedText = cleanHTML(html);
     }
     else if (mimetype === 'text/plain' || filename.endsWith('.txt')) {
       parsedText = buffer.toString('utf-8');
@@ -48,10 +57,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (!parsedText || parsedText.trim().length === 0) {
-      return NextResponse.json({ error: 'El archivo estÃ¡ vacÃ­o o no se pudo extraer texto.' }, { status: 400 });
+      return NextResponse.json({ error: 'El archivo está vacío o no se pudo extraer texto.' }, { status: 400 });
     }
 
-    // Limpiar nombre quitando extensiÃ³n
     let title = filename.replace(/\.[^/.]+$/, "");
     title = title.replace(/_/g, " ").replace(/-/g, " ");
 
@@ -64,4 +72,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message || 'Error al procesar el archivo.' }, { status: 500 });
   }
 }
-

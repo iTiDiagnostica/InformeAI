@@ -3,7 +3,7 @@ import { db } from '@/services/dbService';
 import { authenticateAdminOrModerator, forbiddenResponse } from '@/utils/auth';
 import bcrypt from 'bcryptjs';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: any) {
   const user = authenticateAdminOrModerator(req);
   if (!user) return forbiddenResponse();
 
@@ -11,14 +11,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const { name, specialty, style_directives, username, password, company_id } = await req.json();
 
     if (user.role === 'moderator') {
-      const docRes = await db.query('SELECT company_id FROM doctors WHERE id = $1', [params.id]);
+      const docRes = await db.query('SELECT company_id FROM doctors WHERE id = $1', [(await context.params).id]);
       if (docRes.rows.length === 0 || docRes.rows[0].company_id !== user.companyId) {
         return forbiddenResponse('No puede editar un médico que no pertenece a su empresa.');
       }
     }
 
     if (username) {
-      const checkRes = await db.query('SELECT id FROM doctors WHERE username = $1 AND id != $2', [username, params.id]);
+      const checkRes = await db.query('SELECT id FROM doctors WHERE username = $1 AND id != $2', [username, (await context.params).id]);
       if (checkRes.rows.length > 0) {
         return NextResponse.json({ error: 'El nombre de usuario ya está en uso por otro médico.' }, { status: 400 });
       }
@@ -42,7 +42,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 
     queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, specialty, style_directives, username, company_id`;
-    queryParams.push(params.id);
+    queryParams.push((await context.params).id);
 
     const result = await db.query(queryStr, queryParams);
     if (result.rows.length === 0) {
@@ -55,19 +55,19 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: any) {
   const user = authenticateAdminOrModerator(req);
   if (!user) return forbiddenResponse();
 
   try {
     if (user.role === 'moderator') {
-      const docRes = await db.query('SELECT company_id FROM doctors WHERE id = $1', [params.id]);
+      const docRes = await db.query('SELECT company_id FROM doctors WHERE id = $1', [(await context.params).id]);
       if (docRes.rows.length === 0 || docRes.rows[0].company_id !== user.companyId) {
         return forbiddenResponse('No puede eliminar un médico que no pertenece a su empresa.');
       }
     }
 
-    await db.query('DELETE FROM doctors WHERE id = $1', [params.id]);
+    await db.query('DELETE FROM doctors WHERE id = $1', [(await context.params).id]);
     return new NextResponse(null, { status: 204 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

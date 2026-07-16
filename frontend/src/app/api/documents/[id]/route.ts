@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { authenticate, unauthorizedResponse, forbiddenResponse } from '@/utils/auth';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: any) {
   const user = authenticate(req);
   if (!user) return unauthorizedResponse();
 
   try {
-    const result = await db.query('SELECT * FROM documents WHERE id = $1', [params.id]);
+    const result = await db.query('SELECT * FROM documents WHERE id = $1', [(await context.params).id]);
     if (result.rows.length === 0) {
       return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 });
     }
@@ -34,12 +34,12 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: any) {
   const user = authenticate(req);
   if (!user) return unauthorizedResponse();
 
   try {
-    const checkRes = await db.query('SELECT doctor_id, company_id FROM documents WHERE id = $1', [params.id]);
+    const checkRes = await db.query('SELECT doctor_id, company_id FROM documents WHERE id = $1', [(await context.params).id]);
     if (checkRes.rows.length === 0) {
       return NextResponse.json({ error: 'Documento no encontrado' }, { status: 404 });
     }
@@ -55,7 +55,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       }
     }
 
-    await db.query('DELETE FROM documents WHERE id = $1', [params.id]);
+    await db.query('DELETE FROM documents WHERE id = $1', [(await context.params).id]);
     return new NextResponse(null, { status: 204 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

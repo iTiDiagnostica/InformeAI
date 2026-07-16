@@ -3,7 +3,7 @@ import { db } from '@/services/dbService';
 import { authenticateAdmin, forbiddenResponse } from '@/utils/auth';
 import bcrypt from 'bcryptjs';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: any) {
   const user = authenticateAdmin(req);
   if (!user) return forbiddenResponse();
 
@@ -11,7 +11,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const { name, username, password, company_id } = await req.json();
 
     if (username) {
-      const checkRes = await db.query('SELECT id FROM moderators WHERE username = $1 AND id != $2', [username, params.id]);
+      const checkRes = await db.query('SELECT id FROM moderators WHERE username = $1 AND id != $2', [username, (await context.params).id]);
       if (checkRes.rows.length > 0) {
         return NextResponse.json({ error: 'El nombre de usuario ya está en uso por otro moderador.' }, { status: 400 });
       }
@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     }
 
     queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, username, company_id`;
-    queryParams.push(params.id);
+    queryParams.push((await context.params).id);
 
     const result = await db.query(queryStr, queryParams);
     if (result.rows.length === 0) {
@@ -48,12 +48,12 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: any) {
   const user = authenticateAdmin(req);
   if (!user) return forbiddenResponse();
 
   try {
-    await db.query('DELETE FROM moderators WHERE id = $1', [params.id]);
+    await db.query('DELETE FROM moderators WHERE id = $1', [(await context.params).id]);
     return new NextResponse(null, { status: 204 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
