@@ -4,6 +4,10 @@ import { llmService } from '@/services/llmService';
 import { ragService } from '@/services/ragService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
 
+// Timeout de la función serverless (en segundos) — necesario para Vercel Hobby plan (máx 60s)
+// Se exporta directamente en el route.ts porque vercel.json no aplica confiablemente con App Router
+export const maxDuration = 60;
+
 function splitTemplateQuery(query: string): string[] {
   return query
     .split(/(?:\s+y\s+|\s+con\s+|,)/i)

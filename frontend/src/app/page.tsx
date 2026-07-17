@@ -1200,7 +1200,13 @@ export default function DictationPage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        let data: any = {};
+        try {
+          data = await res.json();
+        } catch {
+          // Vercel puede devolver HTML en lugar de JSON al timeout (504)
+          throw new Error(`Error del servidor (${res.status}). Intente nuevamente.`);
+        }
         if (data.code === 'TEMPLATE_NOT_FOUND') {
           setMissingTemplateName(data.query || rawText);
           setIsTemplateErrorModalOpen(true);
@@ -1208,10 +1214,21 @@ export default function DictationPage() {
         throw new Error(data.error || "Fallo en la estructuración.");
       }
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("La respuesta del servidor no es válida. Intente nuevamente.");
+      }
+
+      const structuredText = data?.structuredText || data?.structuredReport || "";
+      if (!structuredText || typeof structuredText !== "string" || structuredText.trim().length === 0) {
+        throw new Error("La IA no generó un informe válido. Intente nuevamente.");
+      }
+
       // La IA devuelve markdown — convertirlo a HTML una sola vez para almacenarlo
-      updateReportState(convertReportToHtml(data.structuredText), "direct");
-      setCurrentReportId(data.id);
+      updateReportState(convertReportToHtml(structuredText), "direct");
+      setCurrentReportId(data.id || data.reportId || null);
       setMode("correct"); // Cambiar automáticamente al modo corrección una vez generado
       
       // Guardar médico autodetectado
@@ -1228,6 +1245,7 @@ export default function DictationPage() {
       setIsLoading(false);
     }
   };
+
 
   // Enviar corrección incremental
   const handleApplyCorrection = async () => {
@@ -1271,13 +1289,29 @@ export default function DictationPage() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        let data: any = {};
+        try {
+          data = await res.json();
+        } catch {
+          throw new Error(`Error del servidor (${res.status}). Intente nuevamente.`);
+        }
         throw new Error(data.error || "Fallo al aplicar corrección.");
       }
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("La respuesta del servidor no es válida. Intente nuevamente.");
+      }
+
+      const correctedText = data?.structuredText || data?.structuredReport || "";
+      if (!correctedText || typeof correctedText !== "string" || correctedText.trim().length === 0) {
+        throw new Error("La IA no generó una corrección válida. Intente nuevamente.");
+      }
+
       // La IA devuelve markdown — convertirlo a HTML una sola vez
-      updateReportState(convertReportToHtml(data.structuredText), "direct");
+      updateReportState(convertReportToHtml(correctedText), "direct");
       // setCorrectionInstruction(""); // Se comenta por pedido del usuario para mantener visible la instrucción y poder comparar
       
       // Guardar médico autodetectado/perdurado

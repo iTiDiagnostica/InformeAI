@@ -3,6 +3,9 @@ import { db } from '@/services/dbService';
 import { llmService } from '@/services/llmService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
 
+// Timeout de la función serverless (en segundos) — necesario para Vercel Hobby plan
+export const maxDuration = 60;
+
 function normalizeDictatedPunctuation(text: string): string {
   let normalized = text;
   normalized = normalized.replace(/\bcoma\b/gi, ',');
