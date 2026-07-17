@@ -17,8 +17,8 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   try {
     const { activeAiModel } = await req.json();
-    if (activeAiModel !== 'gemma' && activeAiModel !== 'gemini' && !activeAiModel.startsWith('gemini-')) {
-      return NextResponse.json({ error: 'Modelo de IA inválido. Debe ser "gemma", "gemini" o comenzar con "gemini-".' }, { status: 400 });
+    if (!activeAiModel || (activeAiModel !== 'gemma' && activeAiModel !== 'gemini' && !activeAiModel.startsWith('gemini-') && !activeAiModel.startsWith('groq-'))) {
+      return NextResponse.json({ error: 'Modelo de IA inválido.' }, { status: 400 });
     }
     
     await db.query(

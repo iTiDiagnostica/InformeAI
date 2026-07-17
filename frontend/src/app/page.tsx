@@ -612,7 +612,9 @@ export default function DictationPage() {
       const res = await fetch(`${API_URL}/api/settings`);
       if (res.ok) {
         const data = await res.json();
-        setActiveAiModel(data.activeAiModel);
+        // La API devuelve snake_case (active_ai_model), no camelCase
+        const model = data.active_ai_model || data.activeAiModel || "gemini";
+        setActiveAiModel(model);
       }
     } catch (err) {
       console.error("Error al cargar configuración de IA:", err);
@@ -1987,7 +1989,7 @@ export default function DictationPage() {
               {isLoading && (
                 <div className="absolute inset-0 bg-slate-950/70 z-10 flex flex-col items-center justify-center gap-3">
                   <span className="w-10 h-10 rounded-full border-4 border-clinical-teal border-t-transparent animate-spin"></span>
-                   <p className="text-xs text-clinical-teal font-semibold tracking-wide">Estructurando reporte con {activeAiModel.startsWith("gemini") ? "Gemini" : activeAiModel.startsWith("groq") ? "Groq" : "Gemma"}...</p>
+                   <p className="text-xs text-clinical-teal font-semibold tracking-wide">Estructurando reporte con {activeAiModel?.startsWith("gemini") ? "Gemini" : activeAiModel?.startsWith("groq") ? "Groq" : "IA"}...</p>
                 </div>
               )}
               {/* Editor Toolbar */}
