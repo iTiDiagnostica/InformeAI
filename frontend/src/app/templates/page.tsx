@@ -631,7 +631,9 @@ export default function TemplatesPage() {
       const res = await fetch(`${API_URL}/api/settings`);
       if (res.ok) {
         const data = await res.json();
-        setActiveAiModel(data.activeAiModel);
+        // La API devuelve snake_case (active_ai_model), no camelCase
+        const model = data.active_ai_model || data.activeAiModel || "gemini";
+        setActiveAiModel(model);
       }
     } catch (err) {
       console.error("Error al cargar configuración de IA:", err);
@@ -1022,7 +1024,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
     const matchesDoctor =
       filterDoctorId === "all" ||
       (filterDoctorId === "general" && doc.doctorId === null) ||
-      (doc.doctorId !== null && doc.doctorId.toString() === filterDoctorId);
+      (doc.doctorId != null && doc.doctorId.toString() === filterDoctorId);
 
     return matchesSearch && matchesDoctor;
   });
@@ -1375,7 +1377,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         (typeof window !== "undefined" && localStorage.getItem("role") === "moderator") ||
                         (typeof window !== "undefined" &&
                           localStorage.getItem("role") === "doctor" &&
-                          doc.doctorId !== null &&
+                          doc.doctorId != null &&
                           doc.doctorId.toString() === localStorage.getItem("doctor_id"))
                       ) && (
                         <>

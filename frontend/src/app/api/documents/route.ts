@@ -36,7 +36,18 @@ export async function GET(req: NextRequest) {
         ORDER BY d.id DESC
       `, [user.doctorId, companyId]);
     }
-    return NextResponse.json(result.rows);
+    // Mapear snake_case de PostgreSQL a camelCase para el frontend
+    const mapped = result.rows.map((row: any) => ({
+      id: row.id,
+      title: row.title,
+      doctorId: row.doctor_id ?? null,
+      companyId: row.company_id ?? null,
+      created_at: row.created_at,
+      doctorName: row.doctorName ?? null,
+      companyName: row.company_name ?? null,
+      length: row.length ?? 0,
+    }));
+    return NextResponse.json(mapped);
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
