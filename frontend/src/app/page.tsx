@@ -140,7 +140,7 @@ const cleanHtmlForComparison = (html: string): string => {
 
 // Convertir el texto del informe a HTML formateado para el editor contentEditable de la app
 const convertReportToHtml = (text: string): string => {
-  if (!text) return "";
+  if (!text || typeof text !== "string") return "";
 
   const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
   const normalizedText = cleanText.replace(/\r\n/g, "\n");
@@ -190,9 +190,9 @@ const convertReportToHtml = (text: string): string => {
  * fondo blanco y espaciado de párrafos para evitar que se colasen.
  */
 const convertReportToClipboardHtml = (text: string): string => {
-  if (!text) return "";
+  if (!text || typeof text !== "string") return "";
 
-  const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
+  const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ");
   const normalizedText = cleanText.replace(/\r\n/g, "\n");
   const lines = normalizedText.split("\n");
 
