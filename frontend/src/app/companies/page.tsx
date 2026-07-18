@@ -595,10 +595,10 @@ export default function CompaniesPage() {
         />
         
         {/* Top Navbar */}
-        <header className="h-12 xl:h-14 2xl:h-16 border-b border-slate-800 hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
+        <header className="h-12 xl:h-14 2xl:h-16 border-b border-clinical-border hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold tracking-wide text-clinical-text">Control de Branding</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-clinical-text-muted">Empresas e Identidades Visuales</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-clinical-surface border border-clinical-border text-clinical-text-muted">Empresas e Identidades Visuales</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -609,7 +609,7 @@ export default function CompaniesPage() {
                 <select
                   value={selectedPreviewCompanyId}
                   onChange={handlePreviewCompanyChange}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
                 >
                   <option value="base">Sistema (Base)</option>
                   {companies.map((c) => (
@@ -652,7 +652,7 @@ export default function CompaniesPage() {
         <section className="flex-1 p-3 xl:p-4 2xl:p-6 overflow-y-auto min-h-0">
           
           {/* Listado de Empresas */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-lg min-h-full">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-lg min-h-full">
             <div className="mb-6">
               <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">Empresas Registradas</h2>
               <p className="text-xs text-clinical-text-muted mt-1">Gestione las marcas y configuraciones de color para cada una de las clínicas e instituciones médicas integradas.</p>
@@ -662,7 +662,7 @@ export default function CompaniesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {companies.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted">
-                  <div className="w-20 h-20 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-2xl">
+                  <div className="w-20 h-20 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-2xl">
                     🏢
                   </div>
                   <h3 className="font-semibold text-base text-clinical-text">No hay empresas registradas</h3>
@@ -693,7 +693,7 @@ export default function CompaniesPage() {
                   return (
                     <div
                       key={comp.id}
-                      className="p-5 bg-slate-950/40 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
+                      className="p-5 bg-clinical-surface-inset/40 border border-clinical-border rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
                     >
                       <div>
                         {/* Cabecera del Card sin ID de Empresa */}
@@ -705,36 +705,36 @@ export default function CompaniesPage() {
                           </div>
                           
                           {comp.logoBase64 ? (
-                            <div className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 p-1.5 overflow-hidden">
+                            <div className="w-12 h-12 rounded-xl bg-clinical-surface border border-clinical-border flex items-center justify-center shrink-0 p-1.5 overflow-hidden">
                               <img src={comp.logoBase64} alt={comp.name} className="max-h-full max-w-full object-contain" />
                             </div>
                           ) : (
-                            <span className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shrink-0 text-xl">
+                            <span className="w-12 h-12 rounded-xl bg-clinical-surface border border-clinical-border flex items-center justify-center shrink-0 text-xl">
                               🏢
                             </span>
                           )}
                         </div>
 
                         {/* Detalle de Colores Simplificado sin textos ni códigos */}
-                        <div className="flex items-center justify-between bg-slate-950/60 rounded-xl p-3.5 border border-slate-900 text-xs">
+                        <div className="flex items-center justify-between bg-clinical-surface-inset/60 rounded-xl p-3.5 border border-clinical-border text-xs">
                           <div className="flex items-center gap-1.5 min-w-0">
                             <span className="text-clinical-text-muted font-semibold shrink-0">Tema aplicado:</span>
                             <span className="text-clinical-teal font-bold truncate max-w-[140px]" title={themeName}>{themeName}</span>
                           </div>
                           
                           <div className="flex items-center gap-1.5 shrink-0 ml-3">
-                            <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: comp.colorPrimary }} title="Fondo" />
-                            <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: comp.colorSecondary }} title="Panel" />
-                            <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: comp.colorAccent }} title="Acento" />
+                            <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: comp.colorPrimary }} title="Fondo" />
+                            <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: comp.colorSecondary }} title="Panel" />
+                            <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: comp.colorAccent }} title="Acento" />
                           </div>
                         </div>
                       </div>
 
                       {/* Botones de acción */}
-                      <div className="flex gap-2.5 mt-5 pt-3 border-t border-slate-900 shrink-0">
+                      <div className="flex gap-2.5 mt-5 pt-3 border-t border-clinical-border shrink-0">
                         <button
                           onClick={() => handleEdit(comp)}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-400 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/20 transition-all text-xs font-semibold cursor-pointer"
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/20 transition-all text-xs font-semibold cursor-pointer"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 18.75a4.409 4.409 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
@@ -745,7 +745,7 @@ export default function CompaniesPage() {
                         {userRole === "admin" && (
                           <button
                             onClick={() => handleDeleteClick(comp)}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-rose-950/30 text-slate-400 hover:text-rose-400 border border-slate-800 hover:border-rose-900/40 transition-all text-xs font-semibold cursor-pointer"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/40 transition-all text-xs font-semibold cursor-pointer"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
@@ -766,10 +766,10 @@ export default function CompaniesPage() {
       {/* Modal de Registro/Edición */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-clinical-panel border border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
             
             {/* Cabecera del Modal */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 shrink-0">
+            <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h2 className="text-lg font-bold tracking-wide uppercase text-clinical-teal">
                   {isEditMode ? "Modificar Empresa" : "Registrar Empresa"}
@@ -780,7 +780,7 @@ export default function CompaniesPage() {
               </div>
               <button
                 onClick={handleCancelEdit}
-                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -808,10 +808,10 @@ export default function CompaniesPage() {
                         }
                       }}
                       placeholder="Ej: Clínica Santa Fe / Hospital de Clínicas"
-                      className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                      className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                         nameError
                           ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                          : "border-slate-800 focus:border-clinical-teal"
+                          : "border-clinical-border focus:border-clinical-teal"
                       }`}
                     />
                   </div>
@@ -827,11 +827,11 @@ export default function CompaniesPage() {
                           type="file"
                           accept="image/*"
                           onChange={handleLogoUpload}
-                          className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-clinical-text hover:file:bg-slate-800 file:cursor-pointer cursor-pointer border border-slate-800 rounded-xl p-1 bg-slate-950/20"
+                          className="w-full text-xs text-clinical-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-clinical-surface file:text-clinical-text hover:file:bg-clinical-surface-hover file:cursor-pointer cursor-pointer border border-clinical-border rounded-xl p-1 bg-clinical-surface-inset/20"
                         />
                       </div>
                       {logoBase64 && (
-                        <div className="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 p-1 flex items-center justify-center relative group overflow-hidden shrink-0">
+                        <div className="w-12 h-12 rounded-xl bg-clinical-surface-inset border border-clinical-border p-1 flex items-center justify-center relative group overflow-hidden shrink-0">
                           <img src={logoBase64} alt="Logotipo cargado" className="max-h-full max-w-full object-contain" />
                           <button
                             type="button"
@@ -871,11 +871,11 @@ export default function CompaniesPage() {
                               }}
                               className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all text-center cursor-pointer ${
                                 isSelected
-                                  ? "bg-slate-900 border-clinical-teal shadow-md shadow-clinical-teal/10"
-                                  : "bg-slate-900/20 border-slate-800 hover:border-slate-700"
+                                  ? "bg-clinical-surface border-clinical-teal shadow-md shadow-clinical-teal/10"
+                                  : "bg-clinical-surface-inset/20 border-clinical-border hover:border-clinical-teal/30"
                               }`}
                             >
-                              <div className="w-4 h-4 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: theme.colorRepresentation }} />
+                              <div className="w-4 h-4 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: theme.colorRepresentation }} />
                               <span className="text-[8px] font-bold text-clinical-text-muted truncate max-w-full px-0.5">{theme.name}</span>
                             </button>
                           );
@@ -903,8 +903,8 @@ export default function CompaniesPage() {
                               }}
                               className={`w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all hover:scale-[1.005] cursor-pointer ${
                                 isSelected
-                                  ? "bg-slate-900 border-clinical-teal shadow-sm shadow-clinical-teal/5"
-                                  : "bg-slate-900/20 border-slate-800/80 hover:border-slate-700/65"
+                                  ? "bg-clinical-surface border-clinical-teal shadow-sm shadow-clinical-teal/5"
+                                  : "bg-clinical-surface-inset/20 border-clinical-border/80 hover:border-clinical-teal/30"
                               }`}
                             >
                               <div className="flex items-center gap-2">
@@ -917,9 +917,9 @@ export default function CompaniesPage() {
                               </div>
                               
                               <div className="flex items-center gap-1.5 shrink-0 ml-4">
-                                <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: variant.primary }} title="Fondo" />
-                                <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: variant.secondary }} title="Panel" />
-                                <div className="w-3.5 h-3.5 rounded-full border border-slate-700 shadow-inner" style={{ backgroundColor: variant.accent }} title="Acento" />
+                                <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: variant.primary }} title="Fondo" />
+                                <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: variant.secondary }} title="Panel" />
+                                <div className="w-3.5 h-3.5 rounded-full border border-clinical-border/40 shadow-inner" style={{ backgroundColor: variant.accent }} title="Acento" />
                               </div>
                             </button>
                           );
@@ -929,7 +929,7 @@ export default function CompaniesPage() {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800 space-y-4">
+                <div className="mt-6 pt-4 border-t border-clinical-border space-y-4">
                   {/* Mensajes del Formulario */}
                   {error && (
                     <div className="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800 text-[11px] text-rose-300 font-medium shrink-0">
@@ -946,7 +946,7 @@ export default function CompaniesPage() {
                     <button
                       type="button"
                       onClick={handleCancelEdit}
-                      className="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-clinical-text font-bold tracking-wide transition-all border border-slate-700 flex items-center justify-center gap-2 cursor-pointer text-xs"
+                      className="flex-1 py-2.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-bold tracking-wide transition-all border border-clinical-border flex items-center justify-center gap-2 cursor-pointer text-xs"
                     >
                       Cancelar
                     </button>
@@ -971,7 +971,7 @@ export default function CompaniesPage() {
               </form>
 
               {/* Columna Derecha: Vista Previa */}
-              <div className="flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-slate-850 pt-6 lg:pt-0 lg:pl-6 h-full min-h-0">
+              <div className="flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-clinical-border pt-6 lg:pt-0 lg:pl-6 h-full min-h-0">
                 <div className="mb-4 shrink-0">
                   <h3 className="text-xs font-bold tracking-wider uppercase text-clinical-text-muted mb-1">
                     Vista Previa de Marca (Live Demo)
@@ -1010,16 +1010,16 @@ export default function CompaniesPage() {
 
                   return (
                     <div 
-                      className="flex-1 border border-slate-800/80 rounded-2xl p-6 flex gap-4 text-xs overflow-hidden select-none transition-colors min-h-[300px]"
+                      className="flex-1 border border-clinical-border/80 rounded-2xl p-6 flex gap-4 text-xs overflow-hidden select-none transition-colors min-h-[300px]"
                       style={previewStyle}
                     >
                       {/* Minisidebar */}
                       <div 
-                        className="w-1/3 rounded-xl border border-slate-800/80 p-3 flex flex-col justify-between"
+                        className="w-1/3 rounded-xl border border-clinical-border/80 p-3 flex flex-col justify-between"
                         style={{ backgroundColor: colorSecondary }}
                       >
                         <div className="space-y-3">
-                          <div className="h-8 flex items-center justify-center border-b border-slate-800/50 pb-2 shrink-0">
+                          <div className="h-8 flex items-center justify-center border-b border-clinical-border/50 pb-2 shrink-0">
                             {logoBase64 ? (
                               <img src={logoBase64} alt="Preview Logo" className="max-h-full max-w-full object-contain" />
                             ) : (
@@ -1040,12 +1040,12 @@ export default function CompaniesPage() {
 
                       {/* Miniworkplace */}
                       <div className="flex-1 flex flex-col justify-between">
-                        <div className="h-8 rounded-xl border border-slate-800/80 flex items-center justify-between px-3" style={{ backgroundColor: colorSecondary }}>
+                        <div className="h-8 rounded-xl border border-clinical-border/80 flex items-center justify-between px-3" style={{ backgroundColor: colorSecondary }}>
                           <span className="text-[7px] text-clinical-text-muted font-bold">Historial</span>
                           <span className="text-[7px] px-2 py-0.5 rounded bg-clinical-teal/20 text-clinical-teal text-[6px] font-bold">Activo</span>
                         </div>
 
-                        <div className="flex-1 border border-slate-800/60 rounded-xl p-3 my-3 flex flex-col justify-center items-center gap-2 bg-slate-900/20">
+                        <div className="flex-1 border border-clinical-border/60 rounded-xl p-3 my-3 flex flex-col justify-center items-center gap-2 bg-clinical-surface/20">
                           <div className="w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all" style={{ backgroundColor: colorAccent, boxShadow: `0 0 12px ${colorAccent}50` }}>
                             🎙️
                           </div>
@@ -1054,7 +1054,7 @@ export default function CompaniesPage() {
 
                         <div className="h-6 flex gap-3 shrink-0">
                           <div className="flex-1 rounded-lg" style={{ backgroundColor: `${colorAccent}15`, border: `1px solid ${colorAccent}40` }} />
-                          <div className="flex-1 rounded-lg bg-slate-900 border border-slate-800" />
+                          <div className="flex-1 rounded-lg bg-clinical-surface border border-clinical-border" />
                         </div>
                       </div>
                     </div>

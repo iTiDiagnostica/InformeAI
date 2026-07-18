@@ -544,7 +544,7 @@ export default function HistorialPage() {
     if (lower.includes("rx") || lower.includes("rad")) return "bg-cyan-500/10 text-cyan-400 border-cyan-500/30";
     if (lower.includes("tac") || lower.includes("tom")) return "bg-rose-500/10 text-rose-400 border-rose-500/30";
     if (lower.includes("mam")) return "bg-pink-500/10 text-pink-400 border-pink-500/30";
-    return "bg-slate-800 text-clinical-text-muted border-slate-700";
+    return "bg-clinical-surface text-clinical-text-muted border-clinical-border";
   };
 
   const formatDate = (isoString?: string) => {
@@ -604,10 +604,10 @@ export default function HistorialPage() {
         />
         
         {/* Top Navbar */}
-        <header className="h-12 xl:h-14 2xl:h-16 border-b border-slate-800 hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
+        <header className="h-12 xl:h-14 2xl:h-16 border-b border-clinical-border hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold tracking-wide text-clinical-text">Historial de Trabajo</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-clinical-text-muted">Todos los informes</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-clinical-surface border border-clinical-border text-clinical-text-muted">Todos los informes</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -618,7 +618,7 @@ export default function HistorialPage() {
                 <select
                   value={selectedPreviewCompanyId}
                   onChange={handlePreviewCompanyChange}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
                 >
                   <option value="base">Sistema (Base)</option>
                   {companies.map((c) => (
@@ -643,7 +643,7 @@ export default function HistorialPage() {
             <button
               onClick={() => fetchReports(pagination.page, debouncedSearch, selectedDoctorId, startDate, endDate)}
               disabled={isLoading}
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all disabled:opacity-40"
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -653,7 +653,7 @@ export default function HistorialPage() {
           </div>
 
           {/* Barra de Filtros y Búsqueda Avanzada */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-xl p-3 flex flex-col md:flex-row items-stretch md:items-center gap-3 shadow-lg shrink-0">
+          <div className="bg-clinical-panel border border-clinical-border rounded-xl p-3 flex flex-col md:flex-row items-stretch md:items-center gap-3 shadow-lg shrink-0">
             {/* Buscador */}
             <div className="flex-1 relative">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
@@ -666,7 +666,7 @@ export default function HistorialPage() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Buscar por N° de informe o tipo de estudio (ej: mamaria)..."
-                className="w-full bg-slate-950/50 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-clinical-text placeholder-slate-500 focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/30 transition-all font-semibold"
+                className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl pl-10 pr-4 py-2.5 text-xs text-clinical-text placeholder-slate-500 focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/30 transition-all font-semibold"
               />
             </div>
 
@@ -677,7 +677,7 @@ export default function HistorialPage() {
                 <select
                   value={selectedDoctorId}
                   onChange={(e) => setSelectedDoctorId(e.target.value)}
-                  className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/30 cursor-pointer min-w-[160px]"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/30 cursor-pointer min-w-[160px]"
                 >
                   <option value="all">Todos los médicos</option>
                   {doctors.map(doc => (
@@ -691,7 +691,7 @@ export default function HistorialPage() {
             <div className="relative" ref={calendarRef}>
               <button
                 onClick={() => setIsCalendarOpen(!isCalendarOpen)}
-                className="flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 hover:border-clinical-teal/50 hover:bg-clinical-teal/5 text-xs font-semibold text-clinical-text transition-all cursor-pointer min-w-[200px]"
+                className="flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl bg-clinical-surface-inset border border-clinical-border hover:border-clinical-teal/50 hover:bg-clinical-teal/5 text-xs font-semibold text-clinical-text transition-all cursor-pointer min-w-[200px]"
               >
                 <span className="flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-clinical-text-muted">
@@ -710,12 +710,12 @@ export default function HistorialPage() {
 
               {/* Calendario Flotante Popover */}
               {isCalendarOpen && (
-                <div className="absolute right-0 mt-2 z-30 bg-clinical-panel border border-slate-800 rounded-2xl p-4 shadow-2xl w-[320px] animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="absolute right-0 mt-2 z-30 bg-clinical-panel border border-clinical-border rounded-2xl p-4 shadow-2xl w-[320px] animate-in fade-in slide-in-from-top-1 duration-200">
                   {/* Navegación del Calendario */}
                   <div className="flex items-center justify-between mb-4">
                     <button
                       onClick={handlePrevMonth}
-                      className="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-clinical-text transition-all cursor-pointer"
+                      className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all cursor-pointer"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -726,7 +726,7 @@ export default function HistorialPage() {
                     </span>
                     <button
                       onClick={handleNextMonth}
-                      className="p-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-clinical-text transition-all cursor-pointer"
+                      className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all cursor-pointer"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -761,7 +761,7 @@ export default function HistorialPage() {
                       } else if (inRange) {
                         dayClass += "bg-clinical-teal/15 text-clinical-teal rounded-none";
                       } else {
-                        dayClass += "hover:bg-slate-850 hover:text-clinical-text text-clinical-text-muted";
+                        dayClass += "hover:bg-clinical-surface-hover hover:text-clinical-text text-clinical-text-muted";
                       }
 
                       return (
@@ -777,7 +777,7 @@ export default function HistorialPage() {
                   </div>
 
                   {/* Accesos Rápidos */}
-                  <div className="border-t border-slate-850 mt-4 pt-3 flex items-center justify-between">
+                  <div className="border-t border-clinical-border-subtle mt-4 pt-3 flex items-center justify-between">
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
@@ -842,7 +842,7 @@ export default function HistorialPage() {
           )}
 
           {/* Tabla de Historial */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-xl overflow-hidden flex flex-col flex-1 shadow-lg min-h-0">
+          <div className="bg-clinical-panel border border-clinical-border rounded-xl overflow-hidden flex flex-col flex-1 shadow-lg min-h-0">
             {isLoading ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-3">
                 <span className="w-10 h-10 rounded-full border-4 border-clinical-teal border-t-transparent animate-spin"></span>
@@ -850,7 +850,7 @@ export default function HistorialPage() {
               </div>
             ) : reports.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
-                <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-slate-700">
+                <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                   </svg>
@@ -864,7 +864,7 @@ export default function HistorialPage() {
               <div className="flex-1 flex flex-col justify-between overflow-auto min-h-0">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted bg-slate-950/20">
+                    <tr className="border-b border-clinical-border text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted bg-clinical-surface-inset/50">
                       <th className="py-4 px-6">Informe</th>
                       <th className="py-4 px-6">Tipo de Estudio</th>
                       <th className="py-4 px-6">Médico / Especialidad</th>
@@ -874,9 +874,9 @@ export default function HistorialPage() {
                       <th className="py-4 px-6 text-right">Acciones</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-clinical-border/40">
                     {reports.map((report) => (
-                      <tr key={report.id} className="hover:bg-slate-900/30 transition-all group">
+                      <tr key={report.id} className="hover:bg-clinical-surface/40 transition-all group">
                         <td className="py-4 px-6 font-semibold text-xs text-clinical-text">
                           <button
                             onClick={() => {
@@ -927,7 +927,7 @@ export default function HistorialPage() {
                                 setSelectedReport(report);
                                 setIsModalOpen(true);
                               }}
-                              className="p-2 rounded bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-clinical-text border border-slate-800 transition-all cursor-pointer"
+                              className="p-2 rounded bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text border border-clinical-border transition-all cursor-pointer"
                               title="Visualizar Reporte"
                               aria-label="Visualizar reporte"
                             >
@@ -938,7 +938,7 @@ export default function HistorialPage() {
                             </button>
                             <button
                               onClick={() => handleLoadReport(report)}
-                              className="p-2 rounded bg-slate-900 hover:bg-clinical-teal/15 text-slate-400 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer"
+                              className="p-2 rounded bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
                               title="Cargar en Dictador principal"
                               aria-label="Cargar reporte en el dictador principal"
                             >
@@ -954,7 +954,7 @@ export default function HistorialPage() {
                 </table>
 
                 {/* Controles de Paginación */}
-                <div className="p-4 border-t border-slate-800 flex items-center justify-between flex-wrap gap-4 bg-slate-950/10 shrink-0">
+                <div className="p-4 border-t border-clinical-border flex items-center justify-between flex-wrap gap-4 bg-clinical-surface-inset/30 shrink-0">
                   <span className="text-xs text-clinical-text-muted font-medium">
                     Mostrando <span className="text-clinical-text font-bold">{(pagination.page - 1) * pagination.limit + 1}</span> a{" "}
                     <span className="text-clinical-text font-bold">
@@ -967,7 +967,7 @@ export default function HistorialPage() {
                     <button
                       onClick={() => fetchReports(pagination.page - 1, debouncedSearch, selectedDoctorId, startDate, endDate)}
                       disabled={pagination.page === 1}
-                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                       Anterior
                     </button>
@@ -982,7 +982,7 @@ export default function HistorialPage() {
                           className={`w-8 h-8 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
                             isActive
                               ? "bg-clinical-teal border-clinical-teal text-slate-950"
-                              : "bg-slate-900 border-slate-800 text-clinical-text hover:bg-slate-800"
+                              : "bg-clinical-surface border-clinical-border text-clinical-text hover:bg-clinical-surface-hover"
                           }`}
                         >
                           {pageNum}
@@ -993,7 +993,7 @@ export default function HistorialPage() {
                     <button
                       onClick={() => fetchReports(pagination.page + 1, debouncedSearch, selectedDoctorId, startDate, endDate)}
                       disabled={pagination.page === pagination.totalPages}
-                      className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                       Siguiente
                     </button>
@@ -1008,10 +1008,10 @@ export default function HistorialPage() {
       {/* Modal de Detalle de Informe */}
       {isModalOpen && selectedReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
             
             {/* Header del Modal */}
-            <div className="p-6 border-b border-slate-800 hidden md:flex items-center justify-between shrink-0 bg-slate-950/20">
+            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
               <div>
                 <h3 className="font-bold text-base text-clinical-text tracking-wide">
                   Detalles del Informe #{selectedReport.id}
@@ -1022,7 +1022,7 @@ export default function HistorialPage() {
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1032,7 +1032,7 @@ export default function HistorialPage() {
 
             {/* Contenido del Modal */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-slate-950/30 p-4 border border-slate-800/80 rounded-xl shrink-0">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-clinical-surface-inset/40 p-4 border border-clinical-border rounded-xl shrink-0">
                 <div className="space-y-1.5">
                   <p className="text-clinical-text-muted font-medium">IA Utilizada: <span className="text-clinical-text font-bold">{selectedReport.aiType}</span></p>
                   <p className="text-clinical-text-muted font-medium">Creado Por: <span className="text-clinical-text font-bold">{selectedReport.createdByRole}</span></p>
@@ -1056,7 +1056,7 @@ export default function HistorialPage() {
               {/* Dictado Bruto */}
               <div className="space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted">Texto del Dictado (Bruto)</span>
-                <div className="bg-slate-950/40 border border-slate-800 rounded-xl p-4 text-xs text-clinical-text-muted leading-relaxed select-text cursor-text max-h-[150px] overflow-y-auto">
+                <div className="bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-4 text-xs text-clinical-text-muted leading-relaxed select-text cursor-text max-h-[150px] overflow-y-auto">
                   {selectedReport.rawText}
                 </div>
               </div>

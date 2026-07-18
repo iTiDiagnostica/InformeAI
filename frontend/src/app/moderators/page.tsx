@@ -403,10 +403,10 @@ export default function ModeratorsPage() {
         />
         
         {/* Top Navbar */}
-        <header className="h-12 xl:h-14 2xl:h-16 border-b border-slate-800 hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
+        <header className="h-12 xl:h-14 2xl:h-16 border-b border-clinical-border hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold tracking-wide text-clinical-text">Control de Moderadores</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-clinical-text-muted">Administración de Tenants</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-clinical-surface border border-clinical-border text-clinical-text-muted">Administración de Tenants</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -416,7 +416,7 @@ export default function ModeratorsPage() {
               <select
                 value={selectedPreviewCompanyId}
                 onChange={handlePreviewCompanyChange}
-                className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
               >
                 <option value="base">Sistema (Base)</option>
                 {companies.map((c) => (
@@ -454,7 +454,7 @@ export default function ModeratorsPage() {
         <section className="flex-1 p-3 xl:p-4 2xl:p-6 overflow-y-auto min-h-0">
 
           {/* Listado de Moderadores */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-lg min-h-full">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-lg min-h-full">
             <div className="mb-6">
               <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">Moderadores Registrados</h2>
               <p className="text-xs text-clinical-text-muted mt-1">Gestione los administradores delegados por cada empresa asociada</p>
@@ -463,7 +463,7 @@ export default function ModeratorsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {moderators.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted h-full">
-                  <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-slate-700">
+                  <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.947 11.947 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584v-.109m0 0v.003c0-1.113.285-2.16.786-3.07M7.037 16.289a4.125 4.125 0 0 0-7.533 2.493M9 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-3 9.75a9 9 0 0 0-9 0m9-9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
@@ -478,7 +478,7 @@ export default function ModeratorsPage() {
                   return (
                     <div
                       key={mod.id}
-                      className="p-5 bg-slate-950/40 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
+                      className="p-5 bg-clinical-surface-inset/40 border border-clinical-border rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-4 mb-3">
@@ -490,7 +490,7 @@ export default function ModeratorsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap text-[10px] text-clinical-text-muted mt-2">
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-clinical-text font-semibold">
+                          <span className="px-2 py-0.5 rounded bg-clinical-surface border border-clinical-border/40 text-clinical-text font-semibold">
                             Usuario: {mod.username}
                           </span>
                           {mod.companyName && (
@@ -498,16 +498,16 @@ export default function ModeratorsPage() {
                               🏢 {mod.companyName}
                             </span>
                           )}
-                          <span className="px-2 py-0.5 rounded bg-slate-800/40 text-clinical-text-muted">
+                          <span className="px-2 py-0.5 rounded bg-clinical-surface/40 text-clinical-text-muted">
                             Creado: {new Date(mod.createdAt).toLocaleDateString()}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-slate-800/50">
+                      <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-clinical-border/50">
                         <button
                           onClick={() => handleEdit(mod)}
-                          className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer"
+                          className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
                           title="Editar moderador"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -516,7 +516,7 @@ export default function ModeratorsPage() {
                         </button>
                         <button
                           onClick={() => handleDeleteClick(mod)}
-                          className="p-2 rounded-xl bg-slate-900 hover:bg-rose-950/30 text-slate-500 hover:text-rose-400 border border-slate-800 hover:border-rose-900/50 transition-all cursor-pointer"
+                          className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer"
                           title="Eliminar moderador"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -536,9 +536,9 @@ export default function ModeratorsPage() {
       {/* Modal de Formulario de Registro / Edición */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
             {/* Cabecera del Modal */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 shrink-0">
+            <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">
                   {isEditMode ? "Modificar Moderador" : "Registrar Moderador"}
@@ -549,7 +549,7 @@ export default function ModeratorsPage() {
               </div>
               <button
                 onClick={handleCancelEdit}
-                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -572,10 +572,10 @@ export default function ModeratorsPage() {
                     }
                   }}
                   placeholder="Ej: Administrador Externo S.A."
-                  className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                  className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                     nameError
                       ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                      : "border-slate-800 focus:border-clinical-teal"
+                      : "border-clinical-border focus:border-clinical-teal"
                   }`}
                 />
               </div>
@@ -594,10 +594,10 @@ export default function ModeratorsPage() {
                     }
                   }}
                   placeholder="Ej: mod_clinica"
-                  className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                  className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                     usernameError
                       ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                      : "border-slate-800 focus:border-clinical-teal"
+                      : "border-clinical-border focus:border-clinical-teal"
                   }`}
                 />
               </div>
@@ -611,7 +611,7 @@ export default function ModeratorsPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={isEditMode ? "••••••••" : "Ej: contraseñaSecura123"}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
+                  className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
                 />
               </div>
 
@@ -622,7 +622,7 @@ export default function ModeratorsPage() {
                 <select
                   value={selectedCompanyId}
                   onChange={(e) => setSelectedCompanyId(e.target.value)}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
+                  className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
                 >
                   <option value="">-- Seleccione una Empresa --</option>
                   {companies.map((comp) => (
@@ -649,7 +649,7 @@ export default function ModeratorsPage() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-clinical-text font-bold tracking-wide transition-all border border-slate-700 flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
+                  className="flex-1 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-bold tracking-wide transition-all border border-clinical-border flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
                 >
                   Cancelar
                 </button>

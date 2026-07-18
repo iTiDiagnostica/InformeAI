@@ -696,10 +696,10 @@ export default function DoctorsPage() {
         />
         
         {/* Top Navbar */}
-        <header className="h-12 xl:h-14 2xl:h-16 border-b border-slate-800 hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
+        <header className="h-12 xl:h-14 2xl:h-16 border-b border-clinical-border hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold tracking-wide text-clinical-text">Control de Personal</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-clinical-text-muted">Médicos y Perfiles</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-clinical-surface border border-clinical-border text-clinical-text-muted">Médicos y Perfiles</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -710,7 +710,7 @@ export default function DoctorsPage() {
                 <select
                   value={selectedPreviewCompanyId}
                   onChange={handlePreviewCompanyChange}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
                 >
                   <option value="base">Sistema (Base)</option>
                   {companies.map((c) => (
@@ -757,7 +757,7 @@ export default function DoctorsPage() {
         <section className="flex-1 p-3 xl:p-4 2xl:p-6 overflow-y-auto min-h-0">
 
           {/* Listado de Médicos */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-lg min-h-full">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-lg min-h-full">
             <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
                 <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">Médicos Registrados</h2>
@@ -776,7 +776,7 @@ export default function DoctorsPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Buscar médico por nombre, especialidad..."
-                  className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9.5 pr-8 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
+                  className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl pl-9.5 pr-8 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
                 />
                 {searchTerm && (
                   <button
@@ -794,7 +794,7 @@ export default function DoctorsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredDoctors.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted h-full">
-                  <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-slate-700">
+                  <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                     </svg>
@@ -810,7 +810,7 @@ export default function DoctorsPage() {
                   return (
                     <div
                       key={doc.id}
-                      className="p-5 bg-slate-950/40 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
+                      className="p-5 bg-clinical-surface-inset/40 border border-clinical-border rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-4 mb-3">
@@ -822,7 +822,7 @@ export default function DoctorsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 flex-wrap text-[10px] text-clinical-text-muted mt-2">
-                          <span className="px-2 py-0.5 rounded bg-slate-800 text-clinical-text font-semibold">
+                          <span className="px-2 py-0.5 rounded bg-clinical-surface border border-clinical-border/40 text-clinical-text font-semibold">
                             {doc.specialty}
                           </span>
                           {doc.companyName && (
@@ -831,7 +831,7 @@ export default function DoctorsPage() {
                             </span>
                           )}
                           {doc.username && (
-                            <span className="px-2 py-0.5 rounded bg-slate-800/80 text-clinical-teal font-semibold">
+                            <span className="px-2 py-0.5 rounded bg-clinical-surface/80 text-clinical-teal font-semibold">
                               👤 {doc.username}
                             </span>
                           )}
@@ -842,10 +842,10 @@ export default function DoctorsPage() {
                         </div>
                       </div>
 
-                      <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-slate-800/50">
+                      <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-clinical-border/50">
                         <button
                           onClick={() => handleOpenDoctorProfile(doc)}
-                          className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer"
+                          className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
                           title="Ver perfil de médico"
                           aria-label="Ver perfil de médico"
                         >
@@ -857,7 +857,7 @@ export default function DoctorsPage() {
                           <>
                             <button
                               onClick={() => handleEdit(doc)}
-                              className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer"
+                              className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
                               title="Editar médico"
                               aria-label="Editar médico"
                             >
@@ -867,7 +867,7 @@ export default function DoctorsPage() {
                             </button>
                             <button
                               onClick={() => handleDeleteClick(doc)}
-                              className="p-2 rounded-xl bg-slate-900 hover:bg-rose-950/30 text-slate-500 hover:text-rose-400 border border-slate-800 hover:border-rose-900/50 transition-all cursor-pointer"
+                              className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer"
                               title="Eliminar médico"
                               aria-label="Eliminar médico"
                             >
@@ -890,9 +890,9 @@ export default function DoctorsPage() {
       {/* Modal de Formulario de Registro / Edición */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
             {/* Cabecera del Modal */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 shrink-0">
+            <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">
                   {isEditMode ? "Modificar Perfil" : "Registrar Médico"}
@@ -903,7 +903,7 @@ export default function DoctorsPage() {
               </div>
               <button
                 onClick={handleCancelEdit}
-                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -926,10 +926,10 @@ export default function DoctorsPage() {
                     }
                   }}
                   placeholder="Ej: Dr. Gomez Araoz"
-                  className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                  className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                     nameError
                       ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                      : "border-slate-800 focus:border-clinical-teal"
+                      : "border-clinical-border focus:border-clinical-teal"
                   }`}
                 />
               </div>
@@ -948,10 +948,10 @@ export default function DoctorsPage() {
                     }
                   }}
                   placeholder="Ej: Ecografía / Radiología"
-                  className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                  className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                     specialtyError
                       ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                      : "border-slate-800 focus:border-clinical-teal"
+                      : "border-clinical-border focus:border-clinical-teal"
                   }`}
                 />
               </div>
@@ -966,7 +966,7 @@ export default function DoctorsPage() {
                   <select
                     value={selectedCompanyId}
                     onChange={(e) => setSelectedCompanyId(e.target.value)}
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
+                    className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
                   >
                     <option value="">-- Sin Empresa / General --</option>
                     {companies.map((comp) => (
@@ -988,7 +988,7 @@ export default function DoctorsPage() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Ej: dgomez"
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
+                    className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
                   />
                 </div>
                 <div>
@@ -1000,7 +1000,7 @@ export default function DoctorsPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={isEditMode ? "••••••••" : "Ej: doctor123"}
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
+                    className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold"
                   />
                 </div>
               </div>
@@ -1023,7 +1023,7 @@ export default function DoctorsPage() {
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-clinical-text font-bold tracking-wide transition-all border border-slate-700 flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
+                  className="flex-1 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-bold tracking-wide transition-all border border-clinical-border flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
                 >
                   Cancelar
                 </button>
@@ -1049,10 +1049,10 @@ export default function DoctorsPage() {
       {/* Modal de Perfil de Médico */}
       {isProfileModalOpen && selectedDoctorProfile && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
             
             {/* Header del Modal */}
-            <div className="p-6 border-b border-slate-800 hidden md:flex items-center justify-between shrink-0 bg-slate-950/20">
+            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
           <div className="flex items-center gap-3">
             <span className="w-9 h-9 rounded-full bg-clinical-teal/10 border border-clinical-teal/20 flex items-center justify-center text-lg">
               🩺
@@ -1068,7 +1068,7 @@ export default function DoctorsPage() {
           </div>
           <button
             onClick={() => setIsProfileModalOpen(false)}
-            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+            className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1080,12 +1080,12 @@ export default function DoctorsPage() {
         <div className="flex-1 flex overflow-hidden">
           
           {/* Columna Izquierda: Detalles del Médico y Listado de Plantillas */}
-          <div className="w-2/5 border-r border-slate-800 p-6 flex flex-col overflow-y-auto space-y-6">
+          <div className="w-2/5 border-r border-clinical-border p-6 flex flex-col overflow-y-auto space-y-6">
             
             {/* Detalles del Médico */}
             <div className="space-y-4">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal">Información del Médico</h4>
-              <div className="bg-slate-950/30 border border-slate-800/80 rounded-xl p-4 space-y-3 text-xs">
+              <div className="bg-clinical-surface-inset/30 border border-clinical-border rounded-xl p-4 space-y-3 text-xs">
                 {selectedDoctorProfile.companyName && (
                   <div>
                     <span className="text-clinical-text-muted font-medium block">Empresa / Institución:</span>
@@ -1099,7 +1099,7 @@ export default function DoctorsPage() {
             {/* Listado de Plantillas */}
             <div className="flex-1 flex flex-col min-h-[250px]">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal mb-3">Plantillas Asociadas ({templates.filter(t => t.doctorId === selectedDoctorProfile.id).length})</h4>
-              <div className="flex-1 bg-slate-950/20 border border-slate-800/80 rounded-xl p-3 overflow-y-auto space-y-2">
+              <div className="flex-1 bg-clinical-surface-inset/20 border border-clinical-border rounded-xl p-3 overflow-y-auto space-y-2">
                 {templates.filter(t => t.doctorId === selectedDoctorProfile.id).length === 0 ? (
                   <p className="text-xs text-clinical-text-muted italic text-center mt-6">
                     Este médico no tiene plantillas exclusivas asociadas.
@@ -1115,7 +1115,7 @@ export default function DoctorsPage() {
                           className={`p-3 rounded-lg border text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-all ${
                             isSelected
                               ? 'bg-clinical-teal/10 border-clinical-teal text-clinical-text font-bold'
-                              : 'bg-slate-900/40 hover:bg-slate-900 border-slate-800/80 text-clinical-text-muted hover:text-clinical-text font-semibold'
+                              : 'bg-clinical-surface/40 hover:bg-clinical-surface-hover border-clinical-border text-clinical-text-muted hover:text-clinical-text font-semibold'
                           }`}
                         >
                           <span className="truncate flex-1 pr-1">{temp.title}</span>
@@ -1125,7 +1125,7 @@ export default function DoctorsPage() {
                               className={`p-1.5 rounded text-[10px] font-semibold border transition-all cursor-pointer ${
                                 isSelected
                                   ? 'bg-clinical-teal text-slate-950 border-clinical-teal'
-                                  : 'bg-slate-900 hover:bg-clinical-teal/15 text-slate-400 hover:text-clinical-teal border-slate-800 hover:border-clinical-teal/30'
+                                  : 'bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border-clinical-border hover:border-clinical-teal/30'
                               }`}
                               title="Visualizar en panel de la derecha"
                             >
@@ -1133,7 +1133,7 @@ export default function DoctorsPage() {
                             </button>
                             <button
                               onClick={() => handleCopyTemplateInProfile(temp.id)}
-                              className="p-1.5 rounded bg-slate-900 hover:bg-clinical-teal/15 text-slate-400 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 text-[10px] font-semibold transition-all cursor-pointer"
+                              className="p-1.5 rounded bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 text-[10px] font-semibold transition-all cursor-pointer"
                               title="Copiar contenido"
                             >
                               Copiar
@@ -1149,11 +1149,11 @@ export default function DoctorsPage() {
           </div>
 
           {/* Columna Derecha: Previsualización de la Plantilla Activa */}
-          <div className="w-3/5 p-6 flex flex-col overflow-hidden relative bg-slate-950/10">
+          <div className="w-3/5 p-6 flex flex-col overflow-hidden relative bg-clinical-surface-inset/10">
             
             {isFetchingProfileTemplate && (
               <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-10">
-                <div className="flex items-center gap-2 text-xs font-bold text-clinical-teal bg-clinical-panel border border-slate-800 px-4 py-2.5 rounded-xl shadow-lg animate-none">
+                <div className="flex items-center gap-2 text-xs font-bold text-clinical-teal bg-clinical-panel border border-clinical-border px-4 py-2.5 rounded-xl shadow-lg animate-none">
                   <span className="w-3.5 h-3.5 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
                   <span>Cargando contenido de plantilla...</span>
                 </div>
@@ -1168,7 +1168,7 @@ export default function DoctorsPage() {
                   </h4>
                   <button
                     onClick={() => handleCopyClipboard(selectedTemplateInProfile.content)}
-                    className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-[10px] font-bold text-clinical-text transition-all flex items-center gap-1.5 cursor-pointer animate-none"
+                    className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-[10px] font-bold text-clinical-text transition-all flex items-center gap-1.5 cursor-pointer animate-none"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.25 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
@@ -1186,7 +1186,7 @@ export default function DoctorsPage() {
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
-                <div className="w-16 h-16 rounded-full bg-slate-900/60 border border-slate-800/80 flex items-center justify-center mb-4 text-slate-700">
+                <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                   </svg>
@@ -1203,10 +1203,10 @@ export default function DoctorsPage() {
         </div>
 
         {/* Footer del Modal */}
-        <div className="p-4 border-t border-slate-800 flex justify-end bg-slate-950/20 shrink-0">
+        <div className="p-4 border-t border-clinical-border flex justify-end bg-clinical-surface-inset/30 shrink-0">
           <button
             onClick={() => setIsProfileModalOpen(false)}
-            className="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-clinical-text hover:bg-slate-800 transition-all cursor-pointer animate-none"
+            className="px-5 py-2.5 rounded-xl bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text hover:bg-clinical-surface-hover transition-all cursor-pointer animate-none"
           >
             Cerrar Perfil
           </button>

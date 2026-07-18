@@ -1053,7 +1053,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
           isAuthenticated={typeof window !== "undefined" && !!(localStorage.getItem("token") || localStorage.getItem("admin_token"))}
         />
         
-        <header className="h-12 xl:h-14 2xl:h-16 border-b border-slate-800 hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
+        <header className="h-12 xl:h-14 2xl:h-16 border-b border-clinical-border hidden md:flex items-center justify-between px-4 xl:px-6 2xl:px-8 bg-clinical-panel shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold tracking-wide text-clinical-text">Base de Conocimientos</span>
             <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-clinical-teal/15 text-clinical-teal border border-clinical-teal/30">
@@ -1069,7 +1069,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 <select
                   value={selectedPreviewCompanyId}
                   onChange={handlePreviewCompanyChange}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
                 >
                   <option value="base">Sistema (Base)</option>
                   {companies.map((c) => (
@@ -1122,12 +1122,12 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
 
 
           {/* Listado de Plantillas */}
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-lg relative min-h-full">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-lg relative min-h-full">
             
             {/* Overlay de carga al buscar/copiar contenido de plantilla */}
             {isFetchingPreview && (
               <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs rounded-2xl flex items-center justify-center z-20">
-                <div className="flex items-center gap-2 text-xs font-bold text-clinical-teal bg-clinical-panel border border-slate-800 px-3 py-2 rounded-xl shadow-lg">
+                <div className="flex items-center gap-2 text-xs font-bold text-clinical-teal bg-clinical-panel border border-clinical-border px-3 py-2 rounded-xl shadow-lg">
                   <span className="w-3.5 h-3.5 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
                   <span>Cargando contenido de plantilla...</span>
                 </div>
@@ -1158,7 +1158,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Buscar plantilla por título..."
-                    className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9.5 pr-8 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
+                    className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl pl-9.5 pr-8 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
                   />
                   {searchTerm && (
                     <button
@@ -1176,12 +1176,12 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     <select
                       value={filterDoctorId}
                       onChange={(e) => setFilterDoctorId(e.target.value)}
-                      className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium cursor-pointer transition-all"
+                      className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium cursor-pointer transition-all"
                     >
-                      <option value="all" className="bg-slate-900 text-clinical-text">Todos los Médicos</option>
-                      <option value="general" className="bg-slate-900 text-clinical-text">Generales / Sin Médico</option>
+                      <option value="all" className="bg-clinical-panel text-clinical-text">Todos los Médicos</option>
+                      <option value="general" className="bg-clinical-panel text-clinical-text">Generales / Sin Médico</option>
                       {doctors.map((doc) => (
-                        <option key={doc.id} value={doc.id.toString()} className="bg-slate-900 text-clinical-text">
+                        <option key={doc.id} value={doc.id.toString()} className="bg-clinical-panel text-clinical-text">
                           {doc.name}
                         </option>
                       ))}
@@ -1194,7 +1194,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredDocuments.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted h-full">
-                  <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-slate-700">
+                  <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                     </svg>
@@ -1208,7 +1208,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 filteredDocuments.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-5 bg-slate-950/40 border border-slate-800 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
+                    className="p-5 bg-clinical-surface-inset/40 border border-clinical-border rounded-2xl flex flex-col justify-between hover:border-clinical-teal/30 transition-all hover:shadow-lg hover:shadow-black/25 relative group"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-4 mb-3">
@@ -1220,13 +1220,13 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-wrap text-[10px] text-clinical-text-muted mt-2">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-clinical-text font-semibold">
+                        <span className="px-2 py-0.5 rounded bg-clinical-surface border border-clinical-border/40 text-clinical-text font-semibold">
                           {doc.length} caracteres
                         </span>
                         <span className="px-2 py-0.5 rounded bg-clinical-teal/10 border border-clinical-teal/20 text-clinical-teal font-semibold">
                           👨‍⚕️ {doc.doctorName || "General / Compartido"}
                         </span>
-                        <span className="px-2 py-0.5 rounded bg-slate-800/40 text-clinical-text-muted">
+                        <span className="px-2 py-0.5 rounded bg-clinical-surface/40 text-clinical-text-muted">
                           Ingreso: {new Date(doc.created_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -1235,7 +1235,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-slate-800/50">
                       <button
                         onClick={() => handleOpenPreview(doc)}
-                        className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
+                        className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                         title="Previsualizar plantilla"
                         aria-label="Previsualizar plantilla"
                       >
@@ -1243,7 +1243,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       </button>
                       <button
                         onClick={() => handleQuickCopy(doc)}
-                        className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
+                        className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                         title="Copiar contenido"
                         aria-label="Copiar contenido de la plantilla"
                       >
@@ -1259,7 +1259,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         <>
                           <button
                             onClick={() => handleEdit(doc)}
-                            className="p-2 rounded-xl bg-slate-900 hover:bg-clinical-teal/15 text-slate-500 hover:text-clinical-teal border border-slate-800 hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
+                            className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
                             title="Editar plantilla"
                             aria-label="Editar plantilla"
                           >
@@ -1267,7 +1267,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                           </button>
                           <button
                             onClick={() => handleDeleteClick(doc)}
-                            className="p-2 rounded-xl bg-slate-900 hover:bg-rose-950/30 text-slate-500 hover:text-rose-400 border border-slate-800 hover:border-rose-900/50 transition-all cursor-pointer animate-none"
+                            className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer animate-none"
                             title="Eliminar plantilla"
                             aria-label="Eliminar plantilla"
                           >
@@ -1288,9 +1288,9 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
       {/* Modal de Formulario de Registro / Edición */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-clinical-panel border border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col min-h-0 animate-in zoom-in-95 duration-200">
             {/* Cabecera del Modal */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 shrink-0">
+            <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h2 className="text-md font-bold tracking-wide uppercase text-clinical-teal">
                   {isEditMode ? "Modificar Plantilla" : "Ingestar Plantilla"}
@@ -1301,7 +1301,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               </div>
               <button
                 onClick={handleCancelEdit}
-                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-500 hover:text-clinical-text transition-all cursor-pointer animate-none"
+                className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer animate-none"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1321,7 +1321,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     className={`p-4 rounded-xl border border-dashed transition-all flex flex-col items-center justify-center text-center relative group min-h-[90px] ${
                       isDragging
                         ? "border-clinical-teal bg-clinical-teal/10 shadow-lg shadow-clinical-teal/5"
-                        : "border-slate-800 bg-slate-950/20 hover:bg-slate-900/30"
+                        : "border-clinical-border bg-clinical-surface-inset/30 hover:bg-clinical-surface/40"
                     }`}
                   >
                     <input
@@ -1351,7 +1351,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                   </div>
 
                   {selectedFiles.length > 0 && (
-                    <div className="bg-slate-950/40 border border-slate-800 rounded-xl p-3 space-y-2">
+                    <div className="bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal">
                           Archivos seleccionados ({selectedFiles.length})
@@ -1366,7 +1366,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       </div>
                       <div className="space-y-1 max-h-32 overflow-y-auto pr-1">
                         {selectedFiles.map((file, idx) => (
-                          <div key={idx} className="flex items-center justify-between text-xs text-clinical-text bg-slate-900/40 border border-slate-800/40 px-2.5 py-1.5 rounded-lg">
+                          <div key={idx} className="flex items-center justify-between text-xs text-clinical-text bg-clinical-surface/40 border border-clinical-border/40 px-2.5 py-1.5 rounded-lg">
                             <span className="truncate max-w-[70%]">📄 {file.name}</span>
                             <div className="flex items-center gap-2">
                               <span className="text-[10px] text-clinical-text-muted">({(file.size / 1024).toFixed(1)} KB)</span>
@@ -1401,10 +1401,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       }
                     }}
                     placeholder="Ej: Ecografía Abdominal Normal"
-                    className={`w-full bg-slate-950/40 border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
+                    className={`w-full bg-clinical-surface-inset border rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold text-clinical-text ${
                       titleError
                         ? "border-rose-500 focus:border-rose-500 focus:ring-rose-500/30 ring-2 ring-rose-500/20 animate-shake"
-                        : "border-slate-800 focus:border-clinical-teal"
+                        : "border-clinical-border focus:border-clinical-teal"
                     }`}
                   />
                 </div>
@@ -1418,11 +1418,11 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                   <select
                     value={modalDoctorId || ""}
                     onChange={(e) => setModalDoctorId(e.target.value ? parseInt(e.target.value) : null)}
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
+                    className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-semibold cursor-pointer text-clinical-text"
                   >
                     <option value="" disabled>-- Seleccione un Médico (Requerido) --</option>
                     {doctors.map((doc) => (
-                      <option key={doc.id} value={doc.id} className="bg-slate-900 text-clinical-text">
+                      <option key={doc.id} value={doc.id} className="bg-clinical-panel text-clinical-text">
                         {doc.name} ({doc.specialty})
                       </option>
                     ))}
@@ -1437,13 +1437,13 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     type="text"
                     readOnly
                     value={typeof window !== "undefined" ? (localStorage.getItem("doctor_name") || "Médico") : "Médico"}
-                    className="w-full bg-slate-950/20 border border-slate-800/50 rounded-xl px-3 py-2 text-xs font-semibold text-clinical-text-muted cursor-not-allowed focus:outline-none"
+                    className="w-full bg-clinical-surface-inset/30 border border-clinical-border/50 rounded-xl px-3 py-2 text-xs font-semibold text-clinical-text-muted cursor-not-allowed focus:outline-none"
                   />
                 </div>
               )}
 
               {isEditMode && (
-                <div className={isEditorMaximized ? "fixed inset-4 md:inset-10 z-50 bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col" : "flex flex-col"}>
+                <div className={isEditorMaximized ? "fixed inset-4 md:inset-10 z-50 bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-2xl flex flex-col" : "flex flex-col"}>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted">
                       Contenido de texto estructurado <span className="text-rose-500 font-bold ml-0.5 animate-pulse">*</span>
@@ -1451,7 +1451,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     <button
                       type="button"
                       onClick={() => setIsEditorMaximized(!isEditorMaximized)}
-                      className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text transition-colors flex items-center justify-center cursor-pointer"
+                      className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text transition-colors flex items-center justify-center cursor-pointer"
                       title={isEditorMaximized ? "Restaurar tamaño" : "Maximizar editor"}
                       aria-label={isEditorMaximized ? "Restaurar tamaño" : "Maximizar editor"}
                     >
@@ -1460,16 +1460,16 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                   </div>
                   
                   <div className={`flex flex-col border rounded-xl overflow-hidden transition-all ${
-                      contentError ? "border-rose-500 ring-2 ring-rose-500/20" : "border-slate-800 focus-within:border-clinical-teal"
+                      contentError ? "border-rose-500 ring-2 ring-rose-500/20" : "border-clinical-border focus-within:border-clinical-teal"
                     } ${isEditorMaximized ? "flex-1" : ""}`}
                   >
                     {/* Barra de herramientas */}
-                    <div className="flex items-center gap-1.5 p-2 bg-slate-900 border-b border-slate-800 shrink-0 select-none overflow-x-auto">
+                    <div className="flex items-center gap-1.5 p-2 bg-clinical-surface-inset border-b border-clinical-border shrink-0 select-none overflow-x-auto">
                       <button
                         type="button"
                         onClick={handleUndo}
                         disabled={historyIndex <= 0}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                         title="Deshacer (Ctrl+Z)"
                         aria-label="Deshacer"
                       >
@@ -1481,7 +1481,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onClick={handleRedo}
                         disabled={historyIndex >= templateHistory.length - 1}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                         title="Rehacer (Ctrl+Y)"
                         aria-label="Rehacer"
                       >
@@ -1489,12 +1489,12 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
                         </svg>
                       </button>
-                      <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
+                      <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
                       <button
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('bold', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Negrita"
                         aria-label="Formato negrita"
                       >
@@ -1506,7 +1506,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('italic', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Cursiva"
                         aria-label="Formato cursiva"
                       >
@@ -1518,7 +1518,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('underline', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Subrayado"
                         aria-label="Formato subrayado"
                       >
@@ -1531,7 +1531,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('justifyLeft', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Alinear Izquierda"
                         aria-label="Alinear a la izquierda"
                       ><AlignLeft className="w-4 h-4" /></button>
@@ -1539,7 +1539,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('justifyCenter', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Centrar"
                         aria-label="Centrar texto"
                       ><AlignCenter className="w-4 h-4" /></button>
@@ -1547,7 +1547,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('justifyRight', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Alinear Derecha"
                         aria-label="Alinear a la derecha"
                       ><AlignRight className="w-4 h-4" /></button>
@@ -1555,7 +1555,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         type="button"
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => { document.execCommand('justifyFull', false); handleEditorInput(); }}
-                        className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                        className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                         title="Justificar"
                         aria-label="Justificar texto"
                       ><AlignJustify className="w-4 h-4" /></button>
@@ -1567,7 +1567,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       contentEditable={true}
                       suppressContentEditableWarning={true}
                       onInput={handleEditorInput}
-                      className={`w-full bg-slate-950/40 p-4 text-xs resize-none focus:outline-none transition-all font-medium leading-relaxed overflow-y-auto text-clinical-text cursor-text ${
+                      className={`w-full bg-clinical-surface-inset/40 p-4 text-xs resize-none focus:outline-none transition-all font-medium leading-relaxed overflow-y-auto text-clinical-text cursor-text ${
                         isEditorMaximized ? "flex-1 min-h-[300px]" : "min-h-[150px] max-h-[250px]"
                       }`}
                       style={{ outline: "none" }}
@@ -1579,7 +1579,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                        <button
                          type="button"
                          onClick={() => setIsCancelModalOpen(true)}
-                         className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-clinical-text font-semibold tracking-wide transition-all shadow-md text-xs cursor-pointer"
+                         className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-semibold tracking-wide transition-all shadow-md text-xs cursor-pointer"
                        >
                          Cancelar
                        </button>
@@ -1596,7 +1596,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                   {/* Modal de confirmación: Cancelar */}
                   {isCancelModalOpen && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                      <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in-95 duration-200">
+                      <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in-95 duration-200">
                         <h3 className="text-sm font-bold text-clinical-text mb-2">Cerrar editor</h3>
                         <p className="text-xs text-clinical-text-muted mb-6 leading-relaxed">
                           ¿Estás seguro de que deseas cancelar y cerrar el editor? Los cambios actuales no se perderán pero volverás a la vista normal.
@@ -1605,7 +1605,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                           <button
                             type="button"
                             onClick={() => setIsCancelModalOpen(false)}
-                            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text text-xs font-semibold transition-all cursor-pointer"
+                            className="px-4 py-2 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text text-xs font-semibold transition-all cursor-pointer"
                           >
                             Volver al editor
                           </button>
@@ -1627,7 +1627,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                   {/* Modal de confirmación: Guardar */}
                   {isSaveModalOpen && (
                     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                      <div className="bg-clinical-panel border border-slate-800 rounded-2xl p-6 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in-95 duration-200">
+                      <div className="bg-clinical-panel border border-clinical-border rounded-2xl p-6 shadow-2xl max-w-sm w-full animate-in fade-in zoom-in-95 duration-200">
                         <h3 className="text-sm font-bold text-clinical-text mb-2">Guardar cambios</h3>
                         <p className="text-xs text-clinical-text-muted mb-6 leading-relaxed">
                           ¿Deseas confirmar los cambios realizados y cerrar el editor maximizado?
@@ -1636,7 +1636,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                           <button
                             type="button"
                             onClick={() => setIsSaveModalOpen(false)}
-                            className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text text-xs font-semibold transition-all cursor-pointer"
+                            className="px-4 py-2 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text text-xs font-semibold transition-all cursor-pointer"
                           >
                             Cancelar
                           </button>
@@ -1673,7 +1673,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 <button
                   type="button"
                   onClick={handleCancelEdit}
-                  className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-clinical-text font-bold tracking-wide transition-all border border-slate-700 flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
+                  className="flex-1 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-bold tracking-wide transition-all border border-clinical-border flex items-center justify-center gap-2 cursor-pointer text-xs animate-none"
                 >
                   Cancelar
                 </button>
@@ -1710,10 +1710,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
       {/* Modal de Previsualización de Plantilla */}
       {isPreviewOpen && previewTemplate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
             
-            {/* Header del Modal */}
-            <div className="p-6 border-b border-slate-800 hidden md:flex items-center justify-between shrink-0 bg-slate-950/20">
+            {/* Cabecera de Vista Previa */}
+            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
               <div>
                 <h3 className="font-bold text-base text-clinical-text tracking-wide">
                   Previsualización: {previewTemplate.title}
@@ -1724,7 +1724,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               </div>
               <button
                 onClick={() => setIsPreviewOpen(false)}
-                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -1745,11 +1745,11 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               </div>
             </div>
 
-            {/* Footer del Modal */}
-            <div className="p-4 border-t border-slate-800 flex items-center justify-end shrink-0 bg-slate-950/20 gap-3">
+            {/* Footer de Vista Previa */}
+            <div className="p-4 border-t border-clinical-border flex items-center justify-end shrink-0 bg-clinical-surface-inset/30 gap-3">
               <button
                 onClick={() => handleCopyClipboard(previewTemplate.content)}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.25 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
@@ -1758,7 +1758,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               </button>
               <button
                 onClick={() => setIsPreviewOpen(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-clinical-text hover:bg-slate-800 transition-all cursor-pointer animate-none"
+                className="px-5 py-2.5 rounded-xl bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text hover:bg-clinical-surface-hover transition-all cursor-pointer animate-none"
               >
                 Cerrar
               </button>
