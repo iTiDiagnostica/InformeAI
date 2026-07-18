@@ -82,6 +82,7 @@ export async function GET(req: NextRequest) {
       pagination: {
         totalItems,
         totalPages,
+        page,
         currentPage: page,
         limit
       }

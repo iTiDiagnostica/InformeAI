@@ -125,12 +125,13 @@ export default function HistorialPage() {
   }, [isAdmin]);
 
   const fetchReports = useCallback(async (
-    page: number = 1,
+    pageParam: number = 1,
     search: string = "",
     docId: string = "all",
     start: string = "",
     end: string = ""
   ) => {
+    const page = isNaN(Number(pageParam)) ? 1 : Math.max(1, Number(pageParam));
     setIsLoading(true);
     setError(null);
     try {
@@ -179,10 +180,10 @@ export default function HistorialPage() {
 
         setReports(mapped);
         setPagination({
-          page: data.pagination.page,
-          limit: data.pagination.limit,
-          totalItems: data.pagination.totalItems,
-          totalPages: data.pagination.totalPages
+          page: data.pagination.page || data.pagination.currentPage || 1,
+          limit: data.pagination.limit || 10,
+          totalItems: data.pagination.totalItems || 0,
+          totalPages: data.pagination.totalPages || 1
         });
       } else {
         throw new Error("No se pudo recuperar el historial.");
