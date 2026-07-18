@@ -1799,7 +1799,7 @@ export default function DictationPage() {
           <div className={`bg-clinical-panel border-clinical-border flex flex-col shadow-lg relative transition-all duration-300 ${
             isMaximized 
               ? 'flex-1 h-full w-full rounded-none border-0 p-8 md:p-10' 
-              : 'rounded-xl p-4 h-full min-h-0 border'
+              : 'rounded-xl p-4 h-auto xl:h-full xl:min-h-0 border'
           }`}>
             
             {/* Header del Visor */}
@@ -1815,7 +1815,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleUndo}
                   disabled={historyIndex <= 0}
-                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
+                  className="w-8 h-8 flex items-center justify-center rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer shrink-0"
                   title="Deshacer (Ctrl+Z)"
                   aria-label="Deshacer"
                 >
@@ -1828,7 +1828,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleRedo}
                   disabled={historyIndex >= reportHistory.length - 1}
-                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
+                  className="w-8 h-8 flex items-center justify-center rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer shrink-0"
                   title="Rehacer (Ctrl+Y)"
                   aria-label="Rehacer"
                 >
@@ -1841,7 +1841,7 @@ export default function DictationPage() {
 
                 <button
                   onClick={() => setIsMaximized(!isMaximized)}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-xs font-semibold transition-all ${
+                  className={`w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded border text-xs font-semibold transition-all shrink-0 ${
                     isMaximized
                       ? "bg-rose-950/30 border-rose-900/50 text-rose-400 hover:bg-rose-950/50"
                       : "bg-clinical-surface hover:bg-clinical-surface-hover border-clinical-border text-clinical-text"
@@ -1850,17 +1850,15 @@ export default function DictationPage() {
                 >
                   {isMaximized ? (
                     <>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M15 9V4.5M15 9h4.5M15 9l5.25-5.25M15 15v4.5M15 15h4.5M15 15l5.25 5.25M9 15v4.5M9 15H4.5M9 15l-5.25 5.25" />
-                      </svg>
-                      <span className="hidden sm:inline">Contraer</span>
+                      </svg><span className="hidden sm:inline">Contraer</span>
                     </>
                   ) : (
                     <>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
-                      </svg>
-                      <span className="hidden sm:inline">Maximizar</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h-4.5m4.5 0L15 9M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 15" />
+                      </svg><span className="hidden sm:inline">Maximizar</span>
                     </>
                   )}
                 </button>
@@ -1868,25 +1866,23 @@ export default function DictationPage() {
                 <button
                   onClick={handleCopyClipboard}
                   disabled={!structuredReport}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
-                  </svg>
-                  <span className="hidden sm:inline">{copySuccess ? "Copiado!" : "Copiar"}</span>
+                  </svg><span className="hidden sm:inline">{copySuccess ? "Copiado!" : "Copiar"}</span>
                 </button>
 
                 {/* Limpiar Button */}
                 <button
                   onClick={handleClearEditor}
                   disabled={!isEditorOpen}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
                   title="Limpiar texto del informe"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-rose-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-rose-400 shrink-0">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg>
-                  <span className="hidden sm:inline">Limpiar</span>
+                  </svg><span className="hidden sm:inline">Limpiar</span>
                 </button>
 
               </div>
@@ -2055,7 +2051,7 @@ export default function DictationPage() {
                   contentEditable={true}
                   suppressContentEditableWarning={true}
                   onInput={handleEditorInput}
-                  className="report-paper flex-1 overflow-y-auto p-8 md:p-10 select-text cursor-text outline-none focus:ring-1 focus:ring-clinical-teal/30 transition-all"
+                  className="report-paper flex-1 h-auto xl:h-full overflow-y-visible xl:overflow-y-auto p-8 md:p-10 select-text cursor-text outline-none focus:ring-1 focus:ring-clinical-teal/30 transition-all"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
                 ></div>
               ) : isLoading ? (

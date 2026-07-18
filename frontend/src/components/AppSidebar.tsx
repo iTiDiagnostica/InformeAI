@@ -196,7 +196,9 @@ export function AppSidebar({
                 }`}
                 title={item.label}
               >
-                {item.icon}
+                <div className="w-5 h-5 flex items-center justify-center shrink-0">
+                  {item.icon}
+                </div>
                 <span className={isMobile ? '' : 'hidden xl:inline'}>{item.label}</span>
               </Link>
             );
