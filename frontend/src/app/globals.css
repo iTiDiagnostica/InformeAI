@@ -1,4 +1,17 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+/* Mapear variables shadcn a nuestro theme clínico */
+:root {
+  --background: var(--color-clinical-bg);
+  --foreground: var(--color-clinical-text);
+  --popover: var(--color-clinical-panel);
+  --popover-foreground: var(--color-clinical-text);
+  --muted: var(--color-clinical-surface);
+  --muted-foreground: var(--color-clinical-text-muted);
+  --border: var(--color-clinical-border);
+  --ring: var(--color-clinical-teal);
+}
 
 @theme {
   --color-clinical-bg: var(--clinical-bg, oklch(0.12 0.015 195));
@@ -167,4 +180,21 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Mobile: prevenir zoom accidental en double-tap */
+@media (hover: none) and (pointer: coarse) {
+  button, a, select, input, textarea {
+    touch-action: manipulation;
+  }
+  /* Targets más grandes para dedos */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Ocultar scrollbar nativa en móvil (usar scroll nativo) */
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
 }
