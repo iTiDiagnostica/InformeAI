@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../../components/ConfirmationModal";
-import { Eye, Copy, Pencil, Trash2, Maximize, Minimize, AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
+import { Eye, Copy, Pencil, Trash2, Maximize, Minimize, AlignLeft, AlignCenter, AlignRight, AlignJustify, Plus, Search, X, LayoutTemplate, UploadCloud, Undo2, Redo2, Bold, Italic, Underline } from "lucide-react";
 import { Company, Doctor, DocumentItem } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -1107,9 +1107,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               }}
               className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 font-bold text-xs transition-all shadow-md shadow-clinical-teal/10 cursor-pointer animate-none"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
+              <Plus className="w-4 h-4" />
               <span>Ingestar Plantilla</span>
             </button>
 
@@ -1149,9 +1147,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-[480px]">
                 <div className="relative flex-1">
                   <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z" />
-                    </svg>
+                    <Search className="w-4 h-4" />
                   </span>
                   <input
                     type="text"
@@ -1165,9 +1161,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       onClick={() => setSearchTerm("")}
                       className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-500 hover:text-clinical-text transition-all cursor-pointer animate-none"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                      </svg>
+                      <X className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -1195,9 +1189,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               {filteredDocuments.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted h-full">
                   <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
+                    <LayoutTemplate className="w-8 h-8" />
                   </div>
                   <h3 className="font-semibold text-sm text-clinical-text">No se encontraron plantillas</h3>
                   <p className="text-xs max-w-xs mt-2 leading-relaxed">
@@ -1303,9 +1295,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 onClick={handleCancelEdit}
                 className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer animate-none"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -1332,9 +1322,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       disabled={isFileParsing}
                       multiple
                     />
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7 text-clinical-teal mb-1.5 group-hover:scale-105 transition-all">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-                    </svg>
+                    <UploadCloud className="w-7 h-7 text-clinical-teal mb-1.5 group-hover:scale-105 transition-all" />
                     {isFileParsing ? (
                       <div className="flex items-center gap-2 text-xs font-semibold text-clinical-teal">
                         <span className="w-3.5 h-3.5 rounded-full border border-clinical-teal border-t-transparent animate-spin"></span>
@@ -1473,9 +1461,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         title="Deshacer (Ctrl+Z)"
                         aria-label="Deshacer"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                        </svg>
+                        <Undo2 className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -1485,9 +1471,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         title="Rehacer (Ctrl+Y)"
                         aria-label="Rehacer"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                           <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
-                        </svg>
+                        <Redo2 className="w-4 h-4" />
                       </button>
                       <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
                       <button
@@ -1498,9 +1482,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         title="Negrita"
                         aria-label="Formato negrita"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h4.5a3.75 3.75 0 0 1 0 7.5h-4.5m0-7.5v7.5m0-7.5h3.75M6.75 11.25h6a3.75 3.75 0 0 1 0 7.5h-6m0-7.5v7.5m0-7.5h3" />
-                        </svg>
+                        <Bold className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -1510,9 +1492,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         title="Cursiva"
                         aria-label="Formato cursiva"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 4.5l-4 15m-1.5-15h4m-6 15h4" />
-                        </svg>
+                        <Italic className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -1522,9 +1502,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         title="Subrayado"
                         aria-label="Formato subrayado"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16" />
-                        </svg>
+                        <Underline className="w-4 h-4" />
                       </button>
                       <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
                       <button
@@ -1726,9 +1704,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 onClick={() => setIsPreviewOpen(false)}
                 className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -1751,9 +1727,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                 onClick={() => handleCopyClipboard(previewTemplate.content)}
                 className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.25 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
-                </svg>
+                <Copy className="w-4 h-4" />
                 {copySuccessText ? "¡Copiado!" : "Copiar Contenido"}
               </button>
               <button

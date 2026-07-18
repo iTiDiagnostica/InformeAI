@@ -4,7 +4,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlignLeft, AlignCenter, AlignRight, AlignJustify } from "lucide-react";
+import { 
+  AlignLeft, AlignCenter, AlignRight, AlignJustify,
+  Mic, Upload, Trash2, Sparkles, Wand2, Undo2, Redo2, Maximize2, Minimize2, 
+  Copy, Check, Bold, Italic, Underline, ChevronDown, LayoutTemplate, 
+  Info, X, ExternalLink, Search, Users, AlertTriangle, Stethoscope, Square, Plus
+} from "lucide-react";
 
 import { Company, Doctor, Report, SpeechRecognitionInstance, SpeechRecognitionEvent } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
@@ -1573,9 +1578,7 @@ export default function DictationPage() {
                       {activeDoc ? getInitials(activeDoc.name) : "??"}
                     </span>
                     <span>{activeDoc ? activeDoc.name : "Cargando..."}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 text-clinical-text-muted">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
+                    <ChevronDown className="w-3 h-3 text-clinical-text-muted" />
                   </button>
                 );
               })() : (
@@ -1584,10 +1587,9 @@ export default function DictationPage() {
                     onClick={() => setIsDoctorModalOpen(true)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-950/20 border border-rose-900/30 hover:border-clinical-teal/40 hover:bg-clinical-teal/5 text-rose-300 transition-all text-xs font-semibold cursor-pointer select-none"
                   >
-                    <span>🩺 Seleccionar Médico</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                    </svg>
+                    <Stethoscope className="w-4 h-4 mr-0.5 text-rose-400" />
+                    <span>Seleccionar Médico</span>
+                    <ChevronDown className="w-3 h-3" />
                   </button>
                 ) : (
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text select-none">
@@ -1602,9 +1604,7 @@ export default function DictationPage() {
               className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all"
             >
               Nuevo informe
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-              </svg>
+              <Plus className="w-4 h-4" />
             </button>
           </div>
         </header>
@@ -1656,13 +1656,9 @@ export default function DictationPage() {
                   } ${!isSpeechSupported || isTranscribing ? "opacity-40 cursor-not-allowed" : ""}`}
                 >
                   {isRecording ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 animate-pulse">
-                      <rect x="6" y="6" width="12" height="12" rx="1.5" />
-                    </svg>
+                    <Square className="w-6 h-6 fill-current animate-pulse text-rose-400" />
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-                    </svg>
+                    <Mic className="w-6 h-6" />
                   )}
                   <span className="text-[11px] font-bold leading-tight text-center">
                     {isRecording ? `Grabando ${formatTime(recordingSeconds)}` : "Dictar"}
@@ -1686,9 +1682,7 @@ export default function DictationPage() {
                   {isTranscribing ? (
                     <span className="w-6 h-6 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                    </svg>
+                    <Upload className="w-6 h-6" />
                   )}
                   <span className="text-[11px] font-bold leading-tight text-center truncate w-full">
                     {isTranscribing ? "Procesando..." : audioFileName ? audioFileName : "Subir Audio"}
@@ -1710,9 +1704,7 @@ export default function DictationPage() {
                   className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-clinical-surface/80 hover:bg-rose-950/40 border border-clinical-border/80 hover:border-rose-900/50 text-[11px] font-semibold text-rose-400 hover:text-rose-300 transition-all cursor-pointer shadow-sm focus:outline-none"
                   aria-label={mode === "correct" ? "Borrar corrección" : "Borrar dictado"}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
+                  <Trash2 className="w-3.5 h-3.5" />
                   Borrar
                 </button>
               </div>
@@ -1742,11 +1734,7 @@ export default function DictationPage() {
                       <span className="w-4 h-4 rounded-full border-2 border-slate-950 border-t-transparent animate-spin"></span>
                     ) : (
                       <>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-                          <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5z" />
-                          <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" />
-                        </svg>
+                        <Sparkles className="w-4 h-4" />
                         Generar informe con IA
                       </>
                     )}
@@ -1776,9 +1764,7 @@ export default function DictationPage() {
                       <span className="w-4 h-4 rounded-full border-2 border-slate-950 border-t-transparent animate-spin"></span>
                     ) : (
                       <>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V18ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8.25V6ZM13.5 16.312v-1.124A2.25 2.25 0 0 1 15.75 12.94h1.124m-1.124 3.372L13.5 14.25m2.25 2.062 2.25-2.062M20.25 14.25a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
-                        </svg>
+                        <Wand2 className="w-4 h-4" />
                         Informar con AI
                       </>
                     )}
@@ -1819,9 +1805,7 @@ export default function DictationPage() {
                   title="Deshacer (Ctrl+Z)"
                   aria-label="Deshacer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                  </svg>
+                  <Undo2 className="w-4 h-4" />
                 </button>
 
                 {/* Rehacer (Redo) */}
@@ -1832,57 +1816,44 @@ export default function DictationPage() {
                   title="Rehacer (Ctrl+Y)"
                   aria-label="Rehacer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3" />
-                  </svg>
+                  <Redo2 className="w-4 h-4" />
                 </button>
 
                 <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
 
                 <button
                   onClick={() => setIsMaximized(!isMaximized)}
-                  className={`w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded border text-xs font-semibold transition-all shrink-0 ${
+                  className={`w-8 h-8 flex items-center justify-center rounded border transition-all shrink-0 cursor-pointer ${
                     isMaximized
                       ? "bg-rose-950/30 border-rose-900/50 text-rose-400 hover:bg-rose-950/50"
                       : "bg-clinical-surface hover:bg-clinical-surface-hover border-clinical-border text-clinical-text"
                   }`}
-                  title={isMaximized ? "Restaurar tamaño normal" : "Maximizar área de edición"}
+                  title={isMaximized ? "Contraer" : "Maximizar"}
+                  aria-label={isMaximized ? "Contraer" : "Maximizar"}
                 >
-                  {isMaximized ? (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M15 9V4.5M15 9h4.5M15 9l5.25-5.25M15 15v4.5M15 15h4.5M15 15l5.25 5.25M9 15v4.5M9 15H4.5M9 15l-5.25 5.25" />
-                      </svg><span className="hidden sm:inline">Contraer</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h-4.5m4.5 0L15 9M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 15" />
-                      </svg><span className="hidden sm:inline">Maximizar</span>
-                    </>
-                  )}
+                  {isMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                 </button>
+
                 {/* Copiar Button */}
                 <button
                   onClick={handleCopyClipboard}
                   disabled={!structuredReport}
-                  className="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                  className="w-8 h-8 flex items-center justify-center rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                  title={copySuccess ? "¡Copiado!" : "Copiar"}
+                  aria-label="Copiar al portapapeles"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 shrink-0">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
-                  </svg><span className="hidden sm:inline">{copySuccess ? "Copiado!" : "Copiar"}</span>
+                  {copySuccess ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                 </button>
 
                 {/* Limpiar Button */}
                 <button
                   onClick={handleClearEditor}
                   disabled={!isEditorOpen}
-                  className="w-8 h-8 sm:w-auto sm:px-2.5 sm:py-1.5 flex items-center justify-center gap-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
-                  title="Limpiar texto del informe"
+                  className="w-8 h-8 flex items-center justify-center rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                  title="Limpiar"
+                  aria-label="Limpiar texto del informe"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-rose-400 shrink-0">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                  </svg><span className="hidden sm:inline">Limpiar</span>
+                  <Trash2 className="w-4 h-4 text-rose-400" />
                 </button>
 
               </div>
@@ -1911,9 +1882,7 @@ export default function DictationPage() {
                     title="Negrita"
                     aria-label="Formato negrita"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3.75h4.5a3.75 3.75 0 0 1 0 7.5h-4.5m0-7.5v7.5m0-7.5h3.75M6.75 11.25h6a3.75 3.75 0 0 1 0 7.5h-6m0-7.5v7.5m0-7.5h3" />
-                    </svg>
+                    <Bold className="w-4 h-4" />
                   </button>
                   {/* Cursiva Button */}
                   <button
@@ -1926,9 +1895,7 @@ export default function DictationPage() {
                     title="Cursiva"
                     aria-label="Formato cursiva"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 4.5l-4 15m-1.5-15h4m-6 15h4" />
-                    </svg>
+                    <Italic className="w-4 h-4" />
                   </button>
 
                   {/* Subrayado Button */}
@@ -1942,9 +1909,7 @@ export default function DictationPage() {
                     title="Subrayado"
                     aria-label="Formato subrayado"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 3v7a6 6 0 0 0 12 0V3M4 21h16" />
-                    </svg>
+                    <Underline className="w-4 h-4" />
                   </button>
 
                   {/* Alignment buttons */}
@@ -2020,9 +1985,7 @@ export default function DictationPage() {
                       aria-label="Tamaño de fuente"
                     >
                       <span>{currentFontSize}</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3 text-clinical-text-muted">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
+                      <ChevronDown className="w-3 h-3 text-clinical-text-muted" />
                     </button>
                     {isFontSizeOpen && (
                       <div className="absolute left-0 mt-1 w-28 bg-clinical-panel border border-clinical-border rounded-lg shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-100">
@@ -2059,9 +2022,7 @@ export default function DictationPage() {
               ) : (
                 <div key="empty" className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
                   <div className="w-16 h-16 rounded-full bg-clinical-surface border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                    </svg>
+                    <LayoutTemplate className="w-8 h-8" />
                   </div>
                   <h3 className="font-semibold text-sm text-clinical-text">No hay informe estructurado</h3>
                   <p className="text-xs max-w-xs mt-2 leading-relaxed">
@@ -2073,9 +2034,7 @@ export default function DictationPage() {
 
             {/* Info inferior de ayuda */}
             <div className="mt-4 text-[10px] text-clinical-text-muted flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5 text-clinical-teal shrink-0">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0-3h.008v.008H12V9.75Zm0-4.853c-1.29 0-2.583.045-3.87.135a8.205 8.205 0 0 0-3.418 1.196L3.08 7.9c-.31.18-.432.553-.3.882l.988 2.502c.07.177.206.319.38.38l2.502.988c.329.132.702.01.882-.3l1.67-2.83a8.192 8.192 0 0 0 4.88 0l1.67 2.83c.18.31.553.432.882.3l2.502-.988c.174-.06.31-.203.38-.38l.988-2.502c.132-.329.01-.702-.3-.882l-1.638-1.737a8.204 8.204 0 0 0-3.417-1.196 48.57 48.57 0 0 0-3.87-.135Z" />
-              </svg>
+              <Info className="w-3.5 h-3.5 text-clinical-teal shrink-0" />
               <span>El informe es 100% editable manualmente. Puede realizar cambios directamente en el texto final.</span>
             </div>
           </div>
@@ -2091,16 +2050,14 @@ export default function DictationPage() {
             {/* Header del Modal */}
             <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-4 shrink-0">
               <h3 className="font-bold text-base text-clinical-text tracking-wide flex items-center gap-2">
-                <span className="text-rose-500">⚠️</span> Plantilla No Encontrada
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" /> Plantilla No Encontrada
               </h3>
               <button
                 onClick={() => setIsTemplateErrorModalOpen(false)}
                 className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
                 aria-label="Cerrar modal"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -2140,9 +2097,7 @@ export default function DictationPage() {
                 className="flex-1 py-2 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 font-bold tracking-wide transition-all shadow-md shadow-clinical-teal/10 hover:shadow-clinical-teal/20 flex items-center justify-center gap-1.5 cursor-pointer text-xs"
               >
                 <span>Verificar</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                </svg>
+                <ExternalLink className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
@@ -2165,7 +2120,7 @@ export default function DictationPage() {
             <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h3 className="font-bold text-lg text-clinical-text tracking-wide flex items-center gap-2">
-                  <span>🩺</span> Seleccionar Perfil de Médico
+                  <Stethoscope className="w-5 h-5 text-clinical-teal" /> Seleccionar Perfil de Médico
                 </h3>
                 <p className="text-xs text-clinical-text-muted mt-1 leading-relaxed">
                   Para dictar, cargar audio o escribir informes, primero debe seleccionar su perfil profesional. Esto asegura cargar las plantillas correctas.
@@ -2178,9 +2133,7 @@ export default function DictationPage() {
                   className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
                   aria-label="Cerrar modal"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
@@ -2188,9 +2141,7 @@ export default function DictationPage() {
             {/* Buscador de Médicos */}
             <div className="relative mb-6 shrink-0">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z" />
-                </svg>
+                <Search className="w-4 h-4" />
               </span>
               <input
                 type="text"
@@ -2204,9 +2155,7 @@ export default function DictationPage() {
                   onClick={() => setDoctorSearchTerm("")}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -2223,9 +2172,7 @@ export default function DictationPage() {
                   return (
                     <div className="flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
                       <div className="w-12 h-12 rounded-full bg-clinical-surface border border-clinical-border flex items-center justify-center mb-3 text-clinical-text-muted">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
+                        <Users className="w-6 h-6" />
                       </div>
                       <h4 className="font-semibold text-xs text-clinical-text">No se encontraron médicos</h4>
                       <p className="text-[11px] mt-1">Intente buscar con otro nombre o especialidad.</p>
@@ -2306,9 +2253,7 @@ export default function DictationPage() {
           <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 border border-rose-500/20">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
+                <AlertTriangle className="w-6 h-6" />
               </div>
               <div className="flex-1 space-y-3">
                 <h3 className="font-bold text-base text-clinical-text tracking-wide">{micWarningDetails.title}</h3>

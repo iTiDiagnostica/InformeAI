@@ -3,6 +3,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { 
+  Search, RefreshCw, Calendar, ChevronDown, ChevronLeft, ChevronRight, 
+  X, LayoutTemplate, Eye, ArrowUpRight, Copy, AlertCircle 
+} from "lucide-react";
 
 import { Company, Doctor, Report, PaginationMetadata } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
@@ -645,9 +649,7 @@ export default function HistorialPage() {
               disabled={isLoading}
               className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-              </svg>
+              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
               Actualizar
             </button>
           </div>
@@ -657,9 +659,7 @@ export default function HistorialPage() {
             {/* Buscador */}
             <div className="flex-1 relative">
               <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z" />
-                </svg>
+                <Search className="w-4 h-4" />
               </span>
               <input
                 type="text"
@@ -694,18 +694,14 @@ export default function HistorialPage() {
                 className="flex items-center justify-between gap-2.5 px-4 py-2.5 rounded-xl bg-clinical-surface-inset border border-clinical-border hover:border-clinical-teal/50 hover:bg-clinical-teal/5 text-xs font-semibold text-clinical-text transition-all cursor-pointer min-w-[200px]"
               >
                 <span className="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-clinical-text-muted">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                  </svg>
+                  <Calendar className="w-4 h-4 text-clinical-text-muted" />
                   <span>
                     {startDate ? (
                       endDate ? `${formatDateForDisplay(startDate)} - ${formatDateForDisplay(endDate)}` : `Desde ${formatDateForDisplay(startDate)}`
                     ) : "Rango de fechas"}
                   </span>
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-clinical-text-muted">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                </svg>
+                <ChevronDown className="w-3.5 h-3.5 text-clinical-text-muted" />
               </button>
 
               {/* Calendario Flotante Popover */}
@@ -717,9 +713,7 @@ export default function HistorialPage() {
                       onClick={handlePrevMonth}
                       className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all cursor-pointer"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                      </svg>
+                      <ChevronLeft className="w-3.5 h-3.5" />
                     </button>
                     <span className="text-xs font-bold text-clinical-text uppercase tracking-wide select-none">
                       {MONTHS_SPANISH[calendarMonth]} {calendarYear}
@@ -728,9 +722,7 @@ export default function HistorialPage() {
                       onClick={handleNextMonth}
                       className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all cursor-pointer"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                      </svg>
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
 
@@ -827,17 +819,16 @@ export default function HistorialPage() {
                 onClick={clearFilters}
                 className="px-4 py-2.5 rounded-xl bg-rose-950/20 border border-rose-900/30 hover:border-rose-800 text-xs font-bold text-rose-300 hover:text-rose-200 transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
                 Limpiar Filtros
               </button>
             )}
           </div>
 
           {error && (
-            <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-xs text-rose-300 font-medium">
-              ⚠️ {error}
+            <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-xs text-rose-300 font-medium flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{error}</span>
             </div>
           )}
 
@@ -851,9 +842,7 @@ export default function HistorialPage() {
             ) : reports.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
                 <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                  </svg>
+                  <LayoutTemplate className="w-8 h-8" />
                 </div>
                 <h3 className="font-semibold text-sm text-clinical-text">No se encontraron informes</h3>
                 <p className="text-xs max-w-xs mt-2 leading-relaxed">
@@ -931,10 +920,7 @@ export default function HistorialPage() {
                               title="Visualizar Reporte"
                               aria-label="Visualizar reporte"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                              </svg>
+                              <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleLoadReport(report)}
@@ -942,9 +928,7 @@ export default function HistorialPage() {
                               title="Cargar en Dictador principal"
                               aria-label="Cargar reporte en el dictador principal"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-.75m-6-6h1.5m2.25-2.25h2.25m-2.25 2.25v2.25m3-3H21m0 0v5.25m0-5.25L12 14.25" />
-                              </svg>
+                              <ArrowUpRight className="w-4 h-4" />
                             </button>
                           </div>
                         </td>
@@ -1024,9 +1008,7 @@ export default function HistorialPage() {
                 onClick={() => setIsModalOpen(false)}
                 className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -1069,9 +1051,7 @@ export default function HistorialPage() {
                   onClick={() => handleCopyClipboard(selectedReport.structuredText)}
                   className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
-                  </svg>
+                  <Copy className="w-4 h-4" />
                   {copySuccess ? "¡Copiado!" : "Copiar a Portapapeles"}
                 </button>
               </div>
@@ -1087,9 +1067,7 @@ export default function HistorialPage() {
                   onClick={() => handleLoadReport(selectedReport)}
                   className="px-5 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-clinical-teal/10"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-.75m-6-6h1.5m2.25-2.25h2.25m-2.25 2.25v2.25m3-3H21m0 0v5.25m0-5.25L12 14.25" />
-                  </svg>
+                  <ArrowUpRight className="w-4 h-4" />
                   Cargar en Editor
                 </button>
               </div>

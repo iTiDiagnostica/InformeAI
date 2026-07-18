@@ -4,6 +4,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../../components/ConfirmationModal";
+import { 
+  Plus, Search, X, Users, User, Pencil, Trash2, Stethoscope, Building, Copy, LayoutTemplate 
+} from "lucide-react";
 
 import { Company, Doctor, DocumentItem as TemplateItem } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
@@ -742,9 +745,7 @@ export default function DoctorsPage() {
                 }}
                 className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 font-bold text-xs transition-all shadow-md shadow-clinical-teal/10 cursor-pointer animate-none"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
+                <Plus className="w-4 h-4" />
                 <span>Registrar Médico</span>
               </button>
             )}
@@ -767,9 +768,7 @@ export default function DoctorsPage() {
               {/* Barra de Búsqueda de Médicos */}
               <div className="relative w-full md:w-80">
                 <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637Z" />
-                  </svg>
+                  <Search className="w-4 h-4" />
                 </span>
                 <input
                   type="text"
@@ -783,9 +782,7 @@ export default function DoctorsPage() {
                     onClick={() => setSearchTerm("")}
                     className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-500 hover:text-clinical-text transition-all cursor-pointer animate-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                    </svg>
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
@@ -795,9 +792,7 @@ export default function DoctorsPage() {
               {filteredDoctors.length === 0 ? (
                 <div className="col-span-full flex flex-col items-center justify-center text-center p-12 text-clinical-text-muted h-full">
                   <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                    </svg>
+                    <Users className="w-8 h-8" />
                   </div>
                   <h3 className="font-semibold text-sm text-clinical-text">No se encontraron médicos</h3>
                   <p className="text-xs max-w-xs mt-2 leading-relaxed">
@@ -843,40 +838,34 @@ export default function DoctorsPage() {
                       </div>
 
                       <div className="flex justify-end gap-1.5 mt-5 pt-3 border-t border-clinical-border/50">
-                        <button
-                          onClick={() => handleOpenDoctorProfile(doc)}
-                          className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
-                          title="Ver perfil de médico"
-                          aria-label="Ver perfil de médico"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                          </svg>
-                        </button>
-                        {(userRole === "admin" || userRole === "moderator") && (
-                          <>
-                            <button
-                              onClick={() => handleEdit(doc)}
-                              className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
-                              title="Editar médico"
-                              aria-label="Editar médico"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.83 18.75a4.409 4.409 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteClick(doc)}
-                              className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer"
-                              title="Eliminar médico"
-                              aria-label="Eliminar médico"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                              </svg>
-                            </button>
-                          </>
-                        )}
+                          <button
+                            onClick={() => handleOpenDoctorProfile(doc)}
+                            className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
+                            title="Ver perfil de médico"
+                            aria-label="Ver perfil de médico"
+                          >
+                            <User className="w-4 h-4" />
+                          </button>
+                          {(userRole === "admin" || userRole === "moderator") && (
+                            <>
+                              <button
+                                onClick={() => handleEdit(doc)}
+                                className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
+                                title="Editar médico"
+                                aria-label="Editar médico"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(doc)}
+                                className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer"
+                                title="Eliminar médico"
+                                aria-label="Eliminar médico"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
                       </div>
                     </div>
                   );
@@ -905,9 +894,7 @@ export default function DoctorsPage() {
                 onClick={handleCancelEdit}
                 className="p-1.5 rounded-xl hover:bg-clinical-surface-hover text-slate-500 hover:text-clinical-text transition-all cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
@@ -1053,26 +1040,24 @@ export default function DoctorsPage() {
             
             {/* Header del Modal */}
             <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
-          <div className="flex items-center gap-3">
-            <span className="w-9 h-9 rounded-full bg-clinical-teal/10 border border-clinical-teal/20 flex items-center justify-center text-lg">
-              🩺
-            </span>
-            <div>
-              <h3 className="font-bold text-base text-clinical-text tracking-wide">
-                Perfil de Personal: {selectedDoctorProfile.name}
-              </h3>
-              <p className="text-[10px] text-clinical-text-muted mt-0.5">
-                Especialidad: {selectedDoctorProfile.specialty}
-              </p>
-            </div>
-          </div>
+              <div className="flex items-center gap-3">
+                <span className="w-9 h-9 rounded-full bg-clinical-teal/10 border border-clinical-teal/20 flex items-center justify-center text-clinical-teal">
+                  <Stethoscope className="w-4 h-4" />
+                </span>
+                <div>
+                  <h3 className="font-bold text-base text-clinical-text tracking-wide">
+                    Perfil de Personal: {selectedDoctorProfile.name}
+                  </h3>
+                  <p className="text-[10px] text-clinical-text-muted mt-0.5">
+                    Especialidad: {selectedDoctorProfile.specialty}
+                  </p>
+                </div>
+              </div>
           <button
             onClick={() => setIsProfileModalOpen(false)}
             className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -1089,7 +1074,10 @@ export default function DoctorsPage() {
                 {selectedDoctorProfile.companyName && (
                   <div>
                     <span className="text-clinical-text-muted font-medium block">Empresa / Institución:</span>
-                    <span className="text-clinical-text font-bold">🏢 {selectedDoctorProfile.companyName}</span>
+                    <span className="text-clinical-text font-bold flex items-center gap-1">
+                      <Building className="w-3.5 h-3.5 text-clinical-teal" />
+                      <span>{selectedDoctorProfile.companyName}</span>
+                    </span>
                   </div>
                 )}
 
@@ -1170,9 +1158,7 @@ export default function DoctorsPage() {
                     onClick={() => handleCopyClipboard(selectedTemplateInProfile.content)}
                     className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-[10px] font-bold text-clinical-text transition-all flex items-center gap-1.5 cursor-pointer animate-none"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.25 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
-                    </svg>
+                    <Copy className="w-3.5 h-3.5" />
                     {copySuccessProfile ? "¡Copiado!" : "Copiar plantilla"}
                   </button>
                 </div>
@@ -1187,9 +1173,7 @@ export default function DoctorsPage() {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
                 <div className="w-16 h-16 rounded-full bg-clinical-surface-inset border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                  </svg>
+                  <LayoutTemplate className="w-8 h-8" />
                 </div>
                 <h4 className="font-semibold text-sm text-clinical-text">Visualizar Estructura de Plantillas</h4>
                 <p className="text-xs max-w-xs mt-2 leading-relaxed">
