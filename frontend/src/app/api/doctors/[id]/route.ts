@@ -8,7 +8,9 @@ export async function PUT(req: NextRequest, context: any) {
   if (!user) return forbiddenResponse();
 
   try {
-    const { name, specialty, style_directives, username, password, company_id } = await req.json();
+    const body = await req.json();
+    const { name, specialty, style_directives, username, password } = body;
+    const company_id = body.company_id ?? body.companyId;
 
     if (user.role === 'moderator') {
       const docRes = await db.query('SELECT company_id FROM doctors WHERE id = $1', [(await context.params).id]);
@@ -35,13 +37,13 @@ export async function PUT(req: NextRequest, context: any) {
       paramIndex++;
     }
 
-    if (user.role === 'admin' && company_id) {
+    if (user.role === 'admin' && company_id !== undefined) {
       queryStr += `, company_id = $${paramIndex}`;
       queryParams.push(company_id);
       paramIndex++;
     }
 
-    queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, specialty, style_directives, username, company_id`;
+    queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, specialty, style_directives, username, company_id as "companyId"`;
     queryParams.push((await context.params).id);
 
     const result = await db.query(queryStr, queryParams);

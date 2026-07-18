@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { authenticate, authenticateAdminOrModerator, unauthorizedResponse, forbiddenResponse } from '@/utils/auth';
 import bcrypt from 'bcryptjs';
@@ -11,21 +11,21 @@ export async function GET(req: NextRequest) {
     let result;
     if (user.role === 'admin') {
       result = await db.query(`
-        SELECT d.id, d.name, d.specialty, d.style_directives, d.username, d.company_id, c.name as company_name 
+        SELECT d.id, d.name, d.specialty, d.style_directives, d.username, d.company_id as "companyId", c.name as "companyName" 
         FROM doctors d 
         LEFT JOIN companies c ON d.company_id = c.id 
         ORDER BY d.id ASC
       `);
     } else if (user.role === 'moderator') {
       result = await db.query(`
-        SELECT d.id, d.name, d.specialty, d.style_directives, d.username, d.company_id 
+        SELECT d.id, d.name, d.specialty, d.style_directives, d.username, d.company_id as "companyId" 
         FROM doctors d 
         WHERE d.company_id = $1 
         ORDER BY d.id ASC
       `, [user.companyId]);
     } else {
       result = await db.query(`
-        SELECT id, name, specialty, style_directives, username, company_id 
+        SELECT id, name, specialty, style_directives, username, company_id as "companyId" 
         FROM doctors WHERE id = $1
       `, [user.doctorId]);
     }
@@ -40,10 +40,12 @@ export async function POST(req: NextRequest) {
   if (!user) return forbiddenResponse('Se requiere rol de Administrador o Moderador.');
 
   try {
-    const { name, specialty, style_directives, username, password, company_id } = await req.json();
+    const body = await req.json();
+    const { name, specialty, style_directives, username, password } = body;
+    const company_id = body.company_id ?? body.companyId;
 
     if (!name || !username || !password) {
-      return NextResponse.json({ error: 'Faltan campos obligatorios (nombre, usuario o contraseÃ±a).' }, { status: 400 });
+      return NextResponse.json({ error: 'Faltan campos obligatorios (nombre, usuario o contraseña).' }, { status: 400 });
     }
 
     let finalCompanyId = company_id;
@@ -62,8 +64,8 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const result = await db.query(
-      'INSERT INTO doctors (name, specialty, style_directives, username, password_hash, company_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, specialty, style_directives, username, company_id',
-      [name, specialty || 'DiagnÃ³stico por ImÃ¡genes', style_directives || '', username, passwordHash, finalCompanyId]
+      'INSERT INTO doctors (name, specialty, style_directives, username, password_hash, company_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, specialty, style_directives, username, company_id as "companyId"',
+      [name, specialty || 'Diagnóstico por Imágenes', style_directives || '', username, passwordHash, finalCompanyId]
     );
 
     return NextResponse.json(result.rows[0], { status: 201 });

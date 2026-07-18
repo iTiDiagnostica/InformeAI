@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { authenticateAdmin, forbiddenResponse } from '@/utils/auth';
 import bcrypt from 'bcryptjs';
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const result = await db.query(`
-      SELECT m.id, m.name, m.username, m.company_id, c.name as company_name 
+      SELECT m.id, m.name, m.username, m.company_id as "companyId", c.name as "companyName" 
       FROM moderators m 
       LEFT JOIN companies c ON m.company_id = c.id 
       ORDER BY m.id ASC
@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
   if (!user) return forbiddenResponse();
 
   try {
-    const { name, username, password, company_id } = await req.json();
+    const body = await req.json();
+    const { name, username, password } = body;
+    const company_id = body.company_id ?? body.companyId;
 
     if (!name || !username || !password || !company_id) {
       return NextResponse.json({ error: 'Faltan campos obligatorios.' }, { status: 400 });
@@ -38,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const result = await db.query(
-      'INSERT INTO moderators (name, username, password_hash, company_id) VALUES ($1, $2, $3, $4) RETURNING id, name, username, company_id',
+      'INSERT INTO moderators (name, username, password_hash, company_id) VALUES ($1, $2, $3, $4) RETURNING id, name, username, company_id as "companyId"',
       [name, username, passwordHash, company_id]
     );
 

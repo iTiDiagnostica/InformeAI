@@ -8,7 +8,9 @@ export async function PUT(req: NextRequest, context: any) {
   if (!user) return forbiddenResponse();
 
   try {
-    const { name, username, password, company_id } = await req.json();
+    const body = await req.json();
+    const { name, username, password } = body;
+    const company_id = body.company_id ?? body.companyId;
 
     if (username) {
       const checkRes = await db.query('SELECT id FROM moderators WHERE username = $1 AND id != $2', [username, (await context.params).id]);
@@ -28,13 +30,13 @@ export async function PUT(req: NextRequest, context: any) {
       paramIndex++;
     }
 
-    if (company_id) {
+    if (company_id !== undefined) {
       queryStr += `, company_id = $${paramIndex}`;
       queryParams.push(company_id);
       paramIndex++;
     }
 
-    queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, username, company_id`;
+    queryStr += ` WHERE id = $${paramIndex} RETURNING id, name, username, company_id as "companyId"`;
     queryParams.push((await context.params).id);
 
     const result = await db.query(queryStr, queryParams);
