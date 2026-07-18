@@ -40,6 +40,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Soft Sky", primary: "#0f172a", secondary: "#1e293b", accent: "#38bdf8" },
       { name: "Midnight Ice", primary: "#070b13", secondary: "#101726", accent: "#67e8f9" },
       { name: "Royal Cobalt", primary: "#050a18", secondary: "#0b132b", accent: "#2563eb" },
+      { name: "Light Sky (Claro)", primary: "#f0f9ff", secondary: "#ffffff", accent: "#0284c7" },
+      { name: "Soft Turquoise (Claro)", primary: "#ecfeff", secondary: "#ffffff", accent: "#0891b2" },
+      { name: "Clean Cyan (Claro)", primary: "#f5fbfb", secondary: "#ffffff", accent: "#06b6d4" },
+      { name: "Frost Blue (Claro)", primary: "#f1f5f9", secondary: "#ffffff", accent: "#2563eb" },
+      { name: "Bright Sky (Claro)", primary: "#e0f2fe", secondary: "#ffffff", accent: "#0ea5e9" }
     ]
   },
   {
@@ -52,6 +57,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Ruby Rose", primary: "#0c0205", secondary: "#1c0d12", accent: "#f43f5e" },
       { name: "Burnt Ember", primary: "#0f0606", secondary: "#1c0f0f", accent: "#f97316" },
       { name: "Wine Berry", primary: "#0d040a", secondary: "#1a0a16", accent: "#db2777" },
+      { name: "Pure Coral (Claro)", primary: "#fff5f5", secondary: "#ffffff", accent: "#e53e3e" },
+      { name: "Soft Scarlet (Claro)", primary: "#fff5f5", secondary: "#fcf8f8", accent: "#c53030" },
+      { name: "Light Pink Rose (Claro)", primary: "#fff1f2", secondary: "#ffffff", accent: "#e11d48" },
+      { name: "Peach Whisper (Claro)", primary: "#fff7ed", secondary: "#ffffff", accent: "#ea580c" },
+      { name: "Sweet Melon (Claro)", primary: "#fffaf8", secondary: "#fff5f0", accent: "#ff6b6b" }
     ]
   },
   {
@@ -64,6 +74,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Lime Health", primary: "#050f05", secondary: "#0d200d", accent: "#84cc16" },
       { name: "Minty Fresh", primary: "#051210", secondary: "#0f2622", accent: "#34d399" },
       { name: "Tropical Teal", primary: "#010f10", secondary: "#052022", accent: "#0d9488" },
+      { name: "Light Mint (Claro)", primary: "#f0fdf4", secondary: "#ffffff", accent: "#16a34a" },
+      { name: "Eco Soft (Claro)", primary: "#f0fdf4", secondary: "#f5fdf7", accent: "#059669" },
+      { name: "Bright Lime (Claro)", primary: "#f7fee7", secondary: "#ffffff", accent: "#65a30d" },
+      { name: "Ocean Breeze (Claro)", primary: "#f0fdfa", secondary: "#ffffff", accent: "#0d9488" },
+      { name: "Teal Essence (Claro)", primary: "#e6fffa", secondary: "#f0fff4", accent: "#008080" }
     ]
   },
   {
@@ -76,6 +91,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Amethyst Glow", primary: "#090414", secondary: "#160c2b", accent: "#8b5cf6" },
       { name: "Indigo Night", primary: "#03020d", secondary: "#0a081f", accent: "#6366f1" },
       { name: "Fuchsia Edge", primary: "#0a030c", secondary: "#180b1e", accent: "#d946ef" },
+      { name: "Soft Lavender (Claro)", primary: "#faf5ff", secondary: "#ffffff", accent: "#9333ea" },
+      { name: "Light Amethyst (Claro)", primary: "#f5f3ff", secondary: "#ffffff", accent: "#7c3aed" },
+      { name: "Orchid Whisper (Claro)", primary: "#fdf4ff", secondary: "#ffffff", accent: "#c084fc" },
+      { name: "Periwinkle Mist (Claro)", primary: "#eef2ff", secondary: "#ffffff", accent: "#4f46e5" },
+      { name: "Bright Fuchsia (Claro)", primary: "#fdf4ff", secondary: "#ffffff", accent: "#d946ef" }
     ]
   },
   {
@@ -88,6 +108,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Silver Steel", primary: "#0f172a", secondary: "#1e293b", accent: "#cbd5e1" },
       { name: "Platinum Frost", primary: "#080b11", secondary: "#111622", accent: "#f1f5f9" },
       { name: "Graphite Dark", primary: "#030303", secondary: "#121212", accent: "#6b7280" },
+      { name: "Silver Mist (Claro)", primary: "#f8fafc", secondary: "#ffffff", accent: "#475569" },
+      { name: "Soft Platinum (Claro)", primary: "#f1f5f9", secondary: "#ffffff", accent: "#64748b" },
+      { name: "Bright Chrome (Claro)", primary: "#f9fafb", secondary: "#ffffff", accent: "#374151" },
+      { name: "Light Cool Gray (Claro)", primary: "#f3f4f6", secondary: "#f9fafb", accent: "#4b5563" },
+      { name: "Carbon White (Claro)", primary: "#ffffff", secondary: "#f8fafc", accent: "#1f2937" }
     ]
   },
   {
@@ -100,6 +125,11 @@ const BASE_THEMES: BaseTheme[] = [
       { name: "Bronze Light", primary: "#090704", secondary: "#18130d", accent: "#fbbf24" },
       { name: "Citrus Yellow", primary: "#0c0c04", secondary: "#1a1a0f", accent: "#eab308" },
       { name: "Sunset Orange", primary: "#0f0702", secondary: "#201007", accent: "#f97316" },
+      { name: "Golden Glow (Claro)", primary: "#fffbeb", secondary: "#ffffff", accent: "#d97706" },
+      { name: "Citrus Light (Claro)", primary: "#fefce8", secondary: "#ffffff", accent: "#ca8a04" },
+      { name: "Honey Warmth (Claro)", primary: "#fffbeb", secondary: "#fffdf5", accent: "#b45309" },
+      { name: "Amber Breeze (Claro)", primary: "#fff7ed", secondary: "#ffffff", accent: "#f59e0b" },
+      { name: "Soft Orange (Claro)", primary: "#fffaf0", secondary: "#fff5e6", accent: "#e65c00" }
     ]
   },
   {
@@ -107,11 +137,15 @@ const BASE_THEMES: BaseTheme[] = [
     name: "Pastel Menta",
     colorRepresentation: "#99f6e4",
     variants: [
-      { name: "Soft Mint (Original)", primary: "#0d1112", secondary: "#161f20", accent: "#99f6e4" },
+      { name: "Teal Foam (Claro)", primary: "#f2fbf9", secondary: "#ffffff", accent: "#0f766e" },
+      { name: "Teal Wave (Original)", primary: "#0d1112", secondary: "#161f20", accent: "#99f6e4" }, // reemplazando para consistencia
       { name: "Pale Turquoise", primary: "#080e0f", secondary: "#121e21", accent: "#a5f3fc" },
       { name: "Sage Calm", primary: "#0b0f0c", secondary: "#162119", accent: "#a7f3d0" },
       { name: "Ice Cyan", primary: "#05090b", secondary: "#0e181c", accent: "#e0f7fa" },
-      { name: "Teal Wave", primary: "#020b0c", secondary: "#07171a", accent: "#2dd4bf" },
+      { name: "Ice Mint (Claro)", primary: "#e6fffa", secondary: "#ffffff", accent: "#0d9488" },
+      { name: "Sage Whisper (Claro)", primary: "#f4fbf7", secondary: "#ffffff", accent: "#15803d" },
+      { name: "Light Aqua (Claro)", primary: "#ecfeff", secondary: "#ffffff", accent: "#0369a1" },
+      { name: "Teal Wave Light (Claro)", primary: "#f0fdfa", secondary: "#ffffff", accent: "#0ea5e9" }
     ]
   }
 ];
@@ -156,8 +190,36 @@ export default function CompaniesPage() {
 
   const applyTheme = (theme: any) => {
     const root = document.documentElement;
+    const isColorLight = (hex: string): boolean => {
+      if (!hex) return false;
+      const cleanHex = hex.replace("#", "");
+      if (cleanHex.length !== 6 && cleanHex.length !== 3) return false;
+      
+      let r = 0, g = 0, b = 0;
+      if (cleanHex.length === 6) {
+        r = parseInt(cleanHex.substring(0, 2), 16);
+        g = parseInt(cleanHex.substring(2, 4), 16);
+        b = parseInt(cleanHex.substring(4, 6), 16);
+      } else {
+        r = parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
+        g = parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
+        b = parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
+      }
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      return brightness > 140;
+    };
+
     if (theme) {
-      if (theme.primary) root.style.setProperty("--clinical-bg", theme.primary);
+      if (theme.primary) {
+        root.style.setProperty("--clinical-bg", theme.primary);
+        if (isColorLight(theme.primary)) {
+          root.style.setProperty("--clinical-text", "#0f172a");
+          root.style.setProperty("--clinical-text-muted", "#475569");
+        } else {
+          root.style.removeProperty("--clinical-text");
+          root.style.removeProperty("--clinical-text-muted");
+        }
+      }
       if (theme.secondary) {
         root.style.setProperty("--clinical-panel", theme.secondary);
         root.style.setProperty("--clinical-panel-light", `${theme.secondary}cc`);
@@ -172,6 +234,8 @@ export default function CompaniesPage() {
       root.style.removeProperty("--clinical-panel-light");
       root.style.removeProperty("--clinical-teal");
       root.style.removeProperty("--clinical-teal-dim");
+      root.style.removeProperty("--clinical-text");
+      root.style.removeProperty("--clinical-text-muted");
     }
   };
 
@@ -1019,55 +1083,85 @@ export default function CompaniesPage() {
                   </p>
                 </div>
 
-                <div 
-                  className="flex-1 border border-slate-800/80 rounded-2xl p-6 flex gap-4 text-xs overflow-hidden select-none transition-colors min-h-[300px]"
-                  style={{ backgroundColor: colorPrimary }}
-                >
-                  {/* Minisidebar */}
-                  <div 
-                    className="w-1/3 rounded-xl border border-slate-800/80 p-3 flex flex-col justify-between"
-                    style={{ backgroundColor: colorSecondary }}
-                  >
-                    <div className="space-y-3">
-                      <div className="h-8 flex items-center justify-center border-b border-slate-800/50 pb-2 shrink-0">
-                        {logoBase64 ? (
-                          <img src={logoBase64} alt="Preview Logo" className="max-h-full max-w-full object-contain" />
-                        ) : (
-                          <span className="text-[10px] font-extrabold text-clinical-text tracking-wider truncate">{name || "CLINICA"}</span>
-                        )}
-                      </div>
-                      <div className="h-6 rounded-lg flex items-center px-2 gap-1 text-[8px] font-bold" style={{ backgroundColor: `${colorAccent}20`, color: colorAccent, border: `1px solid ${colorAccent}40` }}>
-                        🎙️ Dictador
-                      </div>
-                      <div className="h-6 rounded-lg flex items-center px-2 gap-1 text-[8px] font-bold text-slate-500">
-                        📁 Plantillas
-                      </div>
-                    </div>
-                    <div className="h-5 rounded-lg bg-rose-950/20 text-rose-400 border border-rose-900/30 text-[7px] font-bold flex items-center justify-center shrink-0">
-                      Salir
-                    </div>
-                  </div>
+                {(() => {
+                  const isLight = (() => {
+                    if (!colorPrimary) return false;
+                    const cleanHex = colorPrimary.replace("#", "");
+                    if (cleanHex.length !== 6 && cleanHex.length !== 3) return false;
+                    let r = 0, g = 0, b = 0;
+                    if (cleanHex.length === 6) {
+                      r = parseInt(cleanHex.substring(0, 2), 16);
+                      g = parseInt(cleanHex.substring(2, 4), 16);
+                      b = parseInt(cleanHex.substring(4, 6), 16);
+                    } else {
+                      r = parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
+                      g = parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
+                      b = parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
+                    }
+                    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                    return brightness > 140;
+                  })();
 
-                  {/* Miniworkplace */}
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div className="h-8 rounded-xl border border-slate-800/80 flex items-center justify-between px-3" style={{ backgroundColor: colorSecondary }}>
-                      <span className="text-[7px] text-slate-400 font-bold">Historial</span>
-                      <span className="text-[7px] px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[6px] font-bold">Activo</span>
-                    </div>
+                  const previewStyle = {
+                    backgroundColor: colorPrimary,
+                    "--clinical-text": isLight ? "#0f172a" : "oklch(0.97 0.005 195)",
+                    "--clinical-text-muted": isLight ? "#475569" : "oklch(0.65 0.015 195)",
+                    "--clinical-teal": colorAccent,
+                    color: "var(--clinical-text)",
+                  } as React.CSSProperties;
 
-                    <div className="flex-1 border border-slate-800/60 rounded-xl p-3 my-3 flex flex-col justify-center items-center gap-2 bg-slate-900/20">
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all" style={{ backgroundColor: colorAccent, boxShadow: `0 0 12px ${colorAccent}50` }}>
-                        🎙️
+                  return (
+                    <div 
+                      className="flex-1 border border-slate-800/80 rounded-2xl p-6 flex gap-4 text-xs overflow-hidden select-none transition-colors min-h-[300px]"
+                      style={previewStyle}
+                    >
+                      {/* Minisidebar */}
+                      <div 
+                        className="w-1/3 rounded-xl border border-slate-800/80 p-3 flex flex-col justify-between"
+                        style={{ backgroundColor: colorSecondary }}
+                      >
+                        <div className="space-y-3">
+                          <div className="h-8 flex items-center justify-center border-b border-slate-800/50 pb-2 shrink-0">
+                            {logoBase64 ? (
+                              <img src={logoBase64} alt="Preview Logo" className="max-h-full max-w-full object-contain" />
+                            ) : (
+                              <span className="text-[10px] font-extrabold text-clinical-text tracking-wider truncate">{name || "CLINICA"}</span>
+                            )}
+                          </div>
+                          <div className="h-6 rounded-lg flex items-center px-2 gap-1 text-[8px] font-bold" style={{ backgroundColor: `${colorAccent}20`, color: colorAccent, border: `1px solid ${colorAccent}40` }}>
+                            🎙️ Dictador
+                          </div>
+                          <div className="h-6 rounded-lg flex items-center px-2 gap-1 text-[8px] font-bold text-clinical-text-muted">
+                            📁 Plantillas
+                          </div>
+                        </div>
+                        <div className="h-5 rounded-lg bg-rose-950/20 text-rose-400 border border-rose-900/30 text-[7px] font-bold flex items-center justify-center shrink-0">
+                          Salir
+                        </div>
                       </div>
-                      <span className="text-[8px] text-slate-400 text-center font-bold">Grabar dictado clínico</span>
-                    </div>
 
-                    <div className="h-6 flex gap-3 shrink-0">
-                      <div className="flex-1 rounded-lg" style={{ backgroundColor: `${colorAccent}15`, border: `1px solid ${colorAccent}40` }} />
-                      <div className="flex-1 rounded-lg bg-slate-900 border border-slate-800" />
+                      {/* Miniworkplace */}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div className="h-8 rounded-xl border border-slate-800/80 flex items-center justify-between px-3" style={{ backgroundColor: colorSecondary }}>
+                          <span className="text-[7px] text-clinical-text-muted font-bold">Historial</span>
+                          <span className="text-[7px] px-2 py-0.5 rounded bg-clinical-teal/20 text-clinical-teal text-[6px] font-bold">Activo</span>
+                        </div>
+
+                        <div className="flex-1 border border-slate-800/60 rounded-xl p-3 my-3 flex flex-col justify-center items-center gap-2 bg-slate-900/20">
+                          <div className="w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold transition-all" style={{ backgroundColor: colorAccent, boxShadow: `0 0 12px ${colorAccent}50` }}>
+                            🎙️
+                          </div>
+                          <span className="text-[8px] text-clinical-text-muted text-center font-bold">Grabar dictado clínico</span>
+                        </div>
+
+                        <div className="h-6 flex gap-3 shrink-0">
+                          <div className="flex-1 rounded-lg" style={{ backgroundColor: `${colorAccent}15`, border: `1px solid ${colorAccent}40` }} />
+                          <div className="flex-1 rounded-lg bg-slate-900 border border-slate-800" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </div>
 
             </div>
