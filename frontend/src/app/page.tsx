@@ -1643,71 +1643,57 @@ export default function DictationPage() {
                 </div>
               </div>
 
-              {/* Main Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-                {/* Left Column: Dictation Button & Text */}
-                <div className="flex items-center gap-3 bg-clinical-surface-inset/40 border border-clinical-border-subtle/60 rounded-xl p-3">
-                  <button
-                    onClick={toggleRecording}
-                    disabled={!isSpeechSupported || isTranscribing}
-                    className={`w-12 h-12 rounded-full flex items-center justify-center transition-all outline-none border-2 shrink-0 ${
-                      isRecording
-                        ? "bg-rose-600 border-rose-500 text-white animate-record-pulse"
-                        : "bg-clinical-teal/10 hover:bg-clinical-teal/20 border-clinical-teal/20 text-clinical-teal hover:scale-105"
-                    } ${!isSpeechSupported || isTranscribing ? "opacity-40 cursor-not-allowed" : ""}`}
-                  >
-                    {isRecording ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5 text-white animate-pulse">
-                        <rect x="6" y="6" width="12" height="12" rx="1.5" />
-                      </svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
-                      </svg>
-                    )}
-                  </button>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-clinical-text">
-                      {isRecording ? "Grabando..." : "Dictar por Voz"}
-                    </p>
-                    <p className="text-[10px] text-clinical-text-muted truncate">
-                      {isRecording ? `Tiempo: ${formatTime(recordingSeconds)}` : "Iniciar micrófono"}
-                    </p>
-                  </div>
-                </div>
+              {/* Botones de Acción: Dictar + Subir Audio (siempre grid-2) */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Botón Dictar por Voz */}
+                <button
+                  onClick={toggleRecording}
+                  disabled={!isSpeechSupported || isTranscribing}
+                  className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all cursor-pointer ${
+                    isRecording
+                      ? "bg-rose-600/15 border-rose-500 text-rose-400 animate-record-pulse"
+                      : "bg-clinical-teal/5 hover:bg-clinical-teal/15 border-clinical-teal/30 text-clinical-teal hover:border-clinical-teal/50"
+                  } ${!isSpeechSupported || isTranscribing ? "opacity-40 cursor-not-allowed" : ""}`}
+                >
+                  {isRecording ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 animate-pulse">
+                      <rect x="6" y="6" width="12" height="12" rx="1.5" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
+                    </svg>
+                  )}
+                  <span className="text-[11px] font-bold leading-tight text-center">
+                    {isRecording ? `Grabando ${formatTime(recordingSeconds)}` : "Dictar"}
+                  </span>
+                </button>
 
-                {/* Right Column: Audio Upload Button & Info */}
-                <div className="flex items-center gap-3 bg-clinical-surface-inset/40 border border-clinical-border-subtle/60 rounded-xl p-3">
-                  <input
-                    ref={audioInputRef}
-                    type="file"
-                    accept=".mp3,.wav,.ogg,.webm,.m4a,.flac,.aac,.wma,.mp4,.mpeg,audio/*"
-                    onChange={handleAudioUpload}
-                    className="hidden"
-                    id="audio-upload"
-                  />
-                  <button
-                    onClick={() => audioInputRef.current?.click()}
-                    disabled={isRecording || isTranscribing}
-                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text hover:scale-105 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    {isTranscribing ? (
-                      <span className="w-5 h-5 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                      </svg>
-                    )}
-                  </button>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-clinical-text truncate">
-                      {isTranscribing ? "Cargando..." : "Subir Audio"}
-                    </p>
-                    <p className="text-[10px] text-clinical-text-muted truncate">
-                      {audioFileName ? audioFileName : "MP3, WAV, M4A..."}
-                    </p>
-                  </div>
-                </div>
+                {/* Botón Subir Audio */}
+                <input
+                  ref={audioInputRef}
+                  type="file"
+                  accept=".mp3,.wav,.ogg,.webm,.m4a,.flac,.aac,.wma,.mp4,.mpeg,audio/*"
+                  onChange={handleAudioUpload}
+                  className="hidden"
+                  id="audio-upload"
+                />
+                <button
+                  onClick={() => audioInputRef.current?.click()}
+                  disabled={isRecording || isTranscribing}
+                  className="flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 bg-clinical-surface/50 hover:bg-clinical-surface-hover border-clinical-border hover:border-clinical-text-muted/40 text-clinical-text transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isTranscribing ? (
+                    <span className="w-6 h-6 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+                    </svg>
+                  )}
+                  <span className="text-[11px] font-bold leading-tight text-center truncate w-full">
+                    {isTranscribing ? "Procesando..." : audioFileName ? audioFileName : "Subir Audio"}
+                  </span>
+                </button>
               </div>
             </div>
 
@@ -1738,7 +1724,7 @@ export default function DictationPage() {
                     value={correctionInstruction}
                     onChange={(e) => setCorrectionInstruction(e.target.value)}
                     placeholder="Ej: 'En el informe cambiar el apéndice cecal a 10 mm y en la conclusión alertar riesgo de perforación'"
-                    className="flex-1 min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
+                    className="flex-1 min-h-[120px] md:min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-sm md:text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
                   ></textarea>
                   
                   {interimTranscript && (
@@ -1772,7 +1758,7 @@ export default function DictationPage() {
                     value={rawText}
                     onChange={(e) => setRawText(e.target.value)}
                     placeholder="Escriba o presione el botón de micrófono para dictar el estudio de imagen..."
-                    className="flex-1 min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
+                    className="flex-1 min-h-[120px] md:min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-sm md:text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
                   ></textarea>
 
                   {interimTranscript && (
@@ -1817,14 +1803,14 @@ export default function DictationPage() {
           }`}>
             
             {/* Header del Visor */}
-            <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-3">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-clinical-border mb-3 gap-2">
+              <div className="shrink-0">
                 <span className="text-xs font-bold tracking-wide uppercase text-clinical-teal">Informe Editable</span>
-                <p className="text-[10px] text-clinical-text-muted mt-0.5">Estructura del estudio según normativas de Imagen Diagnóstica</p>
+                <p className="text-[10px] text-clinical-text-muted mt-0.5 hidden sm:block">Estructura del estudio según normativas de Imagen Diagnóstica</p>
               </div>
 
-              {/* Acciones */}
-              <div className="flex items-center gap-2">
+              {/* Acciones — scroll horizontal en móvil */}
+              <div className="flex items-center gap-1.5 overflow-x-auto -mx-1 px-1">
                 {/* Deshacer (Undo) */}
                 <button
                   onClick={handleUndo}
@@ -1867,14 +1853,14 @@ export default function DictationPage() {
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M15 9V4.5M15 9h4.5M15 9l5.25-5.25M15 15v4.5M15 15h4.5M15 15l5.25 5.25M9 15v4.5M9 15H4.5M9 15l-5.25 5.25" />
                       </svg>
-                      <span>Contraer</span>
+                      <span className="hidden sm:inline">Contraer</span>
                     </>
                   ) : (
                     <>
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9M20.25 20.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
                       </svg>
-                      <span>Maximizar</span>
+                      <span className="hidden sm:inline">Maximizar</span>
                     </>
                   )}
                 </button>
@@ -1887,7 +1873,7 @@ export default function DictationPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
                   </svg>
-                  {copySuccess ? "Copiado!" : "Copiar"}
+                  <span className="hidden sm:inline">{copySuccess ? "Copiado!" : "Copiar"}</span>
                 </button>
 
                 {/* Limpiar Button */}
@@ -1900,7 +1886,7 @@ export default function DictationPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-rose-400">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                   </svg>
-                  <span>Limpiar</span>
+                  <span className="hidden sm:inline">Limpiar</span>
                 </button>
 
               </div>
