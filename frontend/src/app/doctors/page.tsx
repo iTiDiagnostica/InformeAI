@@ -7,6 +7,7 @@ import { ConfirmationModal } from "../../components/ConfirmationModal";
 
 import { Company, Doctor, DocumentItem as TemplateItem } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
+import { applyTheme } from "@/utils/theme";
 
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -20,56 +21,7 @@ export default function DoctorsPage() {
   const [companyName, setCompanyName] = useState<string | null>(null);
   const [selectedPreviewCompanyId, setSelectedPreviewCompanyId] = useState<string>("base");
 
-  const applyTheme = (theme: any) => {
-    const root = document.documentElement;
-    const isColorLight = (hex: string): boolean => {
-      if (!hex) return false;
-      const cleanHex = hex.replace("#", "");
-      if (cleanHex.length !== 6 && cleanHex.length !== 3) return false;
-      
-      let r = 0, g = 0, b = 0;
-      if (cleanHex.length === 6) {
-        r = parseInt(cleanHex.substring(0, 2), 16);
-        g = parseInt(cleanHex.substring(2, 4), 16);
-        b = parseInt(cleanHex.substring(4, 6), 16);
-      } else {
-        r = parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
-        g = parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
-        b = parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
-      }
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 140;
-    };
 
-    if (theme) {
-      if (theme.primary) {
-        root.style.setProperty("--clinical-bg", theme.primary);
-        if (isColorLight(theme.primary)) {
-          root.style.setProperty("--clinical-text", "#0f172a");
-          root.style.setProperty("--clinical-text-muted", "#475569");
-        } else {
-          root.style.removeProperty("--clinical-text");
-          root.style.removeProperty("--clinical-text-muted");
-        }
-      }
-      if (theme.secondary) {
-        root.style.setProperty("--clinical-panel", theme.secondary);
-        root.style.setProperty("--clinical-panel-light", `${theme.secondary}cc`);
-      }
-      if (theme.accent) {
-        root.style.setProperty("--clinical-teal", theme.accent);
-        root.style.setProperty("--clinical-teal-dim", `${theme.accent}cc`);
-      }
-    } else {
-      root.style.removeProperty("--clinical-bg");
-      root.style.removeProperty("--clinical-panel");
-      root.style.removeProperty("--clinical-panel-light");
-      root.style.removeProperty("--clinical-teal");
-      root.style.removeProperty("--clinical-teal-dim");
-      root.style.removeProperty("--clinical-text");
-      root.style.removeProperty("--clinical-text-muted");
-    }
-  };
 
   const handlePreviewCompanyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;

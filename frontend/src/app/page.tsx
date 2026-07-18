@@ -440,15 +440,27 @@ export default function DictationPage() {
       return brightness > 140;
     };
 
+    const allVars = [
+      "--clinical-bg", "--clinical-panel", "--clinical-panel-light",
+      "--clinical-teal", "--clinical-teal-dim",
+      "--clinical-text", "--clinical-text-muted",
+      "--clinical-surface", "--clinical-surface-hover", "--clinical-surface-inset",
+      "--clinical-border", "--clinical-border-subtle",
+    ];
+
     if (theme) {
       if (theme.primary) {
         root.style.setProperty("--clinical-bg", theme.primary);
         if (isColorLight(theme.primary)) {
           root.style.setProperty("--clinical-text", "#0f172a");
           root.style.setProperty("--clinical-text-muted", "#475569");
+          root.style.setProperty("--clinical-surface", "#e2e8f0");
+          root.style.setProperty("--clinical-surface-hover", "#cbd5e1");
+          root.style.setProperty("--clinical-surface-inset", "#f1f5f9");
+          root.style.setProperty("--clinical-border", "#cbd5e1");
+          root.style.setProperty("--clinical-border-subtle", "#e2e8f0");
         } else {
-          root.style.removeProperty("--clinical-text");
-          root.style.removeProperty("--clinical-text-muted");
+          ["--clinical-text", "--clinical-text-muted", "--clinical-surface", "--clinical-surface-hover", "--clinical-surface-inset", "--clinical-border", "--clinical-border-subtle"].forEach(v => root.style.removeProperty(v));
         }
       }
       if (theme.secondary) {
@@ -460,13 +472,7 @@ export default function DictationPage() {
         root.style.setProperty("--clinical-teal-dim", `${theme.accent}cc`);
       }
     } else {
-      root.style.removeProperty("--clinical-bg");
-      root.style.removeProperty("--clinical-panel");
-      root.style.removeProperty("--clinical-panel-light");
-      root.style.removeProperty("--clinical-teal");
-      root.style.removeProperty("--clinical-teal-dim");
-      root.style.removeProperty("--clinical-text");
-      root.style.removeProperty("--clinical-text-muted");
+      allVars.forEach(v => root.style.removeProperty(v));
     }
   };
 
@@ -1492,9 +1498,9 @@ export default function DictationPage() {
     <div className="flex h-screen overflow-hidden bg-clinical-bg text-clinical-text font-sans">
       
       {/* Sidebar de Navegación Lateral */}
-      <aside className={`bg-clinical-panel border-slate-800 flex flex-col justify-between shrink-0 transition-all duration-300 ${isMaximized ? 'w-0 opacity-0 overflow-hidden border-r-0 pointer-events-none' : 'w-16 lg:w-64 border-r'}`}>
+      <aside className={`bg-clinical-panel border-clinical-border flex flex-col justify-between shrink-0 transition-all duration-300 ${isMaximized ? 'w-0 opacity-0 overflow-hidden border-r-0 pointer-events-none' : 'w-16 lg:w-64 border-r'}`}>
         <div>
-          <div className="h-16 px-4 lg:px-6 border-b border-slate-800 flex items-center justify-center">
+          <div className="h-16 px-4 lg:px-6 border-b border-clinical-border flex items-center justify-center">
             {companyName && companyName.toLowerCase() === "sistema" ? (
               <>
                 <span className="text-lg font-extrabold tracking-widest text-clinical-teal uppercase select-none hidden lg:block">
@@ -1606,7 +1612,7 @@ export default function DictationPage() {
         </div>
 
         {/* Botón de Admin */}
-        <div className="border-t border-slate-800 flex flex-col shrink-0">
+        <div className="border-t border-clinical-border flex flex-col shrink-0">
           <div className="p-2 lg:p-4">
             {typeof window !== "undefined" && (localStorage.getItem("token") || localStorage.getItem("admin_token")) ? (
               <button
@@ -1634,7 +1640,7 @@ export default function DictationPage() {
       {/* Workspace de Trabajo Principal */}
       <main className="flex-1 flex flex-col overflow-hidden bg-slate-950/20">
         {/* Top Navbar */}
-        <header className="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-clinical-panel shrink-0">
+        <header className="h-16 border-b border-clinical-border flex items-center justify-between px-8 bg-clinical-panel shrink-0">
           <div></div>
 
           <div className="flex items-center gap-4">
@@ -1645,7 +1651,7 @@ export default function DictationPage() {
                 <select
                   value={selectedPreviewCompanyId}
                   onChange={handlePreviewCompanyChange}
-                  className="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
+                  className="bg-clinical-surface-inset border border-clinical-border rounded-lg px-3 py-1.5 text-xs text-clinical-text font-semibold focus:outline-none focus:border-clinical-teal cursor-pointer"
                 >
                   <option value="base">Sistema (Base)</option>
                   {companies.map((c) => (
@@ -1664,7 +1670,7 @@ export default function DictationPage() {
                 const isAdminUser = typeof window !== "undefined" && localStorage.getItem("role") === "admin";
                 if (!isAdminUser) {
                   return (
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-clinical-text select-none">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text select-none">
                       <span className="w-5 h-5 rounded-full bg-clinical-teal/20 text-clinical-teal flex items-center justify-center text-[9px] font-bold border border-clinical-teal/30 shrink-0">
                         {activeDoc ? getInitials(activeDoc.name) : "??"}
                       </span>
@@ -1675,7 +1681,7 @@ export default function DictationPage() {
                 return (
                   <button
                     onClick={() => setIsDoctorModalOpen(true)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-clinical-teal/40 hover:bg-clinical-teal/5 transition-all text-xs font-semibold text-clinical-text cursor-pointer select-none"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clinical-surface border border-clinical-border hover:border-clinical-teal/40 hover:bg-clinical-teal/5 transition-all text-xs font-semibold text-clinical-text cursor-pointer select-none"
                   >
                     <span className="w-5 h-5 rounded-full bg-clinical-teal/20 text-clinical-teal flex items-center justify-center text-[9px] font-bold border border-clinical-teal/30 shrink-0">
                       {activeDoc ? getInitials(activeDoc.name) : "??"}
@@ -1698,7 +1704,7 @@ export default function DictationPage() {
                     </svg>
                   </button>
                 ) : (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-semibold text-clinical-text select-none">
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text select-none">
                     <span>Sin médico asignado</span>
                   </div>
                 )
@@ -1707,7 +1713,7 @@ export default function DictationPage() {
 
             <button
               onClick={handleNewReport}
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all"
             >
               Nuevo informe
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -1724,7 +1730,7 @@ export default function DictationPage() {
           <div className={`space-y-4 lg:space-y-6 flex flex-col h-full transition-all duration-300 ${isMaximized ? 'hidden opacity-0 pointer-events-none' : 'opacity-100 min-h-0'}`}>
             
             {/* Card 1: Botón de Grabación y Transcripción */}
-            <div className="bg-clinical-panel border border-slate-800 rounded-xl p-4 flex flex-col relative overflow-hidden shrink-0 shadow-lg">
+            <div className="bg-clinical-panel border border-clinical-border rounded-xl p-4 flex flex-col relative overflow-hidden shrink-0 shadow-lg">
               {/* Header row */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
@@ -1754,7 +1760,7 @@ export default function DictationPage() {
               {/* Main Grid */}
               <div className="grid grid-cols-2 gap-3 items-center">
                 {/* Left Column: Dictation Button & Text */}
-                <div className="flex items-center gap-3 bg-slate-950/20 border border-slate-800/60 rounded-xl p-3">
+                <div className="flex items-center gap-3 bg-clinical-surface-inset/40 border border-clinical-border-subtle/60 rounded-xl p-3">
                   <button
                     onClick={toggleRecording}
                     disabled={!isSpeechSupported || isTranscribing}
@@ -1785,7 +1791,7 @@ export default function DictationPage() {
                 </div>
 
                 {/* Right Column: Audio Upload Button & Info */}
-                <div className="flex items-center gap-3 bg-slate-950/20 border border-slate-800/60 rounded-xl p-3">
+                <div className="flex items-center gap-3 bg-clinical-surface-inset/40 border border-clinical-border-subtle/60 rounded-xl p-3">
                   <input
                     ref={audioInputRef}
                     type="file"
@@ -1797,7 +1803,7 @@ export default function DictationPage() {
                   <button
                     onClick={() => audioInputRef.current?.click()}
                     disabled={isRecording || isTranscribing}
-                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-slate-800 hover:bg-slate-700 border border-slate-700 text-clinical-text hover:scale-105 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text hover:scale-105 shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     {isTranscribing ? (
                       <span className="w-5 h-5 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin"></span>
@@ -1820,7 +1826,7 @@ export default function DictationPage() {
             </div>
 
             {/* Card 2: Editor de Entrada Manual / Transcrita */}
-            <div className="bg-clinical-panel border border-slate-800 rounded-xl p-4 flex flex-col flex-1 shadow-lg relative min-h-0">
+            <div className="bg-clinical-panel border border-clinical-border rounded-xl p-4 flex flex-col flex-1 shadow-lg relative min-h-0">
               
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold tracking-wide uppercase text-clinical-teal">
@@ -1829,7 +1835,7 @@ export default function DictationPage() {
                 
                 <button
                   onClick={() => mode === "correct" ? setCorrectionInstruction("") : setRawText("")}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-rose-950/40 border border-slate-700/80 hover:border-rose-900/50 text-[11px] font-semibold text-rose-400 hover:text-rose-300 transition-all cursor-pointer shadow-sm focus:outline-none"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-clinical-surface/80 hover:bg-rose-950/40 border border-clinical-border/80 hover:border-rose-900/50 text-[11px] font-semibold text-rose-400 hover:text-rose-300 transition-all cursor-pointer shadow-sm focus:outline-none"
                   aria-label={mode === "correct" ? "Borrar corrección" : "Borrar dictado"}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3.5 h-3.5">
@@ -1846,7 +1852,7 @@ export default function DictationPage() {
                     value={correctionInstruction}
                     onChange={(e) => setCorrectionInstruction(e.target.value)}
                     placeholder="Ej: 'En el informe cambiar el apéndice cecal a 10 mm y en la conclusión alertar riesgo de perforación'"
-                    className="flex-1 min-h-0 bg-slate-950/40 border border-slate-800 rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
+                    className="flex-1 min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
                   ></textarea>
                   
                   {interimTranscript && (
@@ -1880,7 +1886,7 @@ export default function DictationPage() {
                     value={rawText}
                     onChange={(e) => setRawText(e.target.value)}
                     placeholder="Escriba o presione el botón de micrófono para dictar el estudio de imagen..."
-                    className="flex-1 min-h-0 bg-slate-950/40 border border-slate-800 rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
+                    className="flex-1 min-h-0 bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-3 text-xs resize-none focus:outline-none focus:border-clinical-teal focus:ring-1 focus:ring-clinical-teal/50 transition-all font-medium leading-relaxed overflow-y-auto"
                   ></textarea>
 
                   {interimTranscript && (
@@ -1918,14 +1924,14 @@ export default function DictationPage() {
           </div>
 
           {/* Columna Derecha: Visor del Informe Estructurado */}
-          <div className={`bg-clinical-panel border-slate-800 flex flex-col shadow-lg relative transition-all duration-300 ${
+          <div className={`bg-clinical-panel border-clinical-border flex flex-col shadow-lg relative transition-all duration-300 ${
             isMaximized 
               ? 'flex-1 h-full w-full rounded-none border-0 p-8 md:p-10' 
               : 'rounded-xl p-4 h-full min-h-0 border'
           }`}>
             
             {/* Header del Visor */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-3">
               <div>
                 <span className="text-xs font-bold tracking-wide uppercase text-clinical-teal">Informe Editable</span>
                 <p className="text-[10px] text-clinical-text-muted mt-0.5">Estructura del estudio según normativas de Imagen Diagnóstica</p>
@@ -1937,7 +1943,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleUndo}
                   disabled={historyIndex <= 0}
-                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
+                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
                   title="Deshacer (Ctrl+Z)"
                   aria-label="Deshacer"
                 >
@@ -1950,7 +1956,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleRedo}
                   disabled={historyIndex >= reportHistory.length - 1}
-                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
+                  className="flex items-center justify-center px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer text-xs"
                   title="Rehacer (Ctrl+Y)"
                   aria-label="Rehacer"
                 >
@@ -1959,14 +1965,14 @@ export default function DictationPage() {
                   </svg>
                 </button>
 
-                <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
+                <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
 
                 <button
                   onClick={() => setIsMaximized(!isMaximized)}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-xs font-semibold transition-all ${
                     isMaximized
                       ? "bg-rose-950/30 border-rose-900/50 text-rose-400 hover:bg-rose-950/50"
-                      : "bg-slate-800 hover:bg-slate-700 border-slate-700 text-clinical-text"
+                      : "bg-clinical-surface hover:bg-clinical-surface-hover border-clinical-border text-clinical-text"
                   }`}
                   title={isMaximized ? "Restaurar tamaño normal" : "Maximizar área de edición"}
                 >
@@ -1990,7 +1996,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleCopyClipboard}
                   disabled={!structuredReport}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.664A2.251 2.251 0 0 0 15 2.25h-3a2.251 2.251 0 0 0-2.15 1.586m5.8 0c.065.21.1.433.1.664v.75h-6V4.5c0-.231.035-.454.1-.664M6.75 7.5h10.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H6.75A1.5 1.5 0 0 1 5.25 21V9A1.5 1.5 0 0 1 6.75 7.5Z" />
@@ -2002,7 +2008,7 @@ export default function DictationPage() {
                 <button
                   onClick={handleClearEditor}
                   disabled={!isEditorOpen}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                   title="Limpiar texto del informe"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-rose-400">
@@ -2015,7 +2021,7 @@ export default function DictationPage() {
             </div>
 
             {/* Editor del Reporte */}
-            <div className="flex-1 flex flex-col bg-slate-950/40 border border-slate-800 rounded-xl overflow-hidden relative min-h-0">
+            <div className="flex-1 flex flex-col bg-clinical-surface-inset/40 border border-clinical-border rounded-xl overflow-hidden relative min-h-0">
               {isLoading && (
                 <div className="absolute inset-0 bg-slate-950/70 z-10 flex flex-col items-center justify-center gap-3">
                   <span className="w-10 h-10 rounded-full border-4 border-clinical-teal border-t-transparent animate-spin"></span>
@@ -2024,7 +2030,7 @@ export default function DictationPage() {
               )}
               {/* Editor Toolbar */}
               {isEditorOpen && (
-                <div className="flex items-center gap-1.5 p-2 bg-slate-900 border-b border-slate-800 shrink-0 font-sans select-none">
+                <div className="flex items-center gap-1.5 p-2 bg-clinical-surface border-b border-clinical-border shrink-0 font-sans select-none">
                   {/* Bold Button */}
                   {/* Bold Button */}
                   <button
@@ -2033,7 +2039,7 @@ export default function DictationPage() {
                       document.execCommand('bold', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Negrita"
                     aria-label="Formato negrita"
                   >
@@ -2048,7 +2054,7 @@ export default function DictationPage() {
                       document.execCommand('italic', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Cursiva"
                     aria-label="Formato cursiva"
                   >
@@ -2064,7 +2070,7 @@ export default function DictationPage() {
                       document.execCommand('underline', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Subrayado"
                     aria-label="Formato subrayado"
                   >
@@ -2074,7 +2080,7 @@ export default function DictationPage() {
                   </button>
 
                   {/* Alignment buttons */}
-                  <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
+                  <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
 
                   <button
                     onMouseDown={(e) => e.preventDefault()}
@@ -2082,7 +2088,7 @@ export default function DictationPage() {
                       document.execCommand('justifyLeft', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Alinear a la izquierda"
                     aria-label="Alinear a la izquierda"
                   >
@@ -2095,7 +2101,7 @@ export default function DictationPage() {
                       document.execCommand('justifyCenter', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Centrar"
                     aria-label="Centrar texto"
                   >
@@ -2108,7 +2114,7 @@ export default function DictationPage() {
                       document.execCommand('justifyRight', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Alinear a la derecha"
                     aria-label="Alinear a la derecha"
                   >
@@ -2121,7 +2127,7 @@ export default function DictationPage() {
                       document.execCommand('justifyFull', false);
                       handleEditorInput();
                     }}
-                    className="p-1.5 rounded hover:bg-slate-800 text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
                     title="Justificar"
                     aria-label="Justificar texto"
                   >
@@ -2142,7 +2148,7 @@ export default function DictationPage() {
                         }
                       }}
                       onClick={() => setIsFontSizeOpen(!isFontSizeOpen)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-850 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all cursor-pointer"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all cursor-pointer"
                       aria-label="Tamaño de fuente"
                     >
                       <span>{currentFontSize}</span>
@@ -2151,7 +2157,7 @@ export default function DictationPage() {
                       </svg>
                     </button>
                     {isFontSizeOpen && (
-                      <div className="absolute left-0 mt-1 w-28 bg-slate-900 border border-slate-800 rounded-lg shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-100">
+                      <div className="absolute left-0 mt-1 w-28 bg-clinical-panel border border-clinical-border rounded-lg shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-100">
                         {['9pt', '10pt', '11pt', '12pt', '14pt', '16pt', '18pt', '20pt', '24pt'].map((size) => (
                           <button
                             key={size}
@@ -2160,7 +2166,7 @@ export default function DictationPage() {
                               handleFontSizeChange(size);
                               setIsFontSizeOpen(false);
                             }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-xs text-clinical-text transition-all cursor-pointer"
+                            className="w-full text-left px-3 py-1.5 hover:bg-clinical-surface-hover text-xs text-clinical-text transition-all cursor-pointer"
                           >
                             {size === '11pt' ? '11 pt (Def.)' : size.replace('pt', ' pt')}
                           </button>
@@ -2184,7 +2190,7 @@ export default function DictationPage() {
                 <div key="loading" className="flex-1" />
               ) : (
                 <div key="empty" className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
-                  <div className="w-16 h-16 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-4 text-slate-700">
+                  <div className="w-16 h-16 rounded-full bg-clinical-surface border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                     </svg>
@@ -2213,15 +2219,15 @@ export default function DictationPage() {
       {/* Modal de Error de Plantilla No Encontrada */}
       {isTemplateErrorModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-md w-full p-6 shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
             {/* Header del Modal */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4 shrink-0">
+            <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-4 shrink-0">
               <h3 className="font-bold text-base text-clinical-text tracking-wide flex items-center gap-2">
                 <span className="text-rose-500">⚠️</span> Plantilla No Encontrada
               </h3>
               <button
                 onClick={() => setIsTemplateErrorModalOpen(false)}
-                className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+                className="p-1 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
                 aria-label="Cerrar modal"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -2236,7 +2242,7 @@ export default function DictationPage() {
                 El perfil del médico actual no cuenta con la plantilla cargada o la IA no pudo encontrarla en sus registros.
               </p>
               {missingTemplateName && (
-                <div className="p-3 bg-slate-950/50 border border-slate-800 rounded-xl">
+                <div className="p-3 bg-clinical-surface-inset/50 border border-clinical-border rounded-xl">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted block mb-1">
                     Búsqueda solicitada:
                   </span>
@@ -2254,7 +2260,7 @@ export default function DictationPage() {
             <div className="flex gap-3 shrink-0">
               <button
                 onClick={() => setIsTemplateErrorModalOpen(false)}
-                className="flex-1 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 text-clinical-text font-bold tracking-wide transition-all border border-slate-700 cursor-pointer text-xs"
+                className="flex-1 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text font-bold tracking-wide transition-all border border-clinical-border cursor-pointer text-xs"
               >
                 Cancelar
               </button>
@@ -2286,9 +2292,9 @@ export default function DictationPage() {
                }
              }}
         >
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-2xl w-full p-8 shadow-2xl flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-2xl w-full p-8 shadow-2xl flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
             {/* Header del Modal */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-6 shrink-0">
+            <div className="flex items-center justify-between pb-4 border-b border-clinical-border mb-6 shrink-0">
               <div>
                 <h3 className="font-bold text-lg text-clinical-text tracking-wide flex items-center gap-2">
                   <span>🩺</span> Seleccionar Perfil de Médico
@@ -2301,7 +2307,7 @@ export default function DictationPage() {
               {activeDoctorId && (
                 <button
                   onClick={() => setIsDoctorModalOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+                  className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
                   aria-label="Cerrar modal"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -2323,7 +2329,7 @@ export default function DictationPage() {
                 value={doctorSearchTerm}
                 onChange={(e) => setDoctorSearchTerm(e.target.value)}
                 placeholder="Buscar médico por nombre o especialidad..."
-                className="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-10 pr-8 py-3 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
+                className="w-full bg-clinical-surface-inset/60 border border-clinical-border rounded-xl pl-10 pr-8 py-3 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium transition-all"
               />
               {doctorSearchTerm && (
                 <button
@@ -2348,7 +2354,7 @@ export default function DictationPage() {
                 if (filtered.length === 0) {
                   return (
                     <div className="flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
-                      <div className="w-12 h-12 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center mb-3 text-slate-700">
+                      <div className="w-12 h-12 rounded-full bg-clinical-surface border border-clinical-border flex items-center justify-center mb-3 text-clinical-text-muted">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
@@ -2376,14 +2382,14 @@ export default function DictationPage() {
                           className={`p-4 rounded-xl border flex items-center gap-3 cursor-pointer transition-all duration-200 group relative ${
                             isSelected
                               ? "bg-clinical-teal/10 border-clinical-teal/40 text-clinical-text"
-                              : "bg-slate-900/40 border-slate-800 hover:border-slate-700 hover:bg-slate-900/80 text-clinical-text-muted hover:text-clinical-text"
+                              : "bg-clinical-surface-inset/40 border-clinical-border hover:border-clinical-border hover:bg-clinical-surface/80 text-clinical-text-muted hover:text-clinical-text"
                           }`}
                         >
                           {/* Avatar con Iniciales */}
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold shrink-0 border transition-all ${
                             isSelected
                               ? "bg-clinical-teal/20 text-clinical-teal border-clinical-teal/30"
-                              : "bg-slate-800 text-slate-400 border-slate-800 group-hover:bg-clinical-teal/10 group-hover:text-clinical-teal group-hover:border-clinical-teal/20"
+                              : "bg-clinical-surface text-clinical-text-muted border-clinical-border group-hover:bg-clinical-teal/10 group-hover:text-clinical-teal group-hover:border-clinical-teal/20"
                           }`}>
                             {getInitials(doc.name)}
                           </div>
@@ -2413,11 +2419,11 @@ export default function DictationPage() {
             </div>
 
             {/* Footer del Modal */}
-            <div className="mt-6 pt-4 border-t border-slate-800 shrink-0 flex justify-end gap-3">
+            <div className="mt-6 pt-4 border-t border-clinical-border shrink-0 flex justify-end gap-3">
               {activeDoctorId && (
                 <button
                   onClick={() => setIsDoctorModalOpen(false)}
-                  className="px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-clinical-surface/80 hover:bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text transition-all cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -2429,7 +2435,7 @@ export default function DictationPage() {
 
       {showMicWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-lg w-full p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 shrink-0 border border-rose-500/20">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
@@ -2441,7 +2447,7 @@ export default function DictationPage() {
                 <p className="text-xs text-clinical-text-muted leading-relaxed">{micWarningDetails.message}</p>
                 
                 {micWarningDetails.instructions.length > 0 && (
-                  <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-800/80 space-y-2">
+                  <div className="bg-clinical-surface-inset/50 rounded-xl p-4 border border-clinical-border/80 space-y-2">
                     <p className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal">Instrucciones Paso a Paso:</p>
                     <ul className="space-y-1.5">
                       {micWarningDetails.instructions.map((inst, index) => (
@@ -2458,7 +2464,7 @@ export default function DictationPage() {
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowMicWarning(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text hover:text-clinical-text transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-xl bg-clinical-surface/80 hover:bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text hover:text-clinical-text transition-all cursor-pointer"
               >
                 Entendido
               </button>

@@ -3,19 +3,34 @@
 import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+const ALL_THEME_VARS = [
+  "--clinical-bg",
+  "--clinical-panel",
+  "--clinical-panel-light",
+  "--clinical-teal",
+  "--clinical-teal-dim",
+  "--clinical-text",
+  "--clinical-text-muted",
+  "--clinical-surface",
+  "--clinical-surface-hover",
+  "--clinical-surface-inset",
+  "--clinical-border",
+  "--clinical-border-subtle",
+];
+
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
     const root = document.documentElement;
 
+    const clearAllVars = () => {
+      ALL_THEME_VARS.forEach((v) => root.style.removeProperty(v));
+    };
+
     // Forzar colores base del sistema en la pantalla de login
     if (pathname === "/login") {
-      root.style.removeProperty("--clinical-bg");
-      root.style.removeProperty("--clinical-panel");
-      root.style.removeProperty("--clinical-panel-light");
-      root.style.removeProperty("--clinical-teal");
-      root.style.removeProperty("--clinical-teal-dim");
+      clearAllVars();
       return;
     }
 
@@ -47,11 +62,24 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
           if (theme.primary) {
             root.style.setProperty("--clinical-bg", theme.primary);
             if (isColorLight(theme.primary)) {
+              // Texto oscuro sobre fondo claro
               root.style.setProperty("--clinical-text", "#0f172a");
               root.style.setProperty("--clinical-text-muted", "#475569");
+              // Superficies claras para botones/inputs
+              root.style.setProperty("--clinical-surface", "#e2e8f0");
+              root.style.setProperty("--clinical-surface-hover", "#cbd5e1");
+              root.style.setProperty("--clinical-surface-inset", "#f1f5f9");
+              // Bordes claros
+              root.style.setProperty("--clinical-border", "#cbd5e1");
+              root.style.setProperty("--clinical-border-subtle", "#e2e8f0");
             } else {
               root.style.removeProperty("--clinical-text");
               root.style.removeProperty("--clinical-text-muted");
+              root.style.removeProperty("--clinical-surface");
+              root.style.removeProperty("--clinical-surface-hover");
+              root.style.removeProperty("--clinical-surface-inset");
+              root.style.removeProperty("--clinical-border");
+              root.style.removeProperty("--clinical-border-subtle");
             }
           }
           if (theme.secondary) {
@@ -70,14 +98,9 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     }
     
     // Si no hay tema corporativo, limpiar variables custom para usar defaults de CSS
-    root.style.removeProperty("--clinical-bg");
-    root.style.removeProperty("--clinical-panel");
-    root.style.removeProperty("--clinical-panel-light");
-    root.style.removeProperty("--clinical-teal");
-    root.style.removeProperty("--clinical-teal-dim");
-    root.style.removeProperty("--clinical-text");
-    root.style.removeProperty("--clinical-text-muted");
+    clearAllVars();
   }, [pathname]);
 
   return <>{children}</>;
 }
+
