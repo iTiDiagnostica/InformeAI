@@ -1613,7 +1613,7 @@ export default function DictationPage() {
         <section className={`flex-1 transition-all duration-300 ${isMaximized ? 'p-0 flex flex-col h-full' : 'p-3 xl:p-4 2xl:p-6 grid grid-cols-1 xl:grid-cols-2 gap-3 xl:gap-4 2xl:gap-6 overflow-y-auto xl:overflow-hidden min-h-0'}`}>
 
           {/* Columna Izquierda: Controles del Dictador */}
-          <div className={`space-y-3 xl:space-y-4 2xl:space-y-6 flex flex-col h-full transition-all duration-300 ${isMaximized ? 'hidden opacity-0 pointer-events-none' : 'opacity-100 min-h-0'}`}>
+          <div className={`space-y-3 xl:space-y-4 2xl:space-y-6 flex flex-col h-auto xl:h-full transition-all duration-300 ${isMaximized ? 'hidden opacity-0 pointer-events-none' : 'opacity-100 min-h-0'}`}>
             
             {/* Card 1: Botón de Grabación y Transcripción */}
             <div className="bg-clinical-panel border border-clinical-border rounded-xl p-4 flex flex-col relative overflow-hidden shrink-0 shadow-lg">
@@ -1698,7 +1698,7 @@ export default function DictationPage() {
             </div>
 
             {/* Card 2: Editor de Entrada Manual / Transcrita */}
-            <div className="bg-clinical-panel border border-clinical-border rounded-xl p-4 flex flex-col flex-1 shadow-lg relative min-h-0">
+            <div className="bg-clinical-panel border border-clinical-border rounded-xl p-4 flex flex-col h-auto xl:flex-1 shadow-lg relative xl:min-h-0">
               
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold tracking-wide uppercase text-clinical-teal">
