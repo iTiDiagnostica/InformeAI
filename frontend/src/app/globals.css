@@ -25,7 +25,19 @@
 :root {
   background-color: var(--color-clinical-bg);
   color: var(--color-clinical-text);
-  font-size: 108%; /* Aumenta el tamaño global de las fuentes y espaciados rem para mejorar legibilidad */
+  font-size: 100%;
+}
+
+/* Escalar tipografía progresivamente según tamaño de pantalla */
+@media (min-width: 1280px) and (min-height: 800px) {
+  :root {
+    font-size: 104%;
+  }
+}
+@media (min-width: 1536px) and (min-height: 900px) {
+  :root {
+    font-size: 108%;
+  }
 }
 
 body {
