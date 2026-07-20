@@ -1016,7 +1016,6 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
 
     const matchesDoctor =
       filterDoctorId === "all" ||
-      (filterDoctorId === "general" && doc.doctorId === null) ||
       (doc.doctorId != null && doc.doctorId.toString() === filterDoctorId);
 
     return matchesSearch && matchesDoctor;
@@ -1182,7 +1181,6 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       className="w-full bg-clinical-surface-inset border border-clinical-border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-clinical-teal text-clinical-text font-medium cursor-pointer transition-all"
                     >
                       <option value="all" className="bg-clinical-panel text-clinical-text">Todos los Médicos</option>
-                      <option value="general" className="bg-clinical-panel text-clinical-text">Generales / Sin Médico</option>
                       {doctors.map((doc) => (
                         <option key={doc.id} value={doc.id.toString()} className="bg-clinical-panel text-clinical-text">
                           {doc.name}

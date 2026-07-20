@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "../components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className="min-h-full bg-clinical-bg text-clinical-text flex flex-col font-sans">
         <ThemeProvider>
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
