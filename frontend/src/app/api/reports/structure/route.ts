@@ -133,6 +133,12 @@ export async function POST(req: NextRequest) {
           doctorName: doctorProfile?.name || null,
           doctorSpecialty: doctorProfile?.specialty || null
         });
+      } else {
+        return NextResponse.json({
+          error: `No se encontró la plantilla para: "${templateCheck.query}"`,
+          code: 'TEMPLATE_NOT_FOUND',
+          query: templateCheck.query
+        }, { status: 404 });
       }
     }
 

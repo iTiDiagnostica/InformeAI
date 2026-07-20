@@ -46,13 +46,13 @@ export function AppSidebar({
       href: "/",
       label: "Dictador de Voz",
       icon: <Mic className="w-5 h-5 shrink-0" />,
-      show: true,
+      show: !isModerator,
     },
     {
       href: "/historial",
       label: "Historial de Informes",
       icon: <History className="w-5 h-5 shrink-0" />,
-      show: true,
+      show: !isModerator,
     },
     {
       href: "/templates",
