@@ -17,6 +17,18 @@ const ALL_THEME_VARS = [
   "--clinical-surface-inset",
   "--clinical-border",
   "--clinical-border-subtle",
+  "--clinical-danger-bg",
+  "--clinical-danger-text",
+  "--clinical-danger-border",
+  "--clinical-warning-bg",
+  "--clinical-warning-text",
+  "--clinical-warning-border",
+  "--clinical-info-bg",
+  "--clinical-info-text",
+  "--clinical-info-border",
+  "--clinical-success-bg",
+  "--clinical-success-text",
+  "--clinical-success-border",
 ];
 
 export const isColorLight = (hex: string): boolean => {
@@ -63,6 +75,22 @@ export const applyTheme = (theme: CompanyTheme | null | undefined): void => {
         root.style.setProperty("--clinical-surface-inset", "#f1f5f9");
         root.style.setProperty("--clinical-border", "#cbd5e1");
         root.style.setProperty("--clinical-border-subtle", "#e2e8f0");
+
+        root.style.setProperty("--clinical-danger-bg", "#fee2e2");
+        root.style.setProperty("--clinical-danger-text", "#991b1b");
+        root.style.setProperty("--clinical-danger-border", "#fca5a5");
+
+        root.style.setProperty("--clinical-warning-bg", "#fef9c3");
+        root.style.setProperty("--clinical-warning-text", "#854d0e");
+        root.style.setProperty("--clinical-warning-border", "#fde047");
+
+        root.style.setProperty("--clinical-info-bg", "#e0f2fe");
+        root.style.setProperty("--clinical-info-text", "#0369a1");
+        root.style.setProperty("--clinical-info-border", "#7dd3fc");
+
+        root.style.setProperty("--clinical-success-bg", "#d1fae5");
+        root.style.setProperty("--clinical-success-text", "#065f46");
+        root.style.setProperty("--clinical-success-border", "#6ee7b7");
       } else {
         [
           "--clinical-text",
@@ -72,6 +100,18 @@ export const applyTheme = (theme: CompanyTheme | null | undefined): void => {
           "--clinical-surface-inset",
           "--clinical-border",
           "--clinical-border-subtle",
+          "--clinical-danger-bg",
+          "--clinical-danger-text",
+          "--clinical-danger-border",
+          "--clinical-warning-bg",
+          "--clinical-warning-text",
+          "--clinical-warning-border",
+          "--clinical-info-bg",
+          "--clinical-info-text",
+          "--clinical-info-border",
+          "--clinical-success-bg",
+          "--clinical-success-text",
+          "--clinical-success-border",
         ].forEach((v) => root.style.removeProperty(v));
       }
     }

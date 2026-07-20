@@ -514,7 +514,7 @@ export default function ModeratorsPage() {
                         </button>
                         <button
                           onClick={() => handleDeleteClick(mod)}
-                          className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer"
+                          className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-danger-bg text-clinical-text-muted hover:text-clinical-danger-text border border-clinical-border hover:border-clinical-danger-border transition-all cursor-pointer"
                           title="Eliminar moderador"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -629,7 +629,7 @@ export default function ModeratorsPage() {
 
               {/* Action Feedback */}
               {error && (
-                <div className="p-2.5 rounded-lg bg-rose-950/40 border border-rose-800 text-[11px] text-rose-300 font-medium">
+                <div className="p-2.5 rounded-lg bg-clinical-danger-bg border border-clinical-danger-border text-[11px] text-clinical-danger-text font-medium">
                   ⚠️ {error}
                 </div>
               )}

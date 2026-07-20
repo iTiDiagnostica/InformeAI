@@ -1261,7 +1261,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                           </button>
                           <button
                             onClick={() => handleDeleteClick(doc)}
-                            className="p-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/50 transition-all cursor-pointer animate-none"
+                            className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-danger-bg text-clinical-text-muted hover:text-clinical-danger-text border border-clinical-border hover:border-clinical-danger-border transition-all cursor-pointer animate-none"
                             title="Eliminar plantilla"
                             aria-label="Eliminar plantilla"
                           >
@@ -1349,7 +1349,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                         <button
                           type="button"
                           onClick={() => setSelectedFiles([])}
-                          className="text-[10px] font-bold text-rose-400 hover:text-rose-300 transition-all cursor-pointer animate-none"
+                          className="text-[10px] font-bold text-clinical-danger-text hover:brightness-110 transition-all cursor-pointer animate-none"
                         >
                           Limpiar todos
                         </button>
@@ -1363,7 +1363,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                               <button
                                 type="button"
                                 onClick={() => setSelectedFiles(prev => prev.filter((_, i) => i !== idx))}
-                                className="text-rose-400 hover:text-rose-300 font-bold px-1 cursor-pointer text-xs"
+                                className="text-clinical-danger-text hover:brightness-110 font-bold px-1 cursor-pointer text-xs"
                               >
                                 &times;
                               </button>
@@ -1595,7 +1595,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                               setIsCancelModalOpen(false);
                               setIsEditorMaximized(false);
                             }}
-                            className="px-4 py-2 rounded-lg bg-rose-950/50 hover:bg-rose-900/50 text-rose-400 border border-rose-900/50 text-xs font-semibold transition-all cursor-pointer"
+                            className="px-4 py-2 rounded-lg bg-clinical-danger-bg hover:brightness-110 text-clinical-danger-text border border-clinical-danger-border text-xs font-semibold transition-all cursor-pointer"
                           >
                             Sí, cerrar
                           </button>
@@ -1639,7 +1639,7 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
 
               {/* Mensajes informativos de respuesta */}
               {error && (
-                <div className="p-3 rounded-lg bg-rose-950/40 border border-rose-800 text-xs text-rose-300 font-medium animate-none">
+                <div className="p-3 rounded-lg bg-clinical-danger-bg border border-clinical-danger-border text-xs text-clinical-danger-text font-medium animate-none">
                   ⚠️ {error}
                 </div>
               )}

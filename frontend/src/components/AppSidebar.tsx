@@ -192,7 +192,7 @@ export function AppSidebar({
                 if (onLogout) onLogout();
                 if (onNavigate) onNavigate();
               }}
-              className={`flex items-center justify-center gap-2 w-full ${isMobile ? 'px-4 py-3' : 'px-2 py-2.5 xl:px-4'} rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-950/20 border border-rose-900/30 transition-all cursor-pointer`}
+              className={`flex items-center justify-center gap-2 w-full ${isMobile ? 'px-4 py-3' : 'px-2 py-2.5 xl:px-4'} rounded-lg text-xs font-bold text-clinical-danger-text hover:bg-clinical-danger-bg border border-clinical-danger-border transition-all cursor-pointer`}
               title={`Cerrar Sesión ${isAdmin ? "Admin" : ""}`}
             >
               <Lock className="w-3.5 h-3.5 shrink-0" />

@@ -31,6 +31,23 @@
   --color-clinical-border: var(--clinical-border, oklch(0.25 0.012 195));
   --color-clinical-border-subtle: var(--clinical-border-subtle, oklch(0.20 0.010 195));
 
+  /* Estados semánticos (Avisos, errores, éxitos, info) con alta accesibilidad de contraste */
+  --color-clinical-danger-bg: var(--clinical-danger-bg, rgba(159, 18, 57, 0.2));
+  --color-clinical-danger-text: var(--clinical-danger-text, #fda4af);
+  --color-clinical-danger-border: var(--clinical-danger-border, rgba(225, 29, 72, 0.3));
+
+  --color-clinical-warning-bg: var(--clinical-warning-bg, rgba(120, 53, 4, 0.2));
+  --color-clinical-warning-text: var(--clinical-warning-text, #fcd34d);
+  --color-clinical-warning-border: var(--clinical-warning-border, rgba(217, 119, 6, 0.3));
+
+  --color-clinical-info-bg: var(--clinical-info-bg, rgba(8, 81, 115, 0.2));
+  --color-clinical-info-text: var(--clinical-info-text, #7dd3fc);
+  --color-clinical-info-border: var(--clinical-info-border, rgba(14, 165, 233, 0.3));
+
+  --color-clinical-success-bg: var(--clinical-success-bg, rgba(6, 78, 59, 0.2));
+  --color-clinical-success-text: var(--clinical-success-text, #6ee7b7);
+  --color-clinical-success-border: var(--clinical-success-border, rgba(16, 185, 129, 0.3));
+
   --font-montserrat: var(--font-montserrat);
 }
 

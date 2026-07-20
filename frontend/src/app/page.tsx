@@ -15,6 +15,7 @@ import { Company, Doctor, Report, SpeechRecognitionInstance, SpeechRecognitionEv
 import { sanitizeHtml } from "@/utils/sanitize";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
+import { applyTheme } from "@/utils/theme";
 
 /**
  * Convierte el contenido HTML enriquecido del editor contentEditable de vuelta a Markdown estándar (con **)
@@ -426,62 +427,7 @@ export default function DictationPage() {
     }
   }, [API_URL]);
 
-  const applyTheme = (theme: any) => {
-    const root = document.documentElement;
-    const isColorLight = (hex: string): boolean => {
-      if (!hex) return false;
-      const cleanHex = hex.replace("#", "");
-      if (cleanHex.length !== 6 && cleanHex.length !== 3) return false;
-      
-      let r = 0, g = 0, b = 0;
-      if (cleanHex.length === 6) {
-        r = parseInt(cleanHex.substring(0, 2), 16);
-        g = parseInt(cleanHex.substring(2, 4), 16);
-        b = parseInt(cleanHex.substring(4, 6), 16);
-      } else {
-        r = parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
-        g = parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
-        b = parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
-      }
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 140;
-    };
 
-    const allVars = [
-      "--clinical-bg", "--clinical-panel", "--clinical-panel-light",
-      "--clinical-teal", "--clinical-teal-dim",
-      "--clinical-text", "--clinical-text-muted",
-      "--clinical-surface", "--clinical-surface-hover", "--clinical-surface-inset",
-      "--clinical-border", "--clinical-border-subtle",
-    ];
-
-    if (theme) {
-      if (theme.primary) {
-        root.style.setProperty("--clinical-bg", theme.primary);
-        if (isColorLight(theme.primary)) {
-          root.style.setProperty("--clinical-text", "#0f172a");
-          root.style.setProperty("--clinical-text-muted", "#475569");
-          root.style.setProperty("--clinical-surface", "#e2e8f0");
-          root.style.setProperty("--clinical-surface-hover", "#cbd5e1");
-          root.style.setProperty("--clinical-surface-inset", "#f1f5f9");
-          root.style.setProperty("--clinical-border", "#cbd5e1");
-          root.style.setProperty("--clinical-border-subtle", "#e2e8f0");
-        } else {
-          ["--clinical-text", "--clinical-text-muted", "--clinical-surface", "--clinical-surface-hover", "--clinical-surface-inset", "--clinical-border", "--clinical-border-subtle"].forEach(v => root.style.removeProperty(v));
-        }
-      }
-      if (theme.secondary) {
-        root.style.setProperty("--clinical-panel", theme.secondary);
-        root.style.setProperty("--clinical-panel-light", `${theme.secondary}cc`);
-      }
-      if (theme.accent) {
-        root.style.setProperty("--clinical-teal", theme.accent);
-        root.style.setProperty("--clinical-teal-dim", `${theme.accent}cc`);
-      }
-    } else {
-      allVars.forEach(v => root.style.removeProperty(v));
-    }
-  };
 
   const handlePreviewCompanyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -1587,11 +1533,11 @@ export default function DictationPage() {
                 typeof window !== "undefined" && localStorage.getItem("role") === "admin" ? (
                   <button
                     onClick={() => setIsDoctorModalOpen(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-950/20 border border-rose-900/30 hover:border-clinical-teal/40 hover:bg-clinical-teal/5 text-rose-300 transition-all text-xs font-semibold cursor-pointer select-none"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-clinical-danger-bg border border-clinical-danger-border hover:border-clinical-teal/40 hover:bg-clinical-teal/5 text-clinical-danger-text transition-all text-xs font-semibold cursor-pointer select-none"
                   >
-                    <Stethoscope className="w-4 h-4 mr-0.5 text-rose-400" />
+                    <Stethoscope className="w-4 h-4 mr-0.5 text-clinical-danger-text" />
                     <span>Seleccionar Médico</span>
-                    <ChevronDown className="w-3 h-3" />
+                    <ChevronDown className="w-3 h-3 text-clinical-danger-text" />
                   </button>
                 ) : (
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-clinical-surface border border-clinical-border text-xs font-semibold text-clinical-text select-none">
@@ -1703,7 +1649,7 @@ export default function DictationPage() {
                 
                 <button
                   onClick={() => mode === "correct" ? setCorrectionInstruction("") : setRawText("")}
-                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-clinical-surface/80 hover:bg-rose-950/40 border border-clinical-border/80 hover:border-rose-900/50 text-[11px] font-semibold text-rose-400 hover:text-rose-300 transition-all cursor-pointer shadow-sm focus:outline-none"
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-clinical-surface/80 hover:bg-clinical-danger-bg border border-clinical-border/80 hover:border-clinical-danger-border text-[11px] font-semibold text-clinical-danger-text transition-all cursor-pointer shadow-sm focus:outline-none"
                   aria-label={mode === "correct" ? "Borrar corrección" : "Borrar dictado"}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -1776,7 +1722,7 @@ export default function DictationPage() {
 
               {/* Mensajes de Error */}
               {error && (
-                <div className="mt-4 p-3 rounded-lg bg-rose-950/40 border border-rose-800 text-xs text-rose-300 font-medium">
+                <div className="mt-4 p-3 rounded-lg bg-clinical-danger-bg border border-clinical-danger-border text-xs text-clinical-danger-text font-medium">
                   ⚠️ {error}
                 </div>
               )}
@@ -1827,7 +1773,7 @@ export default function DictationPage() {
                   onClick={() => setIsMaximized(!isMaximized)}
                   className={`w-8 h-8 flex items-center justify-center rounded border transition-all shrink-0 cursor-pointer ${
                     isMaximized
-                      ? "bg-rose-950/30 border-rose-900/50 text-rose-400 hover:bg-rose-950/50"
+                      ? "bg-clinical-danger-bg border-clinical-danger-border text-clinical-danger-text hover:brightness-110"
                       : "bg-clinical-surface hover:bg-clinical-surface-hover border-clinical-border text-clinical-text"
                   }`}
                   title={isMaximized ? "Contraer" : "Maximizar"}
@@ -2052,7 +1998,7 @@ export default function DictationPage() {
             {/* Header del Modal */}
             <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-4 shrink-0">
               <h3 className="font-bold text-base text-clinical-text tracking-wide flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" /> Plantilla No Encontrada
+                <AlertTriangle className="w-4 h-4 text-clinical-danger-text shrink-0" /> Plantilla No Encontrada
               </h3>
               <button
                 onClick={() => setIsTemplateErrorModalOpen(false)}
@@ -2073,7 +2019,7 @@ export default function DictationPage() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted block mb-1">
                     Búsqueda solicitada:
                   </span>
-                  <span className="font-semibold text-rose-300">
+                  <span className="font-semibold text-clinical-danger-text">
                     "{missingTemplateName}"
                   </span>
                 </div>

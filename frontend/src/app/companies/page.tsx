@@ -7,6 +7,7 @@ import { ConfirmationModal } from "../../components/ConfirmationModal";
 import { Plus, Pencil, Trash2, X, Check, Building } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
+import { applyTheme } from "@/utils/theme";
 
 interface Company {
   id: number;
@@ -191,56 +192,7 @@ export default function CompaniesPage() {
   const [selectedPreviewCompanyId, setSelectedPreviewCompanyId] = useState<string>("base");
   const router = useRouter();
 
-  const applyTheme = (theme: any) => {
-    const root = document.documentElement;
-    const isColorLight = (hex: string): boolean => {
-      if (!hex) return false;
-      const cleanHex = hex.replace("#", "");
-      if (cleanHex.length !== 6 && cleanHex.length !== 3) return false;
-      
-      let r = 0, g = 0, b = 0;
-      if (cleanHex.length === 6) {
-        r = parseInt(cleanHex.substring(0, 2), 16);
-        g = parseInt(cleanHex.substring(2, 4), 16);
-        b = parseInt(cleanHex.substring(4, 6), 16);
-      } else {
-        r = parseInt(cleanHex.charAt(0) + cleanHex.charAt(0), 16);
-        g = parseInt(cleanHex.charAt(1) + cleanHex.charAt(1), 16);
-        b = parseInt(cleanHex.charAt(2) + cleanHex.charAt(2), 16);
-      }
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 140;
-    };
 
-    if (theme) {
-      if (theme.primary) {
-        root.style.setProperty("--clinical-bg", theme.primary);
-        if (isColorLight(theme.primary)) {
-          root.style.setProperty("--clinical-text", "#0f172a");
-          root.style.setProperty("--clinical-text-muted", "#475569");
-        } else {
-          root.style.removeProperty("--clinical-text");
-          root.style.removeProperty("--clinical-text-muted");
-        }
-      }
-      if (theme.secondary) {
-        root.style.setProperty("--clinical-panel", theme.secondary);
-        root.style.setProperty("--clinical-panel-light", `${theme.secondary}cc`);
-      }
-      if (theme.accent) {
-        root.style.setProperty("--clinical-teal", theme.accent);
-        root.style.setProperty("--clinical-teal-dim", `${theme.accent}cc`);
-      }
-    } else {
-      root.style.removeProperty("--clinical-bg");
-      root.style.removeProperty("--clinical-panel");
-      root.style.removeProperty("--clinical-panel-light");
-      root.style.removeProperty("--clinical-teal");
-      root.style.removeProperty("--clinical-teal-dim");
-      root.style.removeProperty("--clinical-text");
-      root.style.removeProperty("--clinical-text-muted");
-    }
-  };
 
   const handlePreviewCompanyChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
@@ -744,7 +696,7 @@ export default function CompaniesPage() {
                         {userRole === "admin" && (
                           <button
                             onClick={() => handleDeleteClick(comp)}
-                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-clinical-surface hover:bg-rose-950/30 text-clinical-text-muted hover:text-rose-400 border border-clinical-border hover:border-rose-900/40 transition-all text-xs font-semibold cursor-pointer"
+                            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-danger-bg text-clinical-text-muted hover:text-clinical-danger-text border border-clinical-border hover:border-clinical-danger-border transition-all text-xs font-semibold cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                             <span>Eliminar</span>
@@ -927,7 +879,7 @@ export default function CompaniesPage() {
                 <div className="mt-6 pt-4 border-t border-clinical-border space-y-4">
                   {/* Mensajes del Formulario */}
                   {error && (
-                    <div className="p-2.5 rounded-xl bg-rose-950/40 border border-rose-800 text-[11px] text-rose-300 font-medium shrink-0">
+                    <div className="p-2.5 rounded-xl bg-clinical-danger-bg border border-clinical-danger-border text-[11px] text-clinical-danger-text font-medium shrink-0">
                       ⚠️ {error}
                     </div>
                   )}

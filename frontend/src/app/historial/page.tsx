@@ -547,10 +547,10 @@ export default function HistorialPage() {
   const getstudyTypeColor = (type: string) => {
     const lower = type.toLowerCase();
     if (lower.includes("eco")) return "bg-clinical-teal/10 text-clinical-teal border-clinical-teal/30";
-    if (lower.includes("res") || lower.includes("rm")) return "bg-indigo-500/10 text-indigo-400 border-indigo-500/30";
-    if (lower.includes("rx") || lower.includes("rad")) return "bg-cyan-500/10 text-cyan-400 border-cyan-500/30";
-    if (lower.includes("tac") || lower.includes("tom")) return "bg-rose-500/10 text-rose-400 border-rose-500/30";
-    if (lower.includes("mam")) return "bg-pink-500/10 text-pink-400 border-pink-500/30";
+    if (lower.includes("res") || lower.includes("rm")) return "bg-clinical-info-bg text-clinical-info-text border-clinical-info-border";
+    if (lower.includes("rx") || lower.includes("rad")) return "bg-clinical-warning-bg text-clinical-warning-text border-clinical-warning-border/40";
+    if (lower.includes("tac") || lower.includes("tom")) return "bg-clinical-danger-bg text-clinical-danger-text border-clinical-danger-border/40";
+    if (lower.includes("mam")) return "bg-clinical-success-bg text-clinical-success-text border-clinical-success-border/40";
     return "bg-clinical-surface text-clinical-text-muted border-clinical-border";
   };
 
@@ -820,7 +820,7 @@ export default function HistorialPage() {
             {(searchTerm || selectedDoctorId !== "all" || startDate || endDate) && (
               <button
                 onClick={clearFilters}
-                className="px-4 py-2.5 rounded-xl bg-rose-950/20 border border-rose-900/30 hover:border-rose-800 text-xs font-bold text-rose-300 hover:text-rose-200 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                className="px-4 py-2.5 rounded-xl bg-clinical-danger-bg border border-clinical-danger-border hover:brightness-110 text-xs font-bold text-clinical-danger-text transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <X className="w-4 h-4" />
                 Limpiar Filtros
@@ -829,8 +829,8 @@ export default function HistorialPage() {
           </div>
 
           {error && (
-            <div className="p-4 rounded-xl bg-rose-950/40 border border-rose-800 text-xs text-rose-300 font-medium flex items-center gap-1.5">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <div className="p-4 rounded-xl bg-clinical-danger-bg border border-clinical-danger-border text-xs text-clinical-danger-text font-medium flex items-center gap-1.5">
+              <AlertCircle className="w-4 h-4 text-clinical-danger-text shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -894,8 +894,8 @@ export default function HistorialPage() {
                         <td className="py-4 px-6">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             report.createdByRole === 'Administrador'
-                              ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                              : 'bg-slate-800 text-clinical-text-muted border border-slate-700/50'
+                              ? 'bg-clinical-info-bg text-clinical-info-text border border-clinical-info-border'
+                              : 'bg-clinical-surface text-clinical-text-muted border border-clinical-border'
                           }`}>
                             {report.createdByRole}
                           </span>
@@ -903,8 +903,8 @@ export default function HistorialPage() {
                         <td className="py-4 px-6">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                             (report.aiType || '').includes('Nube') || (report.aiType || '').includes('Gemini')
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                              : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
+                              ? 'bg-clinical-warning-bg text-clinical-warning-text border border-clinical-warning-border'
+                              : 'bg-clinical-success-bg text-clinical-success-text border border-clinical-success-border'
                           }`}>
                             {report.aiType}
                           </span>
