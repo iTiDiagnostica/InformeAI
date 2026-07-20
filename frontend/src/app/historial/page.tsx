@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { 
   Search, RefreshCw, Calendar, ChevronDown, ChevronLeft, ChevronRight, 
-  X, LayoutTemplate, Eye, ArrowUpRight, Copy, AlertCircle 
+  X, LayoutTemplate, Eye, ArrowUpRight, Copy, AlertCircle, Check 
 } from "lucide-react";
 
 import { Company, Doctor, Report, PaginationMetadata } from "@/types";
@@ -503,6 +503,12 @@ export default function HistorialPage() {
   const convertReportToHtml = (text: string): string => {
     if (!text) return "";
 
+    // Si el texto ya contiene tags HTML significativos, devolver tal cual
+    const trimmedCheck = text.trim();
+    if (trimmedCheck.startsWith("<div") || trimmedCheck.startsWith("<p") || /<(p|div|strong|br|u|em)\b/i.test(trimmedCheck)) {
+      return text;
+    }
+
     const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
     const lines = normalizedText.split("\n");
@@ -919,7 +925,7 @@ export default function HistorialPage() {
                                 setSelectedReport(report);
                                 setIsModalOpen(true);
                               }}
-                              className="p-2 rounded bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text border border-clinical-border transition-all cursor-pointer"
+                              className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text border border-clinical-border transition-all cursor-pointer hover:scale-105"
                               title="Visualizar Reporte"
                               aria-label="Visualizar reporte"
                             >
@@ -927,7 +933,7 @@ export default function HistorialPage() {
                             </button>
                             <button
                               onClick={() => handleLoadReport(report)}
-                              className="p-2 rounded bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer"
+                              className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer hover:scale-105"
                               title="Cargar en Dictador principal"
                               aria-label="Cargar reporte en el dictador principal"
                             >
@@ -954,7 +960,7 @@ export default function HistorialPage() {
                     <button
                       onClick={() => fetchReports(pagination.page - 1, debouncedSearch, selectedDoctorId, startDate, endDate)}
                       disabled={pagination.page === 1}
-                      className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                       Anterior
                     </button>
@@ -966,7 +972,7 @@ export default function HistorialPage() {
                         <button
                           key={pageNum}
                           onClick={() => fetchReports(pageNum, debouncedSearch, selectedDoctorId, startDate, endDate)}
-                          className={`w-8 h-8 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                          className={`w-8 h-8 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                             isActive
                               ? "bg-clinical-teal border-clinical-teal text-slate-950"
                               : "bg-clinical-surface border-clinical-border text-clinical-text hover:bg-clinical-surface-hover"
@@ -980,7 +986,7 @@ export default function HistorialPage() {
                     <button
                       onClick={() => fetchReports(pagination.page + 1, debouncedSearch, selectedDoctorId, startDate, endDate)}
                       disabled={pagination.page === pagination.totalPages}
-                      className="px-3 py-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                     >
                       Siguiente
                     </button>
@@ -995,10 +1001,10 @@ export default function HistorialPage() {
       {/* Modal de Detalle de Informe */}
       {isModalOpen && selectedReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+          <div className="modal-rounded-container bg-clinical-panel border border-clinical-border max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             
             {/* Header del Modal */}
-            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
+            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30 rounded-t-2xl">
               <div>
                 <h3 className="font-bold text-base text-clinical-text tracking-wide">
                   Detalles del Informe #{selectedReport.id}
@@ -1030,9 +1036,9 @@ export default function HistorialPage() {
 
               {/* Visor de Hoja Estructurada */}
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal">Informe Estructurado Final</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal font-montserrat">Informe Estructurado Final</span>
                 <div
-                  className="report-paper p-8 overflow-y-auto max-h-[350px] outline-none select-text cursor-text"
+                  className="report-paper p-8 outline-none select-text cursor-text shadow-md"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
                   dangerouslySetInnerHTML={{ __html: sanitizeHtml(convertReportToHtml(selectedReport.structuredText)) }}
                 ></div>
@@ -1040,7 +1046,7 @@ export default function HistorialPage() {
 
               {/* Dictado Bruto */}
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted">Texto del Dictado (Bruto)</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-text-muted font-montserrat">Texto del Dictado (Bruto)</span>
                 <div className="bg-clinical-surface-inset/40 border border-clinical-border rounded-xl p-4 text-xs text-clinical-text-muted leading-relaxed select-text cursor-text max-h-[150px] overflow-y-auto">
                   {selectedReport.rawText}
                 </div>
@@ -1048,11 +1054,11 @@ export default function HistorialPage() {
             </div>
 
             {/* Footer del Modal */}
-            <div className="p-4 border-t border-slate-800 flex items-center justify-between shrink-0 bg-slate-950/20 flex-wrap gap-3">
+            <div className="p-4 border-t border-clinical-border flex items-center justify-between shrink-0 bg-clinical-surface-inset/30 flex-wrap gap-3 rounded-b-2xl">
               <div className="flex gap-2">
                 <button
                   onClick={() => handleCopyClipboard(selectedReport.structuredText)}
-                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer hover:border-clinical-teal/50 hover:text-clinical-teal"
                 >
                   <Copy className="w-4 h-4" />
                   {copySuccess ? "¡Copiado!" : "Copiar a Portapapeles"}
@@ -1062,13 +1068,13 @@ export default function HistorialPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-clinical-text transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all cursor-pointer"
                 >
                   Cerrar
                 </button>
                 <button
                   onClick={() => handleLoadReport(selectedReport)}
-                  className="px-5 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-clinical-teal/10"
+                  className="px-5 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-clinical-teal/10 hover:shadow-clinical-teal/20"
                 >
                   <ArrowUpRight className="w-4 h-4" />
                   Cargar en Editor
@@ -1076,6 +1082,14 @@ export default function HistorialPage() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast flotante de copiado exitoso */}
+      {copySuccess && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-clinical-success-bg border border-clinical-success-border text-clinical-success-text px-4 py-2.5 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <Check className="w-4 h-4 text-clinical-success-text" />
+          <span className="text-xs font-semibold">¡Informe copiado al portapapeles con éxito!</span>
         </div>
       )}
     </div>

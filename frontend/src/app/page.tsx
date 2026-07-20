@@ -150,6 +150,12 @@ const cleanHtmlForComparison = (html: string): string => {
 const convertReportToHtml = (text: string): string => {
   if (!text || typeof text !== "string") return "";
 
+  // Si el texto ya contiene tags HTML significativos, devolver tal cual (ya es HTML procesado)
+  const trimmedCheck = text.trim();
+  if (trimmedCheck.startsWith("<div") || trimmedCheck.startsWith("<p") || /<(p|div|strong|br|u|em)\b/i.test(trimmedCheck)) {
+    return text;
+  }
+
   const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
   const normalizedText = cleanText.replace(/\r\n/g, "\n");
   const lines = normalizedText.split("\n");
@@ -189,6 +195,33 @@ const convertReportToHtml = (text: string): string => {
   });
 
   return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${htmlLines.join("")}</div>`;
+};
+
+// Detecta si el texto devuelto por la IA es una advertencia/error de que el dictado no contiene información médica o es inválido
+const isAiWarningMessage = (text: string): boolean => {
+  if (!text || typeof text !== "string") return false;
+  const normalized = text.toLowerCase();
+  
+  // Para evitar falsos positivos con reportes clínicos válidos que contienen "no contiene hallazgos" o "no se detecta...",
+  // requerimos que la advertencia haga referencia explícita al "dictado" o use frases de error de la IA muy específicas.
+  const hasDictado = normalized.includes("dictado");
+  const isInvalidError = normalized.includes("por favor, proporcione") || 
+                         normalized.includes("no es posible estructurar") || 
+                         normalized.includes("no se puede estructurar") ||
+                         normalized.includes("no contiene información médica");
+                         
+  if (hasDictado && (
+    normalized.includes("no contiene") || 
+    normalized.includes("no es suficiente") || 
+    normalized.includes("insuficiente") || 
+    normalized.includes("no corresponde") ||
+    normalized.includes("información médica") ||
+    normalized.includes("datos suficientes")
+  )) {
+    return true;
+  }
+  
+  return isInvalidError && hasDictado;
 };
 
 /**
@@ -267,7 +300,7 @@ export default function DictationPage() {
   const [rawText, setRawText] = useState("");
   const [correctionInstruction, setCorrectionInstruction] = useState("");
   const [structuredReport, setStructuredReport] = useState("");
-  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(true);
   // Estados para Deshacer/Rehacer (Undo/Redo) en el Informe
   const [reportHistory, setReportHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
@@ -487,6 +520,8 @@ export default function DictationPage() {
   const [isTemplateErrorModalOpen, setIsTemplateErrorModalOpen] = useState(false);
   const [missingTemplateName, setMissingTemplateName] = useState("");
   const [doctorSearchTerm, setDoctorSearchTerm] = useState("");
+  const [isAiWarningModalOpen, setIsAiWarningModalOpen] = useState(false);
+  const [aiWarningModalMessage, setAiWarningModalMessage] = useState("");
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -655,7 +690,7 @@ export default function DictationPage() {
 
       if (sessionData && sessionData.action === "load") {
         // Cargar explícitamente el informe del historial
-        updateReportState(sessionData.structuredReport || "", "direct");
+        updateReportState(convertReportToHtml(sessionData.structuredReport || ""), "direct");
         setRawText(sessionData.rawText || "");
         setCurrentReportId(sessionData.currentReportId || null);
         setCorrectionInstruction("");
@@ -1219,6 +1254,12 @@ export default function DictationPage() {
         throw new Error("La IA no generó un informe válido. Intente nuevamente.");
       }
 
+      if (isAiWarningMessage(structuredText)) {
+        setAiWarningModalMessage(structuredText);
+        setIsAiWarningModalOpen(true);
+        return;
+      }
+
       // La IA devuelve markdown — convertirlo a HTML una sola vez para almacenarlo
       updateReportState(convertReportToHtml(structuredText), "direct");
       setCurrentReportId(data.id || data.reportId || null);
@@ -1303,6 +1344,12 @@ export default function DictationPage() {
         throw new Error("La IA no generó una corrección válida. Intente nuevamente.");
       }
 
+      if (isAiWarningMessage(correctedText)) {
+        setAiWarningModalMessage(correctedText);
+        setIsAiWarningModalOpen(true);
+        return;
+      }
+
       // La IA devuelve markdown — convertirlo a HTML una sola vez
       updateReportState(convertReportToHtml(correctedText), "direct");
       // setCorrectionInstruction(""); // Se comenta por pedido del usuario para mantener visible la instrucción y poder comparar
@@ -1331,7 +1378,7 @@ export default function DictationPage() {
     setDetectedDoctorId(null);
     setDetectedDoctorName(null);
     setDetectedDoctorSpecialty(null);
-    setIsEditorOpen(false);
+    setIsEditorOpen(true);
     if (editorRef.current) {
       editorRef.current.innerHTML = "";
     }
@@ -1796,7 +1843,7 @@ export default function DictationPage() {
                 {/* Limpiar Button */}
                 <button
                   onClick={handleClearEditor}
-                  disabled={!isEditorOpen}
+                  disabled={!structuredReport || structuredReport.trim() === ""}
                   className="w-8 h-8 flex items-center justify-center rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shrink-0"
                   title="Limpiar"
                   aria-label="Limpiar texto del informe"
@@ -1816,168 +1863,153 @@ export default function DictationPage() {
                 </div>
               )}
               {/* Editor Toolbar */}
-              {isEditorOpen && (
-                <div className="flex items-center gap-1.5 p-2 bg-clinical-surface border-b border-clinical-border shrink-0 font-sans select-none">
-                  {/* Bold Button */}
-                  {/* Bold Button */}
+              {/* Editor Toolbar */}
+              <div className="flex items-center gap-1.5 p-2 bg-clinical-surface border-b border-clinical-border shrink-0 font-sans select-none">
+                {/* Bold Button */}
+                {/* Bold Button */}
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('bold', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Negrita"
+                  aria-label="Formato negrita"
+                >
+                  <Bold className="w-4 h-4" />
+                </button>
+                {/* Cursiva Button */}
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('italic', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Cursiva"
+                  aria-label="Formato cursiva"
+                >
+                  <Italic className="w-4 h-4" />
+                </button>
+
+                {/* Subrayado Button */}
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('underline', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Subrayado"
+                  aria-label="Formato subrayado"
+                >
+                  <Underline className="w-4 h-4" />
+                </button>
+
+                {/* Alignment buttons */}
+                <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
+
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('justifyLeft', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Alinear a la izquierda"
+                  aria-label="Alinear a la izquierda"
+                >
+                  <AlignLeft className="w-4 h-4" />
+                </button>
+
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('justifyCenter', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Centrar"
+                  aria-label="Centrar texto"
+                >
+                  <AlignCenter className="w-4 h-4" />
+                </button>
+
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('justifyRight', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Alinear a la derecha"
+                  aria-label="Alinear a la derecha"
+                >
+                  <AlignRight className="w-4 h-4" />
+                </button>
+
+                <button
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => {
+                    document.execCommand('justifyFull', false);
+                    handleEditorInput();
+                  }}
+                  className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
+                  title="Justificar"
+                  aria-label="Justificar texto"
+                >
+                  <AlignJustify className="w-4 h-4" />
+                </button>
+
+                <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
+
+                {/* Custom Font Size Dropdown */}
+                <div className="relative">
                   <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('bold', false);
-                      handleEditorInput();
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      // Guardar la selección activa del editor antes de que el click la pierda
+                      const sel = window.getSelection();
+                      if (sel && sel.rangeCount > 0 && !sel.getRangeAt(0).collapsed) {
+                        savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+                      }
                     }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Negrita"
-                    aria-label="Formato negrita"
+                    onClick={() => setIsFontSizeOpen(!isFontSizeOpen)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all cursor-pointer"
+                    aria-label="Tamaño de fuente"
                   >
-                    <Bold className="w-4 h-4" />
+                    <span>{currentFontSize}</span>
+                    <ChevronDown className="w-3 h-3 text-clinical-text-muted" />
                   </button>
-                  {/* Cursiva Button */}
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('italic', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Cursiva"
-                    aria-label="Formato cursiva"
-                  >
-                    <Italic className="w-4 h-4" />
-                  </button>
-
-                  {/* Subrayado Button */}
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('underline', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Subrayado"
-                    aria-label="Formato subrayado"
-                  >
-                    <Underline className="w-4 h-4" />
-                  </button>
-
-                  {/* Alignment buttons */}
-                  <span className="w-[1px] h-5 bg-clinical-border mx-1 shrink-0" />
-
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('justifyLeft', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Alinear a la izquierda"
-                    aria-label="Alinear a la izquierda"
-                  >
-                    <AlignLeft className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('justifyCenter', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Centrar"
-                    aria-label="Centrar texto"
-                  >
-                    <AlignCenter className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('justifyRight', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Alinear a la derecha"
-                    aria-label="Alinear a la derecha"
-                  >
-                    <AlignRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      document.execCommand('justifyFull', false);
-                      handleEditorInput();
-                    }}
-                    className="p-1.5 rounded hover:bg-clinical-surface-hover text-clinical-text hover:text-clinical-teal transition-all cursor-pointer"
-                    title="Justificar"
-                    aria-label="Justificar texto"
-                  >
-                    <AlignJustify className="w-4 h-4" />
-                  </button>
-
-                  <span className="w-[1px] h-5 bg-slate-800 mx-1 shrink-0" />
-
-                  {/* Custom Font Size Dropdown */}
-                  <div className="relative">
-                    <button
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        // Guardar la selección activa del editor antes de que el click la pierda
-                        const sel = window.getSelection();
-                        if (sel && sel.rangeCount > 0 && !sel.getRangeAt(0).collapsed) {
-                          savedRangeRef.current = sel.getRangeAt(0).cloneRange();
-                        }
-                      }}
-                      onClick={() => setIsFontSizeOpen(!isFontSizeOpen)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all cursor-pointer"
-                      aria-label="Tamaño de fuente"
-                    >
-                      <span>{currentFontSize}</span>
-                      <ChevronDown className="w-3 h-3 text-clinical-text-muted" />
-                    </button>
-                    {isFontSizeOpen && (
-                      <div className="absolute left-0 mt-1 w-28 bg-clinical-panel border border-clinical-border rounded-lg shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-100">
-                        {['9pt', '10pt', '11pt', '12pt', '14pt', '16pt', '18pt', '20pt', '24pt'].map((size) => (
-                          <button
-                            key={size}
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              handleFontSizeChange(size);
-                              setIsFontSizeOpen(false);
-                            }}
-                            className="w-full text-left px-3 py-1.5 hover:bg-clinical-surface-hover text-xs text-clinical-text transition-all cursor-pointer"
-                          >
-                            {size === '11pt' ? '11 pt (Def.)' : size.replace('pt', ' pt')}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  {isFontSizeOpen && (
+                    <div className="absolute left-0 mt-1 w-28 bg-clinical-panel border border-clinical-border rounded-lg shadow-xl py-1 z-30 animate-in fade-in slide-in-from-top-1 duration-100">
+                      {['9pt', '10pt', '11pt', '12pt', '14pt', '16pt', '18pt', '20pt', '24pt'].map((size) => (
+                        <button
+                          key={size}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            handleFontSizeChange(size);
+                            setIsFontSizeOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-1.5 hover:bg-clinical-surface-hover text-xs text-clinical-text transition-all cursor-pointer"
+                        >
+                          {size === '11pt' ? '11 pt (Def.)' : size.replace('pt', ' pt')}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-              {isEditorOpen ? (
-                <div
-                  key="editor"
-                  ref={editorRef}
-                  contentEditable={true}
-                  suppressContentEditableWarning={true}
-                  onInput={handleEditorInput}
-                  className="report-paper flex-1 h-auto xl:h-full overflow-y-visible xl:overflow-y-auto p-8 md:p-10 select-text cursor-text outline-none focus:ring-1 focus:ring-clinical-teal/30 transition-all"
-                  style={{ backgroundColor: "#ffffff", color: "#000000" }}
-                ></div>
-              ) : isLoading ? (
-                <div key="loading" className="flex-1" />
-              ) : (
-                <div key="empty" className="flex-1 flex flex-col items-center justify-center text-center p-8 text-clinical-text-muted">
-                  <div className="w-16 h-16 rounded-full bg-clinical-surface border border-clinical-border flex items-center justify-center mb-4 text-clinical-text-muted">
-                    <LayoutTemplate className="w-8 h-8" />
-                  </div>
-                  <h3 className="font-semibold text-sm text-clinical-text">No hay informe estructurado</h3>
-                  <p className="text-xs max-w-xs mt-2 leading-relaxed">
-                    Dicte o escriba el informe en la columna izquierda y presione &quot;Informar con AI&quot; para estructurarlo.
-                  </p>
-                </div>
-              )}
+              </div>
+              <div
+                key="editor"
+                ref={editorRef}
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                onInput={handleEditorInput}
+                className="report-paper flex-1 h-auto xl:h-full overflow-y-visible xl:overflow-y-auto p-8 md:p-10 select-text cursor-text outline-none focus:ring-1 focus:ring-clinical-teal/30 transition-all"
+                style={{ backgroundColor: "#ffffff", color: "#000000" }}
+              ></div>
             </div>
 
             {/* Info inferior de ayuda */}
@@ -2046,6 +2078,44 @@ export default function DictationPage() {
               >
                 <span>Verificar</span>
                 <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Advertencia de la IA (Dictado no médico / inválido) */}
+      {isAiWarningModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="modal-rounded-container bg-clinical-panel border border-clinical-border max-w-md w-full p-6 shadow-2xl flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            {/* Header del Modal */}
+            <div className="flex items-center justify-between pb-3 border-b border-clinical-border mb-4 shrink-0">
+              <h3 className="font-bold text-base text-clinical-text tracking-wide flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-clinical-warning-text shrink-0" /> Atención
+              </h3>
+              <button
+                onClick={() => setIsAiWarningModalOpen(false)}
+                className="p-1.5 rounded-lg bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text transition-all cursor-pointer"
+                aria-label="Cerrar modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Contenido */}
+            <div className="space-y-3 mb-6 flex-1 text-xs leading-relaxed">
+              <div className="p-4 bg-clinical-warning-bg border border-clinical-warning-border text-clinical-warning-text rounded-xl font-semibold leading-relaxed">
+                {aiWarningModalMessage}
+              </div>
+            </div>
+
+            {/* Botón Aceptar */}
+            <div className="flex justify-end shrink-0">
+              <button
+                onClick={() => setIsAiWarningModalOpen(false)}
+                className="px-6 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 text-xs font-bold transition-all cursor-pointer shadow-md shadow-clinical-teal/10 hover:shadow-clinical-teal/20"
+              >
+                Aceptar
               </button>
             </div>
           </div>
@@ -2231,6 +2301,13 @@ export default function DictationPage() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {/* Toast flotante de copiado exitoso */}
+      {copySuccess && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-clinical-success-bg border border-clinical-success-border text-clinical-success-text px-4 py-2.5 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <Check className="w-4 h-4 text-clinical-success-text" />
+          <span className="text-xs font-semibold">¡Informe copiado al portapapeles con éxito!</span>
         </div>
       )}
     </div>

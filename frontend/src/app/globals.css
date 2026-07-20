@@ -81,7 +81,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-clinical-bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-clinical-panel-light);
@@ -89,6 +89,17 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-clinical-teal);
+}
+
+/* Contenedor de modal redondeado — forzar recorte del scrollbar */
+.modal-rounded-container {
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 1rem; /* rounded-2xl = 16px = 1rem */
+}
+.modal-rounded-container ::-webkit-scrollbar-track {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 /* Visor de informe simulación de hoja impresa (Arial 11) */

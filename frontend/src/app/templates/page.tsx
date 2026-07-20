@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../../components/ConfirmationModal";
-import { Eye, Copy, Pencil, Trash2, Maximize, Minimize, AlignLeft, AlignCenter, AlignRight, AlignJustify, Plus, Search, X, LayoutTemplate, UploadCloud, Undo2, Redo2, Bold, Italic, Underline } from "lucide-react";
+import { Eye, Copy, Pencil, Trash2, Maximize, Minimize, AlignLeft, AlignCenter, AlignRight, AlignJustify, Plus, Search, X, LayoutTemplate, UploadCloud, Undo2, Redo2, Bold, Italic, Underline, Check } from "lucide-react";
 import { Company, Doctor, DocumentItem } from "@/types";
 import { sanitizeHtml } from "@/utils/sanitize";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -201,6 +201,7 @@ export default function TemplatesPage() {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [copySuccessText, setCopySuccessText] = useState(false);
   const [isFetchingPreview, setIsFetchingPreview] = useState(false);
+  const [isCopyingQuick, setIsCopyingQuick] = useState(false);
   
 
 
@@ -241,6 +242,12 @@ export default function TemplatesPage() {
 
   const convertReportToHtml = (text: string): string => {
     if (!text) return "";
+
+    // Si el texto ya contiene tags HTML significativos, devolver tal cual
+    const trimmedCheck = text.trim();
+    if (trimmedCheck.startsWith("<div") || trimmedCheck.startsWith("<p") || /<(p|div|strong|br|u|em)\b/i.test(trimmedCheck)) {
+      return text;
+    }
 
     const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
@@ -375,7 +382,7 @@ export default function TemplatesPage() {
   };
 
   const handleQuickCopy = async (doc: DocumentItem) => {
-    setIsFetchingPreview(true);
+    setIsCopyingQuick(true);
     setError(null);
     try {
       const token = localStorage.getItem("token") || localStorage.getItem("admin_token");
@@ -403,7 +410,7 @@ export default function TemplatesPage() {
       const message = err instanceof Error ? err.message : "Error al copiar la plantilla.";
       setError(message);
     } finally {
-      setIsFetchingPreview(false);
+      setIsCopyingQuick(false);
     }
   };
   // Estados de carga e interfaz
@@ -1237,11 +1244,16 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                       </button>
                       <button
                         onClick={() => handleQuickCopy(doc)}
-                        className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer animate-none"
+                        disabled={isCopyingQuick}
+                        className="p-2 rounded-xl bg-clinical-surface hover:bg-clinical-teal/15 text-clinical-text-muted hover:text-clinical-teal border border-clinical-border hover:border-clinical-teal/30 transition-all cursor-pointer animate-none disabled:opacity-50 disabled:cursor-wait"
                         title="Copiar contenido"
                         aria-label="Copiar contenido de la plantilla"
                       >
-                        <Copy className="w-4 h-4" />
+                        {isCopyingQuick ? (
+                          <span className="w-4 h-4 rounded-full border-2 border-clinical-teal border-t-transparent animate-spin block"></span>
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
                       </button>
                       {(isAdmin ||
                         (typeof window !== "undefined" && localStorage.getItem("role") === "moderator") ||
@@ -1690,10 +1702,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
       {/* Modal de Previsualización de Plantilla */}
       {isPreviewOpen && previewTemplate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-clinical-panel border border-clinical-border rounded-2xl max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200 overflow-hidden">
+          <div className="modal-rounded-container bg-clinical-panel border border-clinical-border max-w-5xl w-full h-[85vh] flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             
             {/* Cabecera de Vista Previa */}
-            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30">
+            <div className="p-6 border-b border-clinical-border hidden md:flex items-center justify-between shrink-0 bg-clinical-surface-inset/30 rounded-t-2xl">
               <div>
                 <h3 className="font-bold text-base text-clinical-text tracking-wide">
                   Previsualización: {previewTemplate.title}
@@ -1714,9 +1726,9 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {/* Visor de Hoja Estructurada */}
               <div className="space-y-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal">Estructura Base de la Plantilla</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal font-montserrat">Estructura Base de la Plantilla</span>
                 <div
-                  className="report-paper p-8 overflow-y-auto max-h-[450px] outline-none select-text cursor-text border border-slate-200"
+                  className="report-paper p-8 outline-none select-text cursor-text border border-slate-200 shadow-md"
                   style={{ backgroundColor: "#ffffff", color: "#000000" }}
                   dangerouslySetInnerHTML={{ __html: sanitizeHtml(convertReportToHtml(previewTemplate.content)) }}
                 ></div>
@@ -1724,10 +1736,10 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
             </div>
 
             {/* Footer de Vista Previa */}
-            <div className="p-4 border-t border-clinical-border flex items-center justify-end shrink-0 bg-clinical-surface-inset/30 gap-3">
+            <div className="p-4 border-t border-clinical-border flex items-center justify-end shrink-0 bg-clinical-surface-inset/30 gap-3 rounded-b-2xl">
               <button
                 onClick={() => handleCopyClipboard(previewTemplate.content)}
-                className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-xs font-semibold text-clinical-text transition-all flex items-center justify-center gap-1.5 cursor-pointer hover:border-clinical-teal/50 hover:text-clinical-teal"
               >
                 <Copy className="w-4 h-4" />
                 {copySuccessText ? "¡Copiado!" : "Copiar Contenido"}
@@ -1741,6 +1753,14 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
             </div>
 
           </div>
+        </div>
+      )}
+
+      {/* Toast flotante de copiado exitoso */}
+      {copySuccessText && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-clinical-success-bg border border-clinical-success-border text-clinical-success-text px-4 py-2.5 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <Check className="w-4 h-4 text-clinical-success-text" />
+          <span className="text-xs font-semibold">¡Plantilla copiada al portapapeles con éxito!</span>
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ConfirmationModal } from "../../components/ConfirmationModal";
 import { 
-  Plus, Search, X, Users, User, Pencil, Trash2, Stethoscope, Building, Copy, LayoutTemplate 
+  Plus, Search, X, Users, User, Pencil, Trash2, Stethoscope, Building, Copy, LayoutTemplate, Check 
 } from "lucide-react";
 
 import { Company, Doctor, DocumentItem as TemplateItem } from "@/types";
@@ -125,6 +125,12 @@ export default function DoctorsPage() {
 
   const convertReportToHtml = (text: string): string => {
     if (!text) return "";
+
+    // Si el texto ya contiene tags HTML significativos, devolver tal cual
+    const trimmedCheck = text.trim();
+    if (trimmedCheck.startsWith("<div") || trimmedCheck.startsWith("<p") || /<(p|div|strong|br|u|em)\b/i.test(trimmedCheck)) {
+      return text;
+    }
 
     const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
@@ -1166,7 +1172,7 @@ export default function DoctorsPage() {
                 </div>
                 <div className="flex-1 overflow-y-auto space-y-2">
                   <div
-                    className="report-paper p-8 overflow-y-auto max-h-full outline-none select-text cursor-text border border-slate-200"
+                    className="report-paper p-8 outline-none select-text cursor-text border border-slate-200 shadow-md"
                     style={{ backgroundColor: "#ffffff", color: "#000000" }}
                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(convertReportToHtml(selectedTemplateInProfile.content)) }}
                   ></div>
@@ -1209,6 +1215,13 @@ export default function DoctorsPage() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
+      {/* Toast flotante de copiado exitoso */}
+      {copySuccessProfile && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-clinical-success-bg border border-clinical-success-border text-clinical-success-text px-4 py-2.5 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">
+          <Check className="w-4 h-4 text-clinical-success-text" />
+          <span className="text-xs font-semibold">¡Plantilla copiada al portapapeles con éxito!</span>
+        </div>
+      )}
     </div>
   );
 }
