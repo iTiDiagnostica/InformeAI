@@ -324,6 +324,7 @@ export default function CompaniesPage() {
             setCompanyLogo(theme.logo || null);
             setCompanyName(theme.name || null);
             setSelectedPreviewCompanyId(theme.id?.toString() || "base");
+            applyTheme(theme);
           }
         } catch (err) {
           console.error(err);
@@ -332,6 +333,7 @@ export default function CompaniesPage() {
         setCompanyLogo(null);
         setCompanyName(null);
         setSelectedPreviewCompanyId("base");
+        applyTheme(null);
       }
     }
 

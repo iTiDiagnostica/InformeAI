@@ -109,6 +109,7 @@ export default function ModeratorsPage() {
             setCompanyLogo(theme.logo || null);
             setCompanyName(theme.name || null);
             setSelectedPreviewCompanyId(theme.id?.toString() || "base");
+            applyTheme(theme);
           }
         } catch (err) {
           console.error(err);
@@ -117,6 +118,7 @@ export default function ModeratorsPage() {
         setCompanyLogo(null);
         setCompanyName(null);
         setSelectedPreviewCompanyId("base");
+        applyTheme(null);
       }
     }
   }, []);

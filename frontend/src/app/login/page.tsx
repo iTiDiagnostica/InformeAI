@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { User, Lock, AlertCircle, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { applyTheme } from "@/utils/theme";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -20,6 +21,7 @@ export default function LoginPage() {
   useEffect(() => {
     // Limpiar tema de empresa al cargar login
     localStorage.removeItem("companyTheme");
+    applyTheme(null);
 
     // Si ya está logueado, redirigir según el rol
     const role = localStorage.getItem("role");

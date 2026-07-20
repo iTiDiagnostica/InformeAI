@@ -32,7 +32,31 @@ export async function POST(req: NextRequest) {
       if (isMatch) {
         const { generateModeratorToken } = await import('@/utils/auth');
         const token = generateModeratorToken(moderator.id, moderator.company_id);
-        return NextResponse.json({ token, role: 'moderator', moderatorId: moderator.id, companyId: moderator.company_id });
+        
+        let companyTheme = null;
+        if (moderator.company_id) {
+          const compRes = await db.query('SELECT * FROM companies WHERE id = $1', [moderator.company_id]);
+          if (compRes.rows.length > 0) {
+            const comp = compRes.rows[0];
+            companyTheme = {
+              id: comp.id,
+              name: comp.name,
+              logo: comp.logo_base64 || null,
+              favicon: comp.favicon_base64 || null,
+              primary: comp.color_primary,
+              secondary: comp.color_secondary,
+              accent: comp.color_accent
+            };
+          }
+        }
+        
+        return NextResponse.json({ 
+          token, 
+          role: 'moderator', 
+          moderatorId: moderator.id, 
+          companyId: moderator.company_id,
+          companyTheme 
+        });
       }
     }
 
@@ -52,7 +76,31 @@ export async function POST(req: NextRequest) {
       if (isMatch) {
         const { generateDoctorToken } = await import('@/utils/auth');
         const token = generateDoctorToken(doctor.id);
-        return NextResponse.json({ token, role: 'doctor', doctorId: doctor.id });
+        
+        let companyTheme = null;
+        if (doctor.company_id) {
+          const compRes = await db.query('SELECT * FROM companies WHERE id = $1', [doctor.company_id]);
+          if (compRes.rows.length > 0) {
+            const comp = compRes.rows[0];
+            companyTheme = {
+              id: comp.id,
+              name: comp.name,
+              logo: comp.logo_base64 || null,
+              favicon: comp.favicon_base64 || null,
+              primary: comp.color_primary,
+              secondary: comp.color_secondary,
+              accent: comp.color_accent
+            };
+          }
+        }
+        
+        return NextResponse.json({ 
+          token, 
+          role: 'doctor', 
+          doctorId: doctor.id, 
+          doctorName: doctor.name,
+          companyTheme 
+        });
       }
     }
 

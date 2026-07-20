@@ -522,6 +522,7 @@ export default function DictationPage() {
             setCompanyLogo(theme.logo || null);
             setCompanyName(theme.name || null);
             setSelectedPreviewCompanyId(theme.id?.toString() || "base");
+            applyTheme(theme);
           }
         } catch (err) {
           console.error(err);
@@ -530,6 +531,7 @@ export default function DictationPage() {
         setCompanyLogo(null);
         setCompanyName(null);
         setSelectedPreviewCompanyId("base");
+        applyTheme(null);
       }
     }
   }, [isInitialized]);
