@@ -134,29 +134,63 @@ export default function DoctorsPage() {
 
     const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
-    const paragraphs = normalizedText.split(/\n\s*\n/);
+    const lines = normalizedText.split("\n");
 
-    const htmlParagraphs = paragraphs.map((para, idx) => {
-      const trimmed = para.trim();
-      if (!trimmed) return "";
+    let firstNonEmptyIdx = -1;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() !== "") {
+        firstNonEmptyIdx = i;
+        break;
+      }
+    }
+
+    const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+
+    const resultParagraphs: string[] = [];
+    let lastPushedEmpty = false;
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+
+      if (!trimmed) {
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+          lastPushedEmpty = true;
+        }
+        return;
+      }
 
       const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
-      const isTitle = idx === 0 && isFullyBold;
+      const isTitle = idx === firstNonEmptyIdx && isFullyBold;
 
       if (isTitle) {
         const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        return `<p style="font-family: Arial, sans-serif; font-size: 12pt; text-decoration: underline; text-align: center; margin: 0 0 16px 0; line-height: 1.5; color: #000000; background-color: #ffffff;"><b>${titleText}</b></p>`;
+        const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; background-color: #ffffff;"><u><strong>${titleText}</strong></u></p>`;
+        
+        resultParagraphs.push(titleHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else if (isFullyBold) {
         const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; margin: 12px 0 4px 0; line-height: 1.5; color: #000000; background-color: #ffffff;"><b>${headerText}</b></p>`;
+        const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+        
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+        }
+        resultParagraphs.push(headerHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else {
-        let formattedPara = trimmed.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
-        formattedPara = formattedPara.replace(/\n/g, "<br>");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; margin: 0 0 8px 0; line-height: 1.5; color: #000000; background-color: #ffffff;">${formattedPara}</p>`;
+        let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        resultParagraphs.push(
+          `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`
+        );
+        lastPushedEmpty = false;
       }
     });
 
-    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.5; padding: 8px;">${htmlParagraphs.filter(p => p !== "").join("")}</div>`;
+    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${resultParagraphs.join("")}</div>`;
   };
 
   const handleCopyClipboard = async (text: string) => {

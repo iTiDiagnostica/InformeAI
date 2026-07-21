@@ -60,6 +60,15 @@ async function findTemplateDocument(query: string, doctorId: number | null, comp
   return docRes?.rows[0];
 }
 
+function formatAiType(activeAiModel: string): string {
+  if (!activeAiModel) return 'Gemini';
+  const lower = activeAiModel.toLowerCase();
+  if (lower.includes('gemini')) return 'Gemini';
+  if (lower.includes('chatgpt') || lower.includes('openai') || lower.includes('gpt')) return 'ChatGPT';
+  if (lower.includes('groq')) return 'Groq';
+  return activeAiModel.charAt(0).toUpperCase() + activeAiModel.slice(1);
+}
+
 export async function POST(req: NextRequest) {
   const user = authenticate(req);
   if (!user) return unauthorizedResponse();
@@ -68,7 +77,7 @@ export async function POST(req: NextRequest) {
     const { rawText, doctorId } = await req.json();
 
     if (!rawText || rawText.trim().length === 0) {
-      return NextResponse.json({ error: 'El texto del dictado estÃ¡ vacÃ­o.' }, { status: 400 });
+      return NextResponse.json({ error: 'El texto del dictado está vacío.' }, { status: 400 });
     }
 
     let docIdNum = doctorId ? parseInt(doctorId, 10) : null;
@@ -117,9 +126,12 @@ export async function POST(req: NextRequest) {
           );
         }
 
+        const aiTypeFormatted = formatAiType(activeAiModel);
+        const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
+
         const repRes = await db.query(
-          'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
-          [rawText, emptyTemplate, finalDoctorId, companyIdVal]
+          'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+          [rawText, emptyTemplate, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal]
         );
 
         return NextResponse.json({
@@ -162,9 +174,12 @@ export async function POST(req: NextRequest) {
 
     const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, activeAiModel);
 
+    const aiTypeFormatted = formatAiType(activeAiModel);
+    const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
+
     const insertRes = await db.query(
-      'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id) VALUES ($1, $2, $3, $4) RETURNING id',
-      [rawText, structuredReport, finalDoctorId, companyIdVal]
+      'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
+      [rawText, structuredReport, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal]
     );
 
     return NextResponse.json({

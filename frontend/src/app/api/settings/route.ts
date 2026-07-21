@@ -17,7 +17,17 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   try {
     const { activeAiModel } = await req.json();
-    if (!activeAiModel || (activeAiModel !== 'gemma' && activeAiModel !== 'gemini' && !activeAiModel.startsWith('gemini-') && !activeAiModel.startsWith('groq-'))) {
+    if (
+      !activeAiModel ||
+      (activeAiModel !== 'gemini' &&
+        activeAiModel !== 'chatgpt' &&
+        activeAiModel !== 'groq' &&
+        !activeAiModel.startsWith('gemini') &&
+        !activeAiModel.startsWith('groq') &&
+        !activeAiModel.startsWith('openai') &&
+        !activeAiModel.startsWith('chatgpt') &&
+        !activeAiModel.startsWith('gpt'))
+    ) {
       return NextResponse.json({ error: 'Modelo de IA inválido.' }, { status: 400 });
     }
     

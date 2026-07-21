@@ -8,7 +8,8 @@ import {
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Mic, Upload, Trash2, Sparkles, Wand2, Undo2, Redo2, Maximize2, Minimize2, 
   Copy, Check, Bold, Italic, Underline, ChevronDown, LayoutTemplate, 
-  Info, X, ExternalLink, Search, Users, AlertTriangle, Stethoscope, Square, Plus
+  Info, X, ExternalLink, Search, Users, AlertTriangle, Stethoscope, Square, Plus,
+  Cpu, Bot
 } from "lucide-react";
 
 import { Company, Doctor, Report, SpeechRecognitionInstance, SpeechRecognitionEvent } from "@/types";
@@ -16,6 +17,37 @@ import { sanitizeHtml } from "@/utils/sanitize";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { applyTheme } from "@/utils/theme";
+
+// ==========================================
+// Logos SVG de Proveedores de IA
+// ==========================================
+const GeminiLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M12 0C12 6.62742 6.62742 12 0 12C6.62742 12 12 17.3726 12 24C12 17.3726 17.3726 12 24 12C17.3726 12 12 6.62742 12 0Z"
+      fill="url(#gemini_grad_main)"
+    />
+    <defs>
+      <linearGradient id="gemini_grad_main" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#38BDF8" />
+        <stop offset="0.5" stopColor="#818CF8" />
+        <stop offset="1" stopColor="#C084FC" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+const ChatGPTLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0814 4.7792-2.7582a.7944.7944 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.5045 4.5045 0 0 1-4.4954 4.4954zm-9.6607-4.1254a4.4707 4.4707 0 0 1-.535-3.0137l.142.0852 4.7839 2.7582a.7944.7944 0 0 0 .7854 0l5.8334-3.3693v2.3325a.0805.0805 0 0 1-.0332.0616l-4.836 2.7912a4.495 4.495 0 0 1-6.1405-1.6457zm-1.1511-10.426a4.4755 4.4755 0 0 1 2.3414-1.9729v5.6727a.7944.7944 0 0 0 .3927.6813l5.8334 3.3693-2.02 1.1686a.071.071 0 0 1-.0711 0l-4.8313-2.7912a4.495 4.495 0 0 1-1.6451-6.1278zm16.597 3.0232l-5.8334-3.3693 2.02-1.1686a.071.071 0 0 1 .0711 0l4.8313 2.7912a4.4998 4.4998 0 0 1-.687 8.1006v-5.6727a.7896.7896 0 0 0-.3973-.6812zm2.0342-3.3075l-.142-.0852-4.7839-2.7582a.7944.7944 0 0 0-.7854 0L10.7497 7.9712V5.6387a.0805.0805 0 0 1 .0332-.0616l4.836-2.7912a4.495 4.495 0 0 1 6.6755 4.6593zm-10.3772-7.551a4.4755 4.4755 0 0 1 2.8764 1.0408l-.1419.0814-4.7792 2.7582a.7944.7944 0 0 0-.3927.6813v6.7369l-2.02-1.1686a.071.071 0 0 1-.038-.052V5.4419a4.5045 4.5045 0 0 1 4.4954-4.4954zm.7674 8.784l2.7582 1.5916-2.7582 1.5916-2.7582-1.5916z"/>
+  </svg>
+);
+
+const GroqLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/>
+  </svg>
+);
 
 /**
  * Convierte el contenido HTML enriquecido del editor contentEditable de vuelta a Markdown estándar (con **)
@@ -169,11 +201,20 @@ const convertReportToHtml = (text: string): string => {
     }
   }
 
-  const htmlLines = lines.map((line, idx) => {
+  const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+
+  const resultParagraphs: string[] = [];
+  let lastPushedEmpty = false;
+
+  lines.forEach((line, idx) => {
     const trimmed = line.trim();
+
     if (!trimmed) {
-      // Línea vacía -> párrafo con &nbsp; para preservar la separación de bloque
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+      if (!lastPushedEmpty && resultParagraphs.length > 0) {
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
+      }
+      return;
     }
 
     const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
@@ -181,20 +222,32 @@ const convertReportToHtml = (text: string): string => {
 
     if (isTitle) {
       const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
-      const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
       const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; background-color: #ffffff;"><u><strong>${titleText}</strong></u></p>`;
-      return `${emptyLine}${titleHtml}`;
+      
+      resultParagraphs.push(titleHtml);
+      resultParagraphs.push(emptyLine);
+      lastPushedEmpty = true;
     } else if (isFullyBold) {
       const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+      const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+      
+      if (!lastPushedEmpty && resultParagraphs.length > 0) {
+        resultParagraphs.push(emptyLine);
+      }
+      resultParagraphs.push(headerHtml);
+      resultParagraphs.push(emptyLine);
+      lastPushedEmpty = true;
     } else {
       let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
       formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`;
+      resultParagraphs.push(
+        `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`
+      );
+      lastPushedEmpty = false;
     }
   });
 
-  return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${htmlLines.join("")}</div>`;
+  return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${resultParagraphs.join("")}</div>`;
 };
 
 // Detecta si el texto devuelto por la IA es una advertencia/error de que el dictado no contiene información médica o es inválido
@@ -435,6 +488,7 @@ export default function DictationPage() {
   const [activeDoctorId, setActiveDoctorId] = useState<number | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeAiModel, setActiveAiModel] = useState<string>("gemini");
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
@@ -444,6 +498,35 @@ export default function DictationPage() {
   const [isFontSizeOpen, setIsFontSizeOpen] = useState(false);
   const [currentFontSize, setCurrentFontSize] = useState("11 pt");
   const savedRangeRef = useRef<Range | null>(null);
+
+  const getAiProviderInfo = (model: string) => {
+    const lower = (model || "").toLowerCase();
+    if (lower.includes("chatgpt") || lower.includes("openai") || lower.includes("gpt")) {
+      return { id: "chatgpt", name: "ChatGPT", logo: <ChatGPTLogo className="w-4 h-4 text-emerald-500 dark:text-emerald-400" /> };
+    }
+    if (lower.includes("groq")) {
+      return { id: "groq", name: "Groq", logo: <GroqLogo className="w-4 h-4 text-amber-500 dark:text-amber-400" /> };
+    }
+    return { id: "gemini", name: "Gemini", logo: <GeminiLogo className="w-4 h-4" /> };
+  };
+
+  const selectAiProvider = async (providerId: string) => {
+    setActiveAiModel(providerId);
+    setIsAiModalOpen(false);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") || localStorage.getItem("admin_token") : null;
+      await fetch(`${API_URL}/api/settings`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ activeAiModel: providerId })
+      });
+    } catch (err) {
+      console.error("Error al guardar el proveedor de IA:", err);
+    }
+  };
 
   const fetchCompanies = useCallback(async () => {
     try {
@@ -646,6 +729,24 @@ export default function DictationPage() {
       console.error("Error al cargar configuración de IA:", err);
     }
   }, [API_URL]);
+
+  const handleAiModelChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newModel = e.target.value;
+    setActiveAiModel(newModel);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("token") || localStorage.getItem("admin_token") : null;
+      await fetch(`${API_URL}/api/settings`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ activeAiModel: newModel })
+      });
+    } catch (err) {
+      console.error("Error al guardar el modelo de IA:", err);
+    }
+  };
 
   
 
@@ -1551,6 +1652,28 @@ export default function DictationPage() {
               </div>
             )}
 
+            {/* Botón Selector de Proveedor de IA con Modal y Logos */}
+            {(() => {
+              const info = getAiProviderInfo(activeAiModel);
+              return (
+                <button
+                  type="button"
+                  onClick={() => setIsAiModalOpen(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-clinical-surface-inset border border-clinical-border hover:border-clinical-teal/50 hover:bg-clinical-surface transition-all cursor-pointer select-none group"
+                  title="Cambiar proveedor de Inteligencia Artificial"
+                >
+                  <span className="text-xs text-clinical-text-muted font-semibold">Motor IA:</span>
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-lg bg-clinical-panel border border-clinical-border/60">
+                    {info.logo}
+                    <span className="text-xs font-bold text-clinical-text group-hover:text-clinical-teal transition-colors">
+                      {info.name}
+                    </span>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-clinical-text-muted group-hover:text-clinical-teal transition-colors" />
+                </button>
+              );
+            })()}
+
             
             {/* Botón de Perfil Médico Activo */}
             <div className="flex items-center gap-2 mr-2">
@@ -2307,6 +2430,136 @@ export default function DictationPage() {
           </div>
         </div>
       )}
+      {/* Modal de Selección de Proveedor de Inteligencia Artificial */}
+      {isAiModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl max-w-lg w-full flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
+            {/* Header del Modal */}
+            <div className="flex items-center justify-between pb-3 border-b border-clinical-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-clinical-teal/10 border border-clinical-teal/30 flex items-center justify-center text-clinical-teal shrink-0">
+                  <Cpu className="w-5 h-5 text-clinical-teal" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-clinical-text uppercase tracking-wider">
+                    Proveedor de IA
+                  </h3>
+                  <p className="text-[11px] text-clinical-text-muted mt-0.5">
+                    Seleccione la tecnología de Inteligencia Artificial para estructurar sus dictados
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAiModalOpen(false)}
+                className="p-1.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text border border-clinical-border/50 transition-all cursor-pointer"
+                title="Cerrar"
+                aria-label="Cerrar modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Opciones de Tarjetas */}
+            <div className="grid grid-cols-1 gap-3">
+              {/* Opción 1: Gemini */}
+              <button
+                type="button"
+                onClick={() => selectAiProvider("gemini")}
+                className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between relative group cursor-pointer ${
+                  activeAiModel.toLowerCase().includes("gemini")
+                    ? "bg-clinical-teal/10 border-clinical-teal shadow-md shadow-clinical-teal/5 ring-1 ring-clinical-teal/30"
+                    : "bg-clinical-surface-inset border-clinical-border hover:border-clinical-teal/40 hover:bg-clinical-surface/70"
+                }`}
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="p-2.5 rounded-xl bg-clinical-surface border border-clinical-border/80 shadow-sm shrink-0 flex items-center justify-center">
+                    <GeminiLogo className="w-6 h-6" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-bold text-clinical-text tracking-wide">Gemini</h4>
+                    <p className="text-xs text-clinical-text-muted mt-0.5 leading-relaxed truncate">
+                      Alta velocidad y precisión médica
+                    </p>
+                  </div>
+                </div>
+                {activeAiModel.toLowerCase().includes("gemini") && (
+                  <span className="w-6 h-6 rounded-full bg-clinical-teal text-slate-950 flex items-center justify-center shrink-0 ml-3 shadow-sm font-bold">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </span>
+                )}
+              </button>
+
+              {/* Opción 2: ChatGPT */}
+              <button
+                type="button"
+                onClick={() => selectAiProvider("chatgpt")}
+                className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between relative group cursor-pointer ${
+                  activeAiModel.toLowerCase().includes("chatgpt") || activeAiModel.toLowerCase().includes("openai")
+                    ? "bg-clinical-teal/10 border-clinical-teal shadow-md shadow-clinical-teal/5 ring-1 ring-clinical-teal/30"
+                    : "bg-clinical-surface-inset border-clinical-border hover:border-clinical-teal/40 hover:bg-clinical-surface/70"
+                }`}
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="p-2.5 rounded-xl bg-clinical-surface border border-clinical-border/80 shadow-sm shrink-0 flex items-center justify-center">
+                    <ChatGPTLogo className="w-6 h-6 text-emerald-500 dark:text-emerald-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-bold text-clinical-text tracking-wide">ChatGPT</h4>
+                    <p className="text-xs text-clinical-text-muted mt-0.5 leading-relaxed truncate">
+                      Razonamiento y síntesis avanzada
+                    </p>
+                  </div>
+                </div>
+                {(activeAiModel.toLowerCase().includes("chatgpt") || activeAiModel.toLowerCase().includes("openai")) && (
+                  <span className="w-6 h-6 rounded-full bg-clinical-teal text-slate-950 flex items-center justify-center shrink-0 ml-3 shadow-sm font-bold">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </span>
+                )}
+              </button>
+
+              {/* Opción 3: Groq */}
+              <button
+                type="button"
+                onClick={() => selectAiProvider("groq")}
+                className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between relative group cursor-pointer ${
+                  activeAiModel.toLowerCase().includes("groq")
+                    ? "bg-clinical-teal/10 border-clinical-teal shadow-md shadow-clinical-teal/5 ring-1 ring-clinical-teal/30"
+                    : "bg-clinical-surface-inset border-clinical-border hover:border-clinical-teal/40 hover:bg-clinical-surface/70"
+                }`}
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className="p-2.5 rounded-xl bg-clinical-surface border border-clinical-border/80 shadow-sm shrink-0 flex items-center justify-center">
+                    <GroqLogo className="w-6 h-6 text-amber-500 dark:text-amber-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-bold text-clinical-text tracking-wide">Groq</h4>
+                    <p className="text-xs text-clinical-text-muted mt-0.5 leading-relaxed truncate">
+                      Procesamiento LPU en tiempo real
+                    </p>
+                  </div>
+                </div>
+                {activeAiModel.toLowerCase().includes("groq") && (
+                  <span className="w-6 h-6 rounded-full bg-clinical-teal text-slate-950 flex items-center justify-center shrink-0 ml-3 shadow-sm font-bold">
+                    <Check className="w-4 h-4 stroke-[3]" />
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsAiModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text text-xs font-bold transition-all shadow-sm cursor-pointer"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Toast flotante de copiado exitoso */}
       {copySuccess && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-clinical-success-bg border border-clinical-success-border text-clinical-success-text px-4 py-2.5 rounded-xl shadow-xl animate-in fade-in slide-in-from-top-4 duration-300">

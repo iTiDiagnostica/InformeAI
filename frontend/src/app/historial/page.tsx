@@ -177,7 +177,7 @@ export default function HistorialPage() {
           doctorSpecialty: row.doctorSpecialty,
           reportType: row.reportType || "Informe",
           createdByRole: row.createdByRole || "Invitado",
-          aiType: row.aiType || "IA Local"
+          aiType: row.aiType || "Gemini"
         }));
 
         setReports(mapped);
@@ -522,11 +522,20 @@ export default function HistorialPage() {
       }
     }
 
-    const htmlLines = lines.map((line, idx) => {
+    const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+
+    const resultParagraphs: string[] = [];
+    let lastPushedEmpty = false;
+
+    lines.forEach((line, idx) => {
       const trimmed = line.trim();
+
       if (!trimmed) {
-        // Línea vacía -> párrafo con &nbsp; para preservar la separación de bloque
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+          lastPushedEmpty = true;
+        }
+        return;
       }
 
       const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
@@ -534,20 +543,32 @@ export default function HistorialPage() {
 
       if (isTitle) {
         const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
         const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; background-color: #ffffff;"><u><strong>${titleText}</strong></u></p>`;
-        return `${emptyLine}${titleHtml}`;
+        
+        resultParagraphs.push(titleHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else if (isFullyBold) {
         const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+        const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+        
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+        }
+        resultParagraphs.push(headerHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else {
         let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
         formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`;
+        resultParagraphs.push(
+          `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`
+        );
+        lastPushedEmpty = false;
       }
     });
 
-    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${htmlLines.join("")}</div>`;
+    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${resultParagraphs.join("")}</div>`;
   };
 
   const getstudyTypeColor = (type: string) => {
@@ -866,7 +887,6 @@ export default function HistorialPage() {
                       <th className="py-4 px-6">Informe</th>
                       <th className="py-4 px-6">Tipo de Estudio</th>
                       <th className="py-4 px-6">Médico / Especialidad</th>
-                      <th className="py-4 px-6">Creado Por</th>
                       <th className="py-4 px-6">IA Utilizada</th>
                       <th className="py-4 px-6">Fecha y Hora</th>
                       <th className="py-4 px-6 text-right">Acciones</th>
@@ -896,15 +916,6 @@ export default function HistorialPage() {
                             <span>{report.doctorName || "General"}</span>
                             <span className="text-[10px] text-clinical-text-muted font-normal mt-0.5">{report.doctorSpecialty || "Sin médico asociado"}</span>
                           </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            report.createdByRole === 'Administrador'
-                              ? 'bg-clinical-info-bg text-clinical-info-text border border-clinical-info-border'
-                              : 'bg-clinical-surface text-clinical-text-muted border border-clinical-border'
-                          }`}>
-                            {report.createdByRole}
-                          </span>
                         </td>
                         <td className="py-4 px-6">
                           <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
@@ -1026,11 +1037,11 @@ export default function HistorialPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs bg-clinical-surface-inset/40 p-4 border border-clinical-border rounded-xl shrink-0">
                 <div className="space-y-1.5">
                   <p className="text-clinical-text-muted font-medium">IA Utilizada: <span className="text-clinical-text font-bold">{selectedReport.aiType}</span></p>
-                  <p className="text-clinical-text-muted font-medium">Creado Por: <span className="text-clinical-text font-bold">{selectedReport.createdByRole}</span></p>
+                  <p className="text-clinical-text-muted font-medium">Médico Especialidad: <span className="text-clinical-text font-bold">{selectedReport.doctorSpecialty || "General"}</span></p>
                 </div>
                 <div className="space-y-1.5">
                   <p className="text-clinical-text-muted font-medium">Fecha y Hora: <span className="text-clinical-text font-bold">{formatDate(selectedReport.createdAt)}</span></p>
-                  <p className="text-clinical-text-muted font-medium">Médico Especialidad: <span className="text-clinical-text font-bold">{selectedReport.doctorSpecialty || "General"}</span></p>
+                  <p className="text-clinical-text-muted font-medium">Médico: <span className="text-clinical-text font-bold">{selectedReport.doctorName || "General"}</span></p>
                 </div>
               </div>
 

@@ -71,6 +71,7 @@ const convertMarkdownToEditorHtml = (text: string): string => {
   const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
   const normalizedText = cleanText.replace(/\r\n/g, "\n");
   const lines = normalizedText.split("\n");
+
   let firstNonEmptyIdx = -1;
   for (let i = 0; i < lines.length; i++) {
     if (lines[i].trim() !== "") {
@@ -78,28 +79,54 @@ const convertMarkdownToEditorHtml = (text: string): string => {
       break;
     }
   }
-  const htmlLines = lines.map((line, idx) => {
+
+  const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: transparent;">&nbsp;</p>`;
+
+  const resultParagraphs: string[] = [];
+  let lastPushedEmpty = false;
+
+  lines.forEach((line, idx) => {
     const trimmed = line.trim();
+
     if (!trimmed) {
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: transparent;">&nbsp;</p>`;
+      if (!lastPushedEmpty && resultParagraphs.length > 0) {
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
+      }
+      return;
     }
+
     const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
     const isTitle = idx === firstNonEmptyIdx && isFullyBold;
+
     if (isTitle) {
       const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
-      const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: transparent;">&nbsp;</p>`;
       const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; margin: 0; padding: 0; background-color: transparent;"><u><strong>${titleText}</strong></u></p>`;
-      return `${emptyLine}${titleHtml}`;
+      
+      resultParagraphs.push(titleHtml);
+      resultParagraphs.push(emptyLine);
+      lastPushedEmpty = true;
     } else if (isFullyBold) {
       const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: transparent;"><strong>${headerText}</strong></p>`;
+      const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: transparent;"><strong>${headerText}</strong></p>`;
+      
+      if (!lastPushedEmpty && resultParagraphs.length > 0) {
+        resultParagraphs.push(emptyLine);
+      }
+      resultParagraphs.push(headerHtml);
+      resultParagraphs.push(emptyLine);
+      lastPushedEmpty = true;
     } else {
       let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
       formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-      return `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: transparent;">${formattedLine}</p>`;
+      resultParagraphs.push(
+        `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: transparent;">${formattedLine}</p>`
+      );
+      lastPushedEmpty = false;
     }
   });
-  return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; background-color: transparent; line-height: 1.15; padding: 8px; text-align: left;">${htmlLines.join("")}</div>`;
+
+  return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: inherit; background-color: transparent; line-height: 1.15; padding: 8px; text-align: left;">${resultParagraphs.join("")}</div>`;
 };
 
 export default function TemplatesPage() {
@@ -251,29 +278,63 @@ export default function TemplatesPage() {
 
     const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
-    const paragraphs = normalizedText.split(/\n\s*\n/);
+    const lines = normalizedText.split("\n");
 
-    const htmlParagraphs = paragraphs.map((para, idx) => {
-      const trimmed = para.trim();
-      if (!trimmed) return "";
+    let firstNonEmptyIdx = -1;
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].trim() !== "") {
+        firstNonEmptyIdx = i;
+        break;
+      }
+    }
+
+    const emptyLine = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; text-align: left; background-color: #ffffff;">&nbsp;</p>`;
+
+    const resultParagraphs: string[] = [];
+    let lastPushedEmpty = false;
+
+    lines.forEach((line, idx) => {
+      const trimmed = line.trim();
+
+      if (!trimmed) {
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+          lastPushedEmpty = true;
+        }
+        return;
+      }
 
       const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
-      const isTitle = idx === 0 && isFullyBold;
+      const isTitle = idx === firstNonEmptyIdx && isFullyBold;
 
       if (isTitle) {
         const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        return `<p style="font-family: Arial, sans-serif; font-size: 12pt; text-decoration: underline; text-align: center; margin: 0 0 16px 0; line-height: 1.5; color: #000000; background-color: #ffffff;"><b>${titleText}</b></p>`;
+        const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; background-color: #ffffff;"><u><strong>${titleText}</strong></u></p>`;
+        
+        resultParagraphs.push(titleHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else if (isFullyBold) {
         const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; margin: 12px 0 4px 0; line-height: 1.5; color: #000000; background-color: #ffffff;"><b>${headerText}</b></p>`;
+        const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
+        
+        if (!lastPushedEmpty && resultParagraphs.length > 0) {
+          resultParagraphs.push(emptyLine);
+        }
+        resultParagraphs.push(headerHtml);
+        resultParagraphs.push(emptyLine);
+        lastPushedEmpty = true;
       } else {
-        let formattedPara = trimmed.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
-        formattedPara = formattedPara.replace(/\n/g, "<br>");
-        return `<p style="font-family: Arial, sans-serif; font-size: 11pt; margin: 0 0 8px 0; line-height: 1.5; color: #000000; background-color: #ffffff;">${formattedPara}</p>`;
+        let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        resultParagraphs.push(
+          `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`
+        );
+        lastPushedEmpty = false;
       }
     });
 
-    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.5; padding: 8px;">${htmlParagraphs.filter(p => p !== "").join("")}</div>`;
+    return `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${resultParagraphs.join("")}</div>`;
   };
 
   const handleCopyClipboard = async (text: string) => {
@@ -433,6 +494,7 @@ export default function TemplatesPage() {
 
   const [isEditorMaximized, setIsEditorMaximized] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const updateSourceRef = useRef<"direct" | "typing" | "history_nav">("direct");
   
   // Estados para historial de Deshacer/Rehacer
@@ -848,8 +910,11 @@ export default function TemplatesPage() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    setSelectedFiles(prev => [...prev, ...Array.from(files)]);
-    e.target.value = "";
+    const fileList = Array.from(files);
+    setSelectedFiles(prev => [...prev, ...fileList]);
+    if (e.target) {
+      e.target.value = "";
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -1103,7 +1168,13 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
                     setModalDoctorId(null);
                   }
                 } else {
-                  setModalDoctorId(null);
+                  if (filterDoctorId && filterDoctorId !== "all") {
+                    setModalDoctorId(parseInt(filterDoctorId));
+                  } else if (doctors.length === 1) {
+                    setModalDoctorId(doctors[0].id);
+                  } else {
+                    setModalDoctorId(null);
+                  }
                 }
                 setIsEditMode(false);
                 setEditId(null);
@@ -1317,36 +1388,39 @@ Espacio Articular: cantidad normal de líquido sinovial. Sin evidencia de derram
               {!isEditMode && (
                 <>
                   <div
+                    onClick={() => fileInputRef.current?.click()}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    className={`p-4 rounded-xl border border-dashed transition-all flex flex-col items-center justify-center text-center relative group min-h-[90px] ${
+                    className={`p-4 rounded-xl border border-dashed transition-all flex flex-col items-center justify-center text-center relative group min-h-[90px] cursor-pointer ${
                       isDragging
                         ? "border-clinical-teal bg-clinical-teal/10 shadow-lg shadow-clinical-teal/5"
                         : "border-clinical-border bg-clinical-surface-inset/30 hover:bg-clinical-surface/40"
                     }`}
                   >
                     <input
+                      ref={fileInputRef}
                       type="file"
                       accept=".docx,.pdf,.txt,.doc,.rtf"
                       onChange={handleFileUpload}
-                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                      onClick={(e) => e.stopPropagation()}
+                      className="hidden"
                       disabled={isFileParsing}
                       multiple
                     />
-                    <UploadCloud className="w-7 h-7 text-clinical-teal mb-1.5 group-hover:scale-105 transition-all" />
+                    <UploadCloud className="w-7 h-7 text-clinical-teal mb-1.5 group-hover:scale-105 transition-all pointer-events-none" />
                     {isFileParsing ? (
-                      <div className="flex items-center gap-2 text-xs font-semibold text-clinical-teal">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-clinical-teal pointer-events-none">
                         <span className="w-3.5 h-3.5 rounded-full border border-clinical-teal border-t-transparent animate-spin"></span>
                         <span>Procesando lote de archivos...</span>
                       </div>
                     ) : (
-                      <>
+                      <div className="pointer-events-none flex flex-col items-center">
                         <span className="text-xs font-bold text-clinical-text">
                           {isDragging ? "¡Suelte los archivos aquí!" : "Cargar plantilla(s) desde archivos"}
                         </span>
                         <span className="text-[9px] text-clinical-text-muted mt-0.5">Soporta uno o varios archivos Word, RTF, PDF o Texto</span>
-                      </>
+                      </div>
                     )}
                   </div>
 
