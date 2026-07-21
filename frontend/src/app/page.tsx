@@ -1184,7 +1184,11 @@ export default function DictationPage() {
       }
 
       const data = await res.json();
-      const transcription = data.text;
+      const transcription = data.transcription || data.text || "";
+
+      if (!transcription || typeof transcription !== "string" || transcription.trim().length === 0) {
+        throw new Error("No se pudo obtener el texto de la transcripción de audio.");
+      }
 
       if (mode === "dictate") {
         setRawText((prev) => (prev ? prev + " " + transcription : transcription));
@@ -1206,7 +1210,7 @@ export default function DictationPage() {
 
   // Enviar texto para estructuración inicial
   const handleStructureReport = async () => {
-    if (!rawText.trim()) {
+    if (!rawText || !rawText.trim()) {
       setError("Por favor escriba o dicte el texto del informe primero.");
       return;
     }
@@ -1283,7 +1287,7 @@ export default function DictationPage() {
 
   // Enviar corrección incremental
   const handleApplyCorrection = async () => {
-    if (!correctionInstruction.trim()) {
+    if (!correctionInstruction || !correctionInstruction.trim()) {
       setError("Por favor escriba o dicte la corrección a aplicar.");
       return;
     }
@@ -1722,7 +1726,7 @@ export default function DictationPage() {
 
                   <button
                     onClick={handleApplyCorrection}
-                    disabled={isLoading || !correctionInstruction.trim()}
+                    disabled={isLoading || !correctionInstruction?.trim()}
                     className="w-full mt-3 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 font-bold tracking-wide transition-all shadow-md shadow-clinical-teal/10 hover:shadow-clinical-teal/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-xs shrink-0"
                   >
                     {isLoading ? (
@@ -1752,7 +1756,7 @@ export default function DictationPage() {
 
                   <button
                     onClick={handleStructureReport}
-                    disabled={isLoading || !rawText.trim()}
+                    disabled={isLoading || !rawText?.trim()}
                     className="w-full mt-3 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal-dim text-slate-950 font-bold tracking-wide transition-all shadow-md shadow-clinical-teal/10 hover:shadow-clinical-teal/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed text-xs shrink-0"
                   >
                     {isLoading ? (
