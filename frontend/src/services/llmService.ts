@@ -1,6 +1,10 @@
 
+interface DoctorProfile {
+  name: string;
+  specialty: string;
+  style_directives: string;
+}
 
-const LM_STUDIO_API_URL = process.env.LM_STUDIO_API_URL || 'http://host.docker.internal:1234/v1';
 
 // ==========================================
 // Rotación y Fallback de Claves API de Gemini
@@ -29,7 +33,7 @@ async function callGeminiWithFallback(
 ): Promise<string> {
   const keys = getGeminiApiKeys();
   const totalKeys = keys.length;
-  let lastError: any = null;
+  let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < totalKeys; attempt++) {
     const index = (currentKeyIndex + attempt) % totalKeys;
@@ -83,9 +87,10 @@ async function callGeminiWithFallback(
       console.log(`✅ Llamada a Gemini exitosa utilizando la clave con índice ${index}.`);
       currentKeyIndex = index;
       return text;
-    } catch (err: any) {
-      console.error(`❌ Excepción al llamar a Gemini con la clave de índice ${index}:`, err.message || err);
-      lastError = err;
+    } catch (err: unknown) {
+      const errObj = err instanceof Error ? err : new Error(String(err));
+      console.error(`❌ Excepción al llamar a Gemini con la clave de índice ${index}:`, errObj.message);
+      lastError = errObj;
     }
   }
 
@@ -156,10 +161,11 @@ async function callOpenAI(
 
       console.log(`✅ Respuesta exitosa de OpenAI (${targetModel}).`);
       return text;
-    } catch (err: any) {
-      if (err.message?.includes('OPENAI_API_KEY')) throw err;
-      console.warn(`⚠️ Error llamando a OpenAI (${targetModel}):`, err.message || err);
-      lastError = err.message || String(err);
+    } catch (err: unknown) {
+      const errObj = err instanceof Error ? err : new Error(String(err));
+      if (errObj.message?.includes('OPENAI_API_KEY')) throw errObj;
+      console.warn(`⚠️ Error llamando a OpenAI (${targetModel}):`, errObj.message);
+      lastError = errObj.message;
     }
   }
 
@@ -256,7 +262,7 @@ export const llmService = {
    * Toma un dictado de voz desestructurado y utiliza el contexto RAG + LLM
    * para generar un informe médico limpio y estructurado.
    */
-  structureReport: async (rawText: string, context: string, doctorProfile: any = null, aiProvider: string = 'gemini'): Promise<string> => {
+  structureReport: async (rawText: string, context: string, doctorProfile: DoctorProfile | null = null, aiProvider: string = 'gemini'): Promise<string> => {
     let doctorStylePrompt = '';
     if (doctorProfile) {
       doctorStylePrompt = `
@@ -268,20 +274,28 @@ export const llmService = {
 - ⚠️ IMPORTANTE: Utiliza las plantillas y los informes previos de este médico recuperados por el RAG como guía estricta para la terminología, estructura de órganos, expresiones típicas y formato de redacción. La devolución final debe replicar con total fidelidad cómo escribe este médico en particular sus informes de estudio de imagen.`;
     }
 
-    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes de "Imagen Diagnóstica". Recibes dictados médicos por voz y los transformas en informes de estudio de imagen formales, objetivos y profesionales.${doctorStylePrompt}
+    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Recibes dictados médicos por voz y tu función principal es estructurarlos utilizando OBLIGATORIAMENTE la plantilla clínica oficial del médico o del sistema como base.${doctorStylePrompt}
 
-SEGURIDAD (REGLA DE ORO — PRIORIDAD MÁXIMA):
-- Basarse EXCLUSIVAMENTE en lo dictado por el médico. PROHIBIDO inventar, alucinar o asumir patologías, medidas, diagnósticos u órganos no mencionados.
-- Si el médico dicta hallazgos para un órgano, transcribirlos con fidelidad absoluta.
-- Para órganos no mencionados por el médico: usar las descripciones normales de la plantilla de referencia RAG (si disponible y compatible). Si no hay plantilla o no es compatible, incluir solo lo dictado.
+⚠️ REGLA SUPREMA Y OBLIGATORIA — USO ESTRICTO DE PLANTILLAS DEL MÉDICO / SISTEMA (PRIORIDAD MÁXIMA PARA TODOS LOS MODELOS):
+1. SIEMPRE QUE EL CONTEXTO RAG CONTENGA UNA PLANTILLA DE REFERENCIA COMPATIBLE (ej: "ECOGRAFÍA TIROIDEA CON DOPPLER", "ECOGRAFÍA MAMARIA BILATERAL", "ECOGRAFÍA ABDOMINAL", "ECOGRAFÍA OBSTÉTRICA", etc.):
+   - DEBES UTILIZAR ESA PLANTILLA EXACTA COMO EL ESQUELETO Y TEXTO BASE DEL INFORME FINAL.
+   - QUEDA ESTRICTAMENTE PROHIBIDO inventar una estructura propia, alucinar secciones no existentes en la plantilla o redactar descripciones estándar distintas a las de la plantilla del médico.
+   - CONSERVA RIGUROSAMENTE los títulos de sección, el orden de los órganos y las descripciones normales clínicas palabra por palabra que figuran en la plantilla para todos los órganos no modificados por el dictado.
+   - ÚNICAMENTE sustituye o modifica el texto de la plantilla en los órganos o estructuras específicas donde el médico haya dictado un hallazgo patológico, medida o alteración.
 
-INTEGRACIÓN CON PLANTILLAS RAG:
-1. El bloque de contexto contiene plantillas o informes reales del RAG. Usarlos como base estructural y terminológica del reporte final cuando coincida el tipo de estudio.
-2. CONSERVAR estructura completa de la plantilla: si describe órganos en estado normal (ej: Hígado de contornos regulares, Vesícula biliar de paredes finas) y el dictado no menciona anomalías para esas estructuras, mantener las descripciones normales.
-3. REEMPLAZO QUIRÚRGICO: Integrar con precisión absoluta todos los hallazgos patológicos, medidas y alteraciones dictadas por el médico, sustituyendo la descripción normal del órgano correspondiente.
-4. Adaptar terminología, expresiones y estilo de redacción de la plantilla de referencia al informe final.
-5. FUSIÓN DE PLANTILLAS MÚLTIPLES: Si el contexto RAG contiene múltiples plantillas de referencia (ej. una de ecografía abdominal y otra de ecografía ginecológica) y el dictado clínico cubre hallazgos correspondientes a ambas, debes fusionar las plantillas en un único informe integrado y cohesivo.
-6. ⚠️ VALIDACIÓN DE COMPATIBILIDAD DE PLANTILLA (CRÍTICO): Si la plantilla de referencia RAG recuperada NO corresponde al tipo de estudio dictado por el médico (por ejemplo, el contexto RAG contiene una plantilla de "ECOGRAFÍA MAMARIA" pero el dictado trata sobre "ECOGRAFÍA OBSTÉTRICA", "ECOGRAFÍA ABDOMINAL", "DOPPLER", etc.), DEBES IGNORAR completamente la plantilla incompatible y estructurar el informe final basándote EXCLUSIVAMENTE en el estudio y hallazgos realmente dictados por el médico. NUNCA fuerces un dictado obstétrico o abdominal dentro de una plantilla mamaria o de otro tipo.
+2. SEGURIDAD Y FIDELIDAD CLÍNICA:
+   - Basarse EXCLUSIVAMENTE en lo dictado por el médico para los hallazgos patológicos. Queda ESTRICTAMENTE PROHIBIDO inventar, alucinar o asumir patologías, medidas, diagnósticos u órganos no mencionados.
+   - Si el médico dicta hallazgos para un órgano, transcribirlos con fidelidad absoluta integrándolos en la sección correspondiente de la plantilla.
+
+3. VALIDACIÓN DE COMPATIBILIDAD DE PLANTILLAS:
+   - Si el contexto RAG contiene una plantilla compatible con el estudio dictado, ÚSALA OBLIGATORIAMENTE.
+   - Si el contexto RAG contiene múltiples plantillas que corresponden al estudio (ej: abdominal + ginecológica), fusiónalas respetando las secciones de ambas plantillas.
+   - Si la plantilla RAG no corresponde en absoluto al tipo de estudio dictado (ej. RAG incluye "ECOGRAFÍA MAMARIA" pero el dictado trata sobre "ECOGRAFÍA OBSTÉTRICA"), descarta la plantilla incompatible y estructura el informe respetando exclusivamente el estudio dictado.
+
+4. ⚠️ OBLIGACIÓN EN DICTADOS CORTOS / SOLICITUD DE ESTUDIO (MÁXIMA PRIORIDAD PARA CHATGPT, GROQ Y GEMINI):
+   - Si el dictado o entrada del usuario es únicamente el nombre de un estudio (ejemplo: "Ecografía tiroidea con doppler", "Ecografía mamaria bilateral", "Doppler renal", "Ecografía abdominal", etc.) o una solicitud breve sin hallazgos patológicos específicos:
+   - DEBES DEVOLVER LA PLANTILLA COMPLETA DE ESE ESTUDIO RECUPERADA DEL RAG CON TODAS SUS SECCIONES, ÓRGANOS Y DESCRIPCIONES CLINICAS COMPLETAS.
+   - Queda ESTRICTAMENTE PROHIBIDO devolver respuestas resumidas o truncadas como "Se efectuó ecografía... Conclusión: estudio solicitado" o dejar secciones vacías. Devuelve SIEMPRE el informe/plantilla COMPLETO estructurado órgano por órgano para que el médico pueda editarlo directamente.
 
 DIRECTIVAS RADIOLÓGICAS PROFESIONALES:
 - TERMINOLOGÍA ECOGRÁFICA: Usar descriptores profesionales de imagen (ecogenicidad, ecotextura, ecoestructura homogénea/heterogénea, anecoico, hipoecoico, isoecoico, hiperecoico, refuerzo acústico posterior, sombra acústica posterior, márgenes regulares/irregulares, contornos netos/difusos).
@@ -292,22 +306,22 @@ DIRECTIVAS RADIOLÓGICAS PROFESIONALES:
 ${REGLAS_FORMATO}
 
 FORMATO DE SALIDA:
-- TÍTULO DINÁMICO: El título principal del informe debe reflejar el tipo de estudio específico, inferido del dictado y/o la plantilla RAG (ej: **ECOGRAFÍA MAMARIA BILATERAL**, **ECOGRAFÍA OBSTÉTRICA — 3° TRIMESTRE**, **DOPPLER VENOSO DE MIEMBROS INFERIORES**, **ECOGRAFÍA ABDOMINAL**). Usar **INFORME** solo si el tipo de estudio no se puede determinar.
-- Estructura de secciones con líneas en blanco obligatorias (omitir **FACTORES DE RIESGO** si no se mencionan en el dictado):
+- TÍTULO DINÁMICO: El título principal debe coincidir con el título de la plantilla RAG o reflejar el tipo de estudio específico (ej: **ECOGRAFÍA TIROIDEA CON DOPPLER**, **ECOGRAFÍA MAMARIA BILATERAL**, **ECOGRAFÍA OBSTÉTRICA — 3° TRIMESTRE**).
+- Estructura de secciones con líneas en blanco obligatorias (omitir **FACTORES DE RIESGO** si no se mencionan en el dictado ni en la plantilla):
 
 **[TÍTULO DEL TIPO DE ESTUDIO]**
 
-[Detalle estructurado órgano por órgano según plantilla RAG. Hallazgos normales conservados de la plantilla. Anomalías dictadas por el médico integradas con **negrita** en los puntos anatómicos clave.]
+[Detalle estructurado órgano por órgano replicando fielmente la plantilla RAG del médico/sistema. Hallazgos normales conservados palabra por palabra de la plantilla. Hallazgos dictados por el médico integrados con **negrita** en los puntos anatómicos clave.]
 
 **FACTORES DE RIESGO**
 
-[Solo si el médico los menciona. Párrafos limpios sin viñetas.]
+[Solo si el médico los menciona o figuran en la plantilla. Párrafos limpios sin viñetas.]
 
 **CONCLUSIÓN**
 
-[Diagnóstico final conciso y preciso. Incluir clasificaciones estandarizadas si el médico las dictó. Párrafo directo sin viñetas.]
+[Diagnóstico final conciso según plantilla y dictado. Incluir clasificaciones estandarizadas dictadas. Párrafo directo sin viñetas.]
 
-Contexto de referencia (plantillas y ejemplos RAG):
+Contexto de referencia (Plantillas oficiales recuperadas del RAG para este médico/sistema):
 ---
 ${context}
 ---`;
@@ -320,7 +334,7 @@ ${context}
    * Se le proporciona un informe médico estructurado, una instrucción de corrección
    * y el perfil del médico actual. Aplica estrictamente los cambios indicados.
    */
-  correctReport: async (originalReport: string, correctionInstruction: string, doctorProfile: any = null, aiProvider: string = 'gemini'): Promise<string> => {
+  correctReport: async (originalReport: string, correctionInstruction: string, doctorProfile: DoctorProfile | null = null, aiProvider: string = 'gemini'): Promise<string> => {
     let doctorStylePrompt = '';
     if (doctorProfile) {
       doctorStylePrompt = `
@@ -332,16 +346,21 @@ ${context}
 - ⚠️ IMPORTANTE: Mantén la terminología y las expresiones típicas del estilo de este médico durante las correcciones, asegurando que todo cambio se integre de forma natural con el resto del reporte.`;
     }
 
-    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes de "Imagen Diagnóstica". Se te proporciona un informe de estudio de imagen ya estructurado y una instrucción de corrección dictada por voz por el médico. Aplica los cambios de forma quirúrgica y precisa.${doctorStylePrompt}
+    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Se te proporciona un informe de estudio de imagen previamente generado y una instrucción de edición/corrección dictada por el médico (por voz o texto). Tu función es aplicar con total precisión las modificaciones solicitadas sobre el informe base.${doctorStylePrompt}
 
-REGLAS DE CORRECCIÓN (ESTRICTAS):
-1. Modificar EXCLUSIVAMENTE el fragmento anatómico o sección afectada por la instrucción. NO alterar, reordenar ni reescribir el resto del informe.
-2. NO inventar ni añadir información que no esté en la instrucción de corrección ni en el informe original.
-3. Mantener el formato, estilo, terminología y estructura del informe original intactos.
-4. Si la corrección implica agregar o cambiar una medida, incluir siempre la unidad correspondiente según contexto anatómico.
-5. Si una sección queda sin contenido tras la corrección (ej: Factores de Riesgo), omitirla completamente (título y contenido).
-6. La respuesta debe ser el informe COMPLETO actualizado, empezando directamente con el título del estudio.
-7. ⚠️ DETECCIÓN DE NUEVO DICTADO COMPLETO / ESTUDIO DIFERENTE (MÁXIMA PRIORIDAD): Si la instrucción recibida no es una pequeña corrección puntual sobre el informe actual, sino un dictado médico completo para un nuevo estudio (por ejemplo, el informe actual es "ECOGRAFÍA MAMARIA" pero el texto dictado trata sobre una ecografía obstétrica, abdominal, ginecológica o renal completa), DEBES DESCARTAR COMPLETAMENTE el informe anterior y estructurar desde cero el nuevo informe médico formal correspondiente al nuevo dictado.
+REGLAS DE CORRECCIÓN Y EDICIÓN POR VOZ (ESTRICTAS PARA TODOS LOS MODELOS):
+1. MEMORIA Y CONTEXTO DEL INFORME: Toma el "Informe original a corregir" como contexto base. Todos los cambios solicitados por el médico deben aplicarse sobre este informe, conservando intacto todo el contenido que no haya sido afectado por la instrucción.
+2. EDICIÓN DE CONTENIDO Y ESTRUCTURA: Modifica, agrega o elimina hallazgos, párrafos, medidas o secciones según la indicación explícita del médico.
+3. EDICIÓN DE FORMATO, ESTILO Y ALINEACIÓN (RICHTEXT / HTML / MARKDOWN):
+   - Negrita: Si el médico pide destacar o colocar palabras en negrita, usa **palabra** o <b>palabra</b>.
+   - Cursiva y Subrayado: Si pide cursiva usa *palabra* y si pide subrayado usa <u>palabra</u>.
+   - Alineación de texto: Si el médico pide alinear al centro, a la derecha o a la izquierda, aplica etiquetas de alineación HTML (ejemplo: <p style="text-align: center;">Texto</p>).
+   - Tamaños de letra: Si el médico pide un tamaño específico (ej: 14pt, 12pt), usa etiquetas span de tamaño (ejemplo: <span style="font-size: 14pt;">Texto</span>).
+   - (Nota: La familia de tipografía se mantiene fija por el sistema, pero todos los demás atributos de formato visual indicados por el médico deben aplicarse estrictamente).
+4. FIDELIDAD RADIOLÓGICA: Si la edición implica modificar medidas o números, conserva siempre las unidades correspondientes (mm, cm, cc, lpm, etc.).
+5. OMISIÓN DE SECCIONES VACÍAS: Si una sección queda sin contenido tras la corrección, omítela completamente.
+6. RESPUESTA COMPLETA: La respuesta debe ser el informe COMPLETO actualizado en Markdown/HTML limpio, empezando directamente con el título del estudio.
+7. ⚠️ DETECCIÓN DE NUEVO DICTADO COMPLETO / ESTUDIO DIFERENTE (MÁXIMA PRIORIDAD): Si la instrucción recibida no es una edición o corrección sobre el informe actual, sino un dictado médico completo para un nuevo estudio (por ejemplo, el informe actual es "ECOGRAFÍA MAMARIA" pero el texto dictado trata sobre una ecografía obstétrica, abdominal o renal completa), DEBES DESCARTAR COMPLETAMENTE el informe anterior y estructurar desde cero el nuevo informe médico formal correspondiente al nuevo dictado.
 
 ${REGLAS_FORMATO}
 
@@ -358,7 +377,7 @@ ${originalReport}
    * Toma una plantilla clínica de referencia y la transforma en una plantilla vacía
    * con campos representados por puntos suspensivos ("...") para rellenar.
    */
-  generateEmptyTemplate: async (templateTitle: string, templateContent: string, doctorProfile: any = null, aiProvider: string = 'gemini'): Promise<string> => {
+  generateEmptyTemplate: async (templateTitle: string, templateContent: string, doctorProfile: DoctorProfile | null = null, aiProvider: string = 'gemini'): Promise<string> => {
     let doctorStylePrompt = '';
     if (doctorProfile) {
       doctorStylePrompt = `
@@ -368,7 +387,7 @@ ${originalReport}
 - Debes aplicar el estilo de redacción del médico: "${doctorProfile.style_directives}"`;
     }
 
-    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes de "Imagen Diagnóstica". Tu tarea es tomar una plantilla de informe médico de referencia (que contiene texto con hallazgos normales y descripciones clínicas) y transformarla en una plantilla editable.
+    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Tu tarea es tomar una plantilla de informe médico de referencia (que contiene texto con hallazgos normales y descripciones clínicas) y transformarla en una plantilla editable.
 
 REGLAS DE GENERACIÓN DE LA PLANTILLA EDITABLE (ESTRICTAS):
 1. CONSERVA TODO EL TEXTO DESCRIPTIVO: Mantén intacta toda la información clínica, frases, descripciones detalladas de normalidad (o hallazgos) y conclusiones de la plantilla de referencia. Está PROHIBIDO reemplazar descripciones de texto o frases completas (como "de contornos regulares y ecoestructura conservada", "sin evidencia de líquido libre", etc.) con puntos suspensivos o vaciar las secciones.
@@ -417,7 +436,7 @@ ${doctorStylePrompt}`;
    * Toma múltiples plantillas clínicas de referencia y las fusiona en una única plantilla vacía
    * con campos representados por puntos suspensivos ("...") para rellenar.
    */
-  generateMergedEmptyTemplate: async (templates: { title: string; content: string }[], doctorProfile: any = null, aiProvider: string = 'gemini'): Promise<string> => {
+  generateMergedEmptyTemplate: async (templates: { title: string; content: string }[], doctorProfile: DoctorProfile | null = null, aiProvider: string = 'gemini'): Promise<string> => {
     let doctorStylePrompt = '';
     if (doctorProfile) {
       doctorStylePrompt = `
@@ -427,7 +446,7 @@ ${doctorStylePrompt}`;
 - Debes aplicar el estilo de redacción del médico: "${doctorProfile.style_directives}"`;
     }
 
-    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes de "Imagen Diagnóstica". Tu tarea es tomar múltiples plantillas de informes médicos de referencia y fusionarlas en una única plantilla de informe complejo vacía (editable).
+    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Tu tarea es tomar múltiples plantillas de informes médicos de referencia y fusionarlas en una única plantilla de informe complejo vacía (editable).
 
 REGLAS DE FUSIÓN Y EN BLANCO (ESTRICTAS):
 1. COMBINA LOS TÍTULOS: Genera un único título principal en negrita en la primera línea que combine de forma clara y formal todos los estudios fusionados (ej. "**ECOGRAFÍA ABDOMINAL Y ECOGRAFÍA GINECOLÓGICA**", o "**ECOGRAFÍA DE ABDOMEN Y PELVIS**").

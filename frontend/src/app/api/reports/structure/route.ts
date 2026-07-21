@@ -73,6 +73,8 @@ export async function POST(req: NextRequest) {
   const user = authenticate(req);
   if (!user) return unauthorizedResponse();
 
+  let currentAiModel = 'gemini';
+
   try {
     const { rawText, doctorId } = await req.json();
 
@@ -101,7 +103,7 @@ export async function POST(req: NextRequest) {
       if (templateDocs.length > 0) {
         const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
         const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
-        const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
+        currentAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
         
         const finalDoctorId = docIdNum || templateDocs[0].doctor_id;
         let doctorProfile: any = null;
@@ -116,17 +118,17 @@ export async function POST(req: NextRequest) {
             templateDocs[0].title,
             templateDocs[0].content,
             doctorProfile,
-            activeAiModel
+            currentAiModel
           );
         } else {
           emptyTemplate = await llmService.generateMergedEmptyTemplate(
             templateDocs.map(d => ({ title: d.title, content: d.content })),
             doctorProfile,
-            activeAiModel
+            currentAiModel
           );
         }
 
-        const aiTypeFormatted = formatAiType(activeAiModel);
+        const aiTypeFormatted = formatAiType(currentAiModel);
         const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
 
         const repRes = await db.query(
@@ -170,11 +172,11 @@ export async function POST(req: NextRequest) {
 
     const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
     const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
-    const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
+    currentAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
-    const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, activeAiModel);
+    const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, currentAiModel);
 
-    const aiTypeFormatted = formatAiType(activeAiModel);
+    const aiTypeFormatted = formatAiType(currentAiModel);
     const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
 
     const insertRes = await db.query(
@@ -193,8 +195,13 @@ export async function POST(req: NextRequest) {
       doctorSpecialty: doctorProfile?.specialty || null
     });
   } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message || 'Error estructurando el informe.' }, { status: 500 });
+    console.error('Error en /api/reports/structure:', error);
+    const providerFormatted = formatAiType(currentAiModel);
+    return NextResponse.json({
+      error: error.message || 'Error procesando el informe con la IA.',
+      isAiError: true,
+      aiProvider: providerFormatted
+    }, { status: 500 });
   }
 }
 

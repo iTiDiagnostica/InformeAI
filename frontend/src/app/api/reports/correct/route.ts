@@ -24,6 +24,8 @@ export async function POST(req: NextRequest) {
   const user = authenticate(req);
   if (!user) return unauthorizedResponse();
 
+  let currentAiModel = 'gemini';
+
   try {
     const { reportId, originalReport, correctionInstruction, doctorId } = await req.json();
 
@@ -53,9 +55,9 @@ export async function POST(req: NextRequest) {
 
     const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
     const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
-    const activeAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
+    currentAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
-    const updatedReport = await llmService.correctReport(originalReport, normalizedInstruction, doctorProfile, activeAiModel);
+    const updatedReport = await llmService.correctReport(originalReport, normalizedInstruction, doctorProfile, currentAiModel);
 
     if (reportId) {
       await db.query(
@@ -73,8 +75,13 @@ export async function POST(req: NextRequest) {
       doctorSpecialty: doctorProfile?.specialty || null
     });
   } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message || 'Error corrigiendo el informe.' }, { status: 500 });
+    console.error('Error en /api/reports/correct:', error);
+    const providerFormatted = (currentAiModel.includes('chatgpt') || currentAiModel.includes('openai')) ? 'ChatGPT' : currentAiModel.includes('groq') ? 'Groq' : 'Gemini';
+    return NextResponse.json({
+      error: error.message || 'Error aplicando la corrección con la IA.',
+      isAiError: true,
+      aiProvider: providerFormatted
+    }, { status: 500 });
   }
 }
 

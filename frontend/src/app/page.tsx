@@ -237,6 +237,9 @@ const convertReportToHtml = (text: string): string => {
       resultParagraphs.push(headerHtml);
       resultParagraphs.push(emptyLine);
       lastPushedEmpty = true;
+    } else if (trimmed.startsWith("<p") || trimmed.startsWith("<div")) {
+      resultParagraphs.push(trimmed);
+      lastPushedEmpty = false;
     } else {
       let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
       formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
@@ -489,6 +492,17 @@ export default function DictationPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeAiModel, setActiveAiModel] = useState<string>("gemini");
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [aiErrorDetails, setAiErrorDetails] = useState<{
+    isOpen: boolean;
+    providerName: string;
+    message: string;
+    technicalDetail?: string;
+  }>({
+    isOpen: false,
+    providerName: "Gemini",
+    message: "",
+    technicalDetail: "",
+  });
   const [isInitialized, setIsInitialized] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
@@ -508,6 +522,17 @@ export default function DictationPage() {
       return { id: "groq", name: "Groq", logo: <GroqLogo className="w-4 h-4 text-amber-500 dark:text-amber-400" /> };
     }
     return { id: "gemini", name: "Gemini", logo: <GeminiLogo className="w-4 h-4" /> };
+  };
+
+  const triggerAiErrorModal = (data: any, defaultErrorMsg: string) => {
+    const rawError = data?.error || defaultErrorMsg;
+    const providerName = data?.aiProvider || getAiProviderInfo(activeAiModel).name;
+    setAiErrorDetails({
+      isOpen: true,
+      providerName,
+      message: `El servicio de Inteligencia Artificial (${providerName}) no se encuentra disponible por el momento. Por favor seleccione otro modelo de Inteligencia Artificial o contacte al administrador.`,
+      technicalDetail: rawError
+    });
   };
 
   const selectAiProvider = async (providerId: string) => {
@@ -1337,26 +1362,29 @@ export default function DictationPage() {
         try {
           data = await res.json();
         } catch {
-          // Vercel puede devolver HTML en lugar de JSON al timeout (504)
-          throw new Error(`Error del servidor (${res.status}). Intente nuevamente.`);
+          data = { error: `Error del servidor (${res.status}).` };
         }
         if (data.code === 'TEMPLATE_NOT_FOUND') {
           setMissingTemplateName(data.query || rawText);
           setIsTemplateErrorModalOpen(true);
+          return;
         }
-        throw new Error(data.error || "Fallo en la estructuración.");
+        triggerAiErrorModal(data, "No se pudo procesar la solicitud con el servicio de Inteligencia Artificial.");
+        return;
       }
 
       let data: any = {};
       try {
         data = await res.json();
       } catch {
-        throw new Error("La respuesta del servidor no es válida. Intente nuevamente.");
+        triggerAiErrorModal({}, "La respuesta del servicio de IA no es válida.");
+        return;
       }
 
       const structuredText = data?.structuredText || data?.structuredReport || "";
       if (!structuredText || typeof structuredText !== "string" || structuredText.trim().length === 0) {
-        throw new Error("La IA no generó un informe válido. Intente nuevamente.");
+        triggerAiErrorModal({}, "La IA no generó un informe válido. Intente nuevamente.");
+        return;
       }
 
       if (isAiWarningMessage(structuredText)) {
@@ -1377,9 +1405,8 @@ export default function DictationPage() {
 
 
       fetchHistory();
-    } catch (err) {
-      const errorObj = err as Error;
-      setError(errorObj.message || "Error al conectar con el servidor.");
+    } catch (err: any) {
+      triggerAiErrorModal({ error: err.message }, "Error al conectar con el servidor de Inteligencia Artificial.");
     } finally {
       setIsLoading(false);
     }
@@ -1397,14 +1424,21 @@ export default function DictationPage() {
       return;
     }
 
-    // Extraer texto plano del HTML para enviar al backend de IA
+    // Extraer representación del informe actual para el backend de IA (preservando formato)
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = sanitizeHtml(structuredReport);
-    // Convertir <strong> a ** para que la IA reconozca la estructura
+    
+    // Convertir elementos visuales a sintaxis limpia conservando el contenido interno y formato
     tempDiv.querySelectorAll('strong, b').forEach(el => {
-      el.replaceWith(`**${el.textContent}**`);
+      const content = el.innerHTML;
+      el.replaceWith(`**${content}**`);
     });
-    const plainReportForAI = tempDiv.innerText || tempDiv.textContent || '';
+    tempDiv.querySelectorAll('em, i').forEach(el => {
+      const content = el.innerHTML;
+      el.replaceWith(`*${content}*`);
+    });
+
+    const plainReportForAI = tempDiv.innerHTML || tempDiv.innerText || tempDiv.textContent || '';
 
     setIsLoading(true);
     setError(null);
@@ -1432,21 +1466,24 @@ export default function DictationPage() {
         try {
           data = await res.json();
         } catch {
-          throw new Error(`Error del servidor (${res.status}). Intente nuevamente.`);
+          data = { error: `Error del servidor (${res.status}).` };
         }
-        throw new Error(data.error || "Fallo al aplicar corrección.");
+        triggerAiErrorModal(data, "No se pudo aplicar la corrección con el servicio de Inteligencia Artificial.");
+        return;
       }
 
       let data: any = {};
       try {
         data = await res.json();
       } catch {
-        throw new Error("La respuesta del servidor no es válida. Intente nuevamente.");
+        triggerAiErrorModal({}, "La respuesta de corrección del servicio de IA no es válida.");
+        return;
       }
 
       const correctedText = data?.structuredText || data?.structuredReport || "";
       if (!correctedText || typeof correctedText !== "string" || correctedText.trim().length === 0) {
-        throw new Error("La IA no generó una corrección válida. Intente nuevamente.");
+        triggerAiErrorModal({}, "La IA no generó una corrección válida. Intente nuevamente.");
+        return;
       }
 
       if (isAiWarningMessage(correctedText)) {
@@ -2554,6 +2591,68 @@ export default function DictationPage() {
                 className="px-5 py-2.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text text-xs font-bold transition-all shadow-sm cursor-pointer"
               >
                 Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Estilizado de Error de Proveedor de IA (Versión Minimalista) */}
+      {aiErrorDetails.isOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-clinical-panel border border-clinical-border rounded-3xl p-6 shadow-2xl max-w-md w-full flex flex-col space-y-5 animate-in zoom-in-95 duration-200">
+            {/* Header del Modal con Logo del Proveedor */}
+            <div className="flex items-center justify-between pb-3 border-b border-clinical-border">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-clinical-surface border border-clinical-border/80 shadow-sm shrink-0 flex items-center justify-center">
+                  {getAiProviderInfo(aiErrorDetails.providerName).logo}
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-clinical-text uppercase tracking-wider">
+                    Servicio No Disponible
+                  </h3>
+                  <p className="text-[11px] font-semibold text-clinical-text-muted mt-0.5">
+                    Motor IA: <span className="text-clinical-teal font-bold">{aiErrorDetails.providerName}</span>
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAiErrorDetails((prev) => ({ ...prev, isOpen: false }))}
+                className="p-1.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover text-clinical-text-muted hover:text-clinical-text border border-clinical-border/50 transition-all cursor-pointer"
+                title="Cerrar"
+                aria-label="Cerrar modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Mensaje Breve y Directo */}
+            <div className="p-4 rounded-2xl bg-clinical-surface-inset border border-clinical-border">
+              <p className="text-xs text-clinical-text leading-relaxed font-medium">
+                El servicio de Inteligencia Artificial <strong className="text-clinical-teal">{aiErrorDetails.providerName}</strong> no se encuentra disponible momentáneamente. Por favor seleccione otro motor de Inteligencia Artificial.
+              </p>
+            </div>
+
+            {/* Acciones */}
+            <div className="pt-1 flex flex-col sm:flex-row items-center justify-end gap-2.5">
+              <button
+                type="button"
+                onClick={() => setAiErrorDetails((prev) => ({ ...prev, isOpen: false }))}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-clinical-surface hover:bg-clinical-surface-hover border border-clinical-border text-clinical-text text-xs font-bold transition-all shadow-sm cursor-pointer"
+              >
+                Cerrar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setAiErrorDetails((prev) => ({ ...prev, isOpen: false }));
+                  setIsAiModalOpen(true);
+                }}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-clinical-teal hover:bg-clinical-teal/90 text-slate-950 text-xs font-bold transition-all shadow-md shadow-clinical-teal/20 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Cpu className="w-4 h-4 text-slate-950" />
+                Seleccionar otro Motor IA
               </button>
             </div>
           </div>
