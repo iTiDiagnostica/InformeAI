@@ -66,7 +66,6 @@ function formatAiType(activeAiModel: string): string {
   const lower = activeAiModel.toLowerCase();
   if (lower.includes('gemini')) return 'Gemini';
   if (lower.includes('chatgpt') || lower.includes('openai') || lower.includes('gpt')) return 'ChatGPT';
-  if (lower.includes('groq')) return 'Groq';
   return activeAiModel.charAt(0).toUpperCase() + activeAiModel.slice(1);
 }
 

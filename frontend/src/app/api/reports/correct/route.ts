@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (error: any) {
     console.error('Error en /api/reports/correct:', error);
-    const providerFormatted = (currentAiModel.includes('chatgpt') || currentAiModel.includes('openai')) ? 'ChatGPT' : currentAiModel.includes('groq') ? 'Groq' : 'Gemini';
+    const providerFormatted = (currentAiModel.includes('chatgpt') || currentAiModel.includes('openai')) ? 'ChatGPT' : 'Gemini';
     return NextResponse.json({
       error: error.message || 'Error aplicando la corrección con la IA.',
       isAiError: true,

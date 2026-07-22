@@ -21,9 +21,7 @@ export async function PUT(req: NextRequest) {
       !activeAiModel ||
       (activeAiModel !== 'gemini' &&
         activeAiModel !== 'chatgpt' &&
-        activeAiModel !== 'groq' &&
         !activeAiModel.startsWith('gemini') &&
-        !activeAiModel.startsWith('groq') &&
         !activeAiModel.startsWith('openai') &&
         !activeAiModel.startsWith('chatgpt') &&
         !activeAiModel.startsWith('gpt'))

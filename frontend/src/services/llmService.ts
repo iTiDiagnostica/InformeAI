@@ -182,49 +182,12 @@ async function callProvider(
 ): Promise<string> {
   const provider = (aiProvider || 'gemini').toLowerCase();
 
-  if (provider.includes('gemini')) {
-    const modelName = provider === 'gemini' ? 'gemini-3.1-flash-lite' : aiProvider;
-    return await callGeminiWithFallback(modelName, systemPrompt, userPrompt);
-  } else if (provider.includes('chatgpt') || provider.includes('openai') || provider.includes('gpt')) {
+  if (provider.includes('chatgpt') || provider.includes('openai') || provider.includes('gpt')) {
     return await callOpenAI('gpt-5.4-mini', systemPrompt, userPrompt);
-  } else if (provider.includes('groq')) {
-    const groqModel = provider.includes('llama') ? provider.replace(/^groq-/, '') : 'llama-3.3-70b-versatile';
-    const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
-    if (!GROQ_API_KEY) {
-      throw new Error('GROQ_API_KEY no está configurada en .env.');
-    }
-    const url = 'https://api.groq.com/openai/v1/chat/completions';
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GROQ_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: groqModel,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
-        ],
-        temperature: 0.1,
-        max_tokens: 3000,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Groq API respondió con código ${response.status}: ${errorText}`);
-    }
-
-    const data = await response.json();
-    if (!data.choices?.length || !data.choices[0]?.message?.content) {
-      throw new Error('Groq API devolvió una respuesta vacía o malformada.');
-    }
-    return data.choices[0].message.content;
   } else {
     // Fallback a Gemini si el proveedor no coincide
-    return await callGeminiWithFallback('gemini-3.1-flash-lite', systemPrompt, userPrompt);
+    const modelName = provider.includes('gemini') && provider !== 'gemini' ? aiProvider : 'gemini-3.1-flash-lite';
+    return await callGeminiWithFallback(modelName, systemPrompt, userPrompt);
   }
 }
 
@@ -292,7 +255,7 @@ export const llmService = {
    - Si el contexto RAG contiene múltiples plantillas que corresponden al estudio (ej: abdominal + ginecológica), fusiónalas respetando las secciones de ambas plantillas.
    - Si la plantilla RAG no corresponde en absoluto al tipo de estudio dictado (ej. RAG incluye "ECOGRAFÍA MAMARIA" pero el dictado trata sobre "ECOGRAFÍA OBSTÉTRICA"), descarta la plantilla incompatible y estructura el informe respetando exclusivamente el estudio dictado.
 
-4. ⚠️ OBLIGACIÓN EN DICTADOS CORTOS / SOLICITUD DE ESTUDIO (MÁXIMA PRIORIDAD PARA CHATGPT, GROQ Y GEMINI):
+4. ⚠️ OBLIGACIÓN EN DICTADOS CORTOS / SOLICITUD DE ESTUDIO (MÁXIMA PRIORIDAD PARA CHATGPT Y GEMINI):
    - Si el dictado o entrada del usuario es únicamente el nombre de un estudio (ejemplo: "Ecografía tiroidea con doppler", "Ecografía mamaria bilateral", "Doppler renal", "Ecografía abdominal", etc.) o una solicitud breve sin hallazgos patológicos específicos:
    - DEBES DEVOLVER LA PLANTILLA COMPLETA DE ESE ESTUDIO RECUPERADA DEL RAG CON TODAS SUS SECCIONES, ÓRGANOS Y DESCRIPCIONES CLINICAS COMPLETAS.
    - Queda ESTRICTAMENTE PROHIBIDO devolver respuestas resumidas o truncadas como "Se efectuó ecografía... Conclusión: estudio solicitado" o dejar secciones vacías. Devuelve SIEMPRE el informe/plantilla COMPLETO estructurado órgano por órgano para que el médico pueda editarlo directamente.

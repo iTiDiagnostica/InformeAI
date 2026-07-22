@@ -9,7 +9,7 @@ import {
   Mic, Upload, Trash2, Sparkles, Wand2, Undo2, Redo2, Maximize2, Minimize2, 
   Copy, Check, Bold, Italic, Underline, ChevronDown, LayoutTemplate, 
   Info, X, ExternalLink, Search, Users, AlertTriangle, Stethoscope, Square, Plus,
-  Cpu, Bot
+  Cpu, Bot, Pause, Play
 } from "lucide-react";
 
 import { Company, Doctor, Report, SpeechRecognitionInstance, SpeechRecognitionEvent } from "@/types";
@@ -40,12 +40,6 @@ const GeminiLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
 const ChatGPTLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0814 4.7792-2.7582a.7944.7944 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.5045 4.5045 0 0 1-4.4954 4.4954zm-9.6607-4.1254a4.4707 4.4707 0 0 1-.535-3.0137l.142.0852 4.7839 2.7582a.7944.7944 0 0 0 .7854 0l5.8334-3.3693v2.3325a.0805.0805 0 0 1-.0332.0616l-4.836 2.7912a4.495 4.495 0 0 1-6.1405-1.6457zm-1.1511-10.426a4.4755 4.4755 0 0 1 2.3414-1.9729v5.6727a.7944.7944 0 0 0 .3927.6813l5.8334 3.3693-2.02 1.1686a.071.071 0 0 1-.0711 0l-4.8313-2.7912a4.495 4.495 0 0 1-1.6451-6.1278zm16.597 3.0232l-5.8334-3.3693 2.02-1.1686a.071.071 0 0 1 .0711 0l4.8313 2.7912a4.4998 4.4998 0 0 1-.687 8.1006v-5.6727a.7896.7896 0 0 0-.3973-.6812zm2.0342-3.3075l-.142-.0852-4.7839-2.7582a.7944.7944 0 0 0-.7854 0L10.7497 7.9712V5.6387a.0805.0805 0 0 1 .0332-.0616l4.836-2.7912a4.495 4.495 0 0 1 6.6755 4.6593zm-10.3772-7.551a4.4755 4.4755 0 0 1 2.8764 1.0408l-.1419.0814-4.7792 2.7582a.7944.7944 0 0 0-.3927.6813v6.7369l-2.02-1.1686a.071.071 0 0 1-.038-.052V5.4419a4.5045 4.5045 0 0 1 4.4954-4.4954zm.7674 8.784l2.7582 1.5916-2.7582 1.5916-2.7582-1.5916z"/>
-  </svg>
-);
-
-const GroqLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/>
   </svg>
 );
 
@@ -350,8 +344,10 @@ export default function DictationPage() {
   // Resolver API_URL de forma dinámica en red local para evitar fallas al conectar desde otros dispositivos
   const API_URL = "";
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const isRecordingRef = useRef(false);
+  const isPausedRef = useRef(false);
   const [mode, setMode] = useState<"dictate" | "correct">("dictate");
   const [rawText, setRawText] = useState("");
   const [correctionInstruction, setCorrectionInstruction] = useState("");
@@ -518,9 +514,6 @@ export default function DictationPage() {
     if (lower.includes("chatgpt") || lower.includes("openai") || lower.includes("gpt")) {
       return { id: "chatgpt", name: "ChatGPT", logo: <ChatGPTLogo className="w-4 h-4 text-emerald-500 dark:text-emerald-400" /> };
     }
-    if (lower.includes("groq")) {
-      return { id: "groq", name: "Groq", logo: <GroqLogo className="w-4 h-4 text-amber-500 dark:text-amber-400" /> };
-    }
     return { id: "gemini", name: "Gemini", logo: <GeminiLogo className="w-4 h-4" /> };
   };
 
@@ -633,18 +626,17 @@ export default function DictationPage() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
-    if (isRecording) {
-      setRecordingSeconds(0);
+    if (isRecording && !isPaused) {
       interval = setInterval(() => {
         setRecordingSeconds((prev) => prev + 1);
       }, 1000);
-    } else {
+    } else if (!isRecording) {
       setRecordingSeconds(0);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isRecording]);
+  }, [isRecording, isPaused]);
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60).toString().padStart(2, "0");
@@ -1130,17 +1122,53 @@ export default function DictationPage() {
     setShowMicWarning(true);
   };
 
+  // Concatenar dictados sucesivos separándolos con un espacio
+  const formatAppendedText = (prevText: string, newText: string): string => {
+    const existing = (prevText || "").trim();
+    const addition = (newText || "").trim();
+    if (!existing) return addition;
+    if (!addition) return existing;
+
+    return `${existing} ${addition}`;
+  };
+
   // Lógica de grabación por voz (Speech Recognition)
   const startRecording = async () => {
-    setError(null);
-
-    // Limpiar texto previo al iniciar un nuevo dictado por voz
-    if (mode === "dictate") {
-      setRawText("");
-    } else {
-      setCorrectionInstruction("");
+    if (isRecording && isPaused) {
+      resumeRecording();
+      return;
     }
+    setError(null);
+    setIsPaused(false);
+    isPausedRef.current = false;
+    await startRecordingInternal();
+  };
 
+  const pauseRecording = () => {
+    if (!isRecordingRef.current || isPausedRef.current) return;
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
+    isPausedRef.current = true;
+    setIsPaused(true);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch (err) {
+        console.error("Error al pausar reconocimiento de voz:", err);
+      }
+    }
+  };
+
+  const resumeRecording = () => {
+    if (!isRecordingRef.current || !isPausedRef.current) return;
+    isPausedRef.current = false;
+    setIsPaused(false);
+    startRecordingInternal();
+  };
+
+  const startRecordingInternal = async () => {
     const SpeechRecognitionClass =
       (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionInstance }).SpeechRecognition ||
       (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionInstance }).webkitSpeechRecognition;
@@ -1150,7 +1178,6 @@ export default function DictationPage() {
       return;
     }
 
-    // Verificar si navigator.mediaDevices no está disponible
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       triggerMicWarning('notFound');
       return;
@@ -1158,7 +1185,6 @@ export default function DictationPage() {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      // Liberar el stream inmediatamente; solo lo necesitamos para obtener el permiso
       stream.getTracks().forEach((track) => track.stop());
     } catch (micErr) {
       const err = micErr as { name: string; message: string };
@@ -1180,6 +1206,7 @@ export default function DictationPage() {
 
       rec.onstart = () => {
         setIsRecording(true);
+        isRecordingRef.current = true;
         setInterimTranscript("");
         resetSilenceTimeout(5000); // 5 segundos de espera inicial antes de comenzar a hablar
       };
@@ -1201,9 +1228,9 @@ export default function DictationPage() {
 
         if (final) {
           if (mode === "dictate") {
-            setRawText((prev) => (prev ? prev + " " + final : final));
+            setRawText((prev) => formatAppendedText(prev, final));
           } else {
-            setCorrectionInstruction((prev) => (prev ? prev + " " + final : final));
+            setCorrectionInstruction((prev) => formatAppendedText(prev, final));
           }
         }
       };
@@ -1224,6 +1251,9 @@ export default function DictationPage() {
           clearTimeout(silenceTimeoutRef.current);
           silenceTimeoutRef.current = null;
         }
+        if (isPausedRef.current) {
+          return;
+        }
         if (isRecordingRef.current) {
           try {
             rec.start();
@@ -1231,10 +1261,14 @@ export default function DictationPage() {
             console.error("Failed to restart speech recognition:", err);
             setIsRecording(false);
             isRecordingRef.current = false;
+            setIsPaused(false);
+            isPausedRef.current = false;
             setInterimTranscript("");
           }
         } else {
           setIsRecording(false);
+          setIsPaused(false);
+          isPausedRef.current = false;
           setInterimTranscript("");
         }
       };
@@ -1254,8 +1288,12 @@ export default function DictationPage() {
       silenceTimeoutRef.current = null;
     }
     isRecordingRef.current = false;
+    isPausedRef.current = false;
+    setIsPaused(false);
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch {}
     }
     setIsRecording(false);
   };
@@ -1264,6 +1302,7 @@ export default function DictationPage() {
     if (silenceTimeoutRef.current) {
       clearTimeout(silenceTimeoutRef.current);
     }
+    if (isPausedRef.current) return;
     silenceTimeoutRef.current = setTimeout(() => {
       stopRecording();
     }, ms);
@@ -1277,21 +1316,12 @@ export default function DictationPage() {
     }
   };
 
-
   // Cargar archivo de audio y transcribir via Whisper
   const handleAudioUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setError(null);
-
-    // Limpiar texto previo al cargar un nuevo archivo de audio
-    if (mode === "dictate") {
-      setRawText("");
-    } else {
-      setCorrectionInstruction("");
-    }
-
     setAudioFileName(file.name);
     setIsTranscribing(true);
 
@@ -1317,9 +1347,9 @@ export default function DictationPage() {
       }
 
       if (mode === "dictate") {
-        setRawText((prev) => (prev ? prev + " " + transcription : transcription));
+        setRawText((prev) => formatAppendedText(prev, transcription));
       } else {
-        setCorrectionInstruction((prev) => (prev ? prev + " " + transcription : transcription));
+        setCorrectionInstruction((prev) => formatAppendedText(prev, transcription));
       }
     } catch (err) {
       const errorObj = err as Error;
@@ -1779,14 +1809,24 @@ export default function DictationPage() {
               {/* Header row */}
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${mode === 'correct' ? 'bg-emerald-500 animate-led-glow' : 'bg-rose-500'} transition-all`}></span>
+                  <span className={`w-2.5 h-2.5 rounded-full ${
+                    isPaused 
+                      ? 'bg-amber-500 animate-pulse' 
+                      : isRecording 
+                        ? (mode === 'correct' ? 'bg-emerald-500 animate-led-glow' : 'bg-rose-500 animate-led-glow') 
+                        : 'bg-slate-500'
+                  } transition-all`}></span>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-clinical-text-muted">
-                    {mode === 'correct' ? 'Modo Corrección' : 'Modo Dictado Principal'}
+                    {isPaused
+                      ? 'Dictado en Pausa'
+                      : isRecording 
+                        ? (mode === 'correct' ? 'Modo Corrección (Grabando)' : 'Modo Dictado Principal (Grabando)') 
+                        : (mode === 'correct' ? 'Modo Corrección' : 'Modo Dictado Principal')}
                   </span>
                 </div>
                 {/* Micro-animación de onda o estado */}
                 <div className="h-4 flex items-center gap-1">
-                  {isRecording ? (
+                  {isRecording && !isPaused ? (
                     Array.from({ length: 6 }).map((_, i) => (
                       <span
                         key={i}
@@ -1794,6 +1834,8 @@ export default function DictationPage() {
                         style={{ height: `${AUDIO_WAVE_HEIGHTS[i % AUDIO_WAVE_HEIGHTS.length]}%` }}
                       ></span>
                     ))
+                  ) : isPaused ? (
+                    <span className="text-[10px] text-amber-400 font-semibold animate-pulse">Pausado</span>
                   ) : isTranscribing ? (
                     <span className="text-[10px] text-clinical-teal italic animate-pulse">Transcribiendo...</span>
                   ) : (
@@ -1802,27 +1844,55 @@ export default function DictationPage() {
                 </div>
               </div>
 
-              {/* Botones de Acción: Dictar + Subir Audio (siempre grid-2) */}
-              <div className="grid grid-cols-2 gap-2">
-                {/* Botón Dictar por Voz */}
-                <button
-                  onClick={toggleRecording}
-                  disabled={!isSpeechSupported || isTranscribing}
-                  className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all cursor-pointer ${
-                    isRecording
-                      ? "bg-rose-600/15 border-rose-500 text-rose-400 animate-record-pulse"
-                      : "bg-clinical-teal/5 hover:bg-clinical-teal/15 border-clinical-teal/30 text-clinical-teal hover:border-clinical-teal/50"
-                  } ${!isSpeechSupported || isTranscribing ? "opacity-40 cursor-not-allowed" : ""}`}
-                >
-                  {isRecording ? (
-                    <Square className="w-6 h-6 fill-current animate-pulse text-rose-400" />
-                  ) : (
+              {/* Botones de Acción: Dictar / Detener + Pausar/Reanudar + Subir Audio */}
+              <div className={`grid ${isRecording ? 'grid-cols-3' : 'grid-cols-2'} gap-2 transition-all`}>
+                {!isRecording ? (
+                  /* Botón Dictar por Voz */
+                  <button
+                    onClick={startRecording}
+                    disabled={!isSpeechSupported || isTranscribing}
+                    className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all cursor-pointer bg-clinical-teal/5 hover:bg-clinical-teal/15 border-clinical-teal/30 text-clinical-teal hover:border-clinical-teal/50 ${!isSpeechSupported || isTranscribing ? "opacity-40 cursor-not-allowed" : ""}`}
+                  >
                     <Mic className="w-6 h-6" />
-                  )}
-                  <span className="text-[11px] font-bold leading-tight text-center">
-                    {isRecording ? `Grabando ${formatTime(recordingSeconds)}` : "Dictar"}
-                  </span>
-                </button>
+                    <span className="text-[11px] font-bold leading-tight text-center">
+                      Dictar
+                    </span>
+                  </button>
+                ) : (
+                  <>
+                    {/* Botón Detener */}
+                    <button
+                      onClick={stopRecording}
+                      className="flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all cursor-pointer bg-rose-600/15 border-rose-500 text-rose-400 hover:bg-rose-600/25"
+                      title="Detener y finalizar grabación"
+                    >
+                      <Square className="w-6 h-6 fill-current animate-pulse text-rose-400" />
+                      <span className="text-[11px] font-bold leading-tight text-center truncate w-full">
+                        Detener ({formatTime(recordingSeconds)})
+                      </span>
+                    </button>
+
+                    {/* Botón Pausar / Reanudar */}
+                    <button
+                      onClick={isPaused ? resumeRecording : pauseRecording}
+                      className={`flex flex-col items-center justify-center gap-1.5 py-3 px-2 rounded-xl border-2 transition-all cursor-pointer ${
+                        isPaused
+                          ? "bg-amber-500/15 border-amber-500 text-amber-400 hover:bg-amber-500/25 animate-pulse"
+                          : "bg-amber-500/10 border-amber-500/50 text-amber-400 hover:bg-amber-500/20"
+                      }`}
+                      title={isPaused ? "Reanudar dictado" : "Pausar dictado"}
+                    >
+                      {isPaused ? (
+                        <Play className="w-6 h-6 fill-current" />
+                      ) : (
+                        <Pause className="w-6 h-6 fill-current" />
+                      )}
+                      <span className="text-[11px] font-bold leading-tight text-center">
+                        {isPaused ? "Reanudar" : "Pausar"}
+                      </span>
+                    </button>
+                  </>
+                )}
 
                 {/* Botón Subir Audio */}
                 <input
@@ -2023,7 +2093,7 @@ export default function DictationPage() {
               {isLoading && (
                 <div className="absolute inset-0 bg-slate-950/70 z-10 flex flex-col items-center justify-center gap-3">
                   <span className="w-10 h-10 rounded-full border-4 border-clinical-teal border-t-transparent animate-spin"></span>
-                   <p className="text-xs text-clinical-teal font-semibold tracking-wide">Estructurando reporte con {activeAiModel?.startsWith("gemini") ? "Gemini" : activeAiModel?.startsWith("groq") ? "Groq" : "IA"}...</p>
+                   <p className="text-xs text-clinical-teal font-semibold tracking-wide">Estructurando reporte con {activeAiModel?.startsWith("gemini") ? "Gemini" : activeAiModel?.startsWith("chatgpt") || activeAiModel?.startsWith("openai") || activeAiModel?.startsWith("gpt") ? "ChatGPT" : "IA"}...</p>
                 </div>
               )}
               {/* Editor Toolbar */}
@@ -2549,34 +2619,6 @@ export default function DictationPage() {
                   </div>
                 </div>
                 {(activeAiModel.toLowerCase().includes("chatgpt") || activeAiModel.toLowerCase().includes("openai")) && (
-                  <span className="w-6 h-6 rounded-full bg-clinical-teal text-slate-950 flex items-center justify-center shrink-0 ml-3 shadow-sm font-bold">
-                    <Check className="w-4 h-4 stroke-[3]" />
-                  </span>
-                )}
-              </button>
-
-              {/* Opción 3: Groq */}
-              <button
-                type="button"
-                onClick={() => selectAiProvider("groq")}
-                className={`p-4 rounded-2xl border text-left transition-all flex items-center justify-between relative group cursor-pointer ${
-                  activeAiModel.toLowerCase().includes("groq")
-                    ? "bg-clinical-teal/10 border-clinical-teal shadow-md shadow-clinical-teal/5 ring-1 ring-clinical-teal/30"
-                    : "bg-clinical-surface-inset border-clinical-border hover:border-clinical-teal/40 hover:bg-clinical-surface/70"
-                }`}
-              >
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="p-2.5 rounded-xl bg-clinical-surface border border-clinical-border/80 shadow-sm shrink-0 flex items-center justify-center">
-                    <GroqLogo className="w-6 h-6 text-amber-500 dark:text-amber-400" />
-                  </div>
-                  <div className="min-w-0">
-                    <h4 className="text-sm font-bold text-clinical-text tracking-wide">Groq</h4>
-                    <p className="text-xs text-clinical-text-muted mt-0.5 leading-relaxed truncate">
-                      Procesamiento LPU en tiempo real
-                    </p>
-                  </div>
-                </div>
-                {activeAiModel.toLowerCase().includes("groq") && (
                   <span className="w-6 h-6 rounded-full bg-clinical-teal text-slate-950 flex items-center justify-center shrink-0 ml-3 shadow-sm font-bold">
                     <Check className="w-4 h-4 stroke-[3]" />
                   </span>
