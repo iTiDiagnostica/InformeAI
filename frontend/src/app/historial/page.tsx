@@ -13,6 +13,7 @@ import { sanitizeHtml } from "@/utils/sanitize";
 import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { applyTheme } from "@/utils/theme";
+import { extractReportType } from "@/utils/reportType";
 
 export default function HistorialPage() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -175,7 +176,9 @@ export default function HistorialPage() {
           doctorId: row.doctorId,
           doctorName: row.doctorName,
           doctorSpecialty: row.doctorSpecialty,
-          reportType: row.reportType || "Informe",
+          reportType: (row.reportType && row.reportType !== "Informe") 
+            ? row.reportType 
+            : extractReportType(row.structured_text, row.raw_text),
           createdByRole: row.createdByRole || "Invitado",
           aiType: row.aiType || "Gemini"
         }));
@@ -572,12 +575,13 @@ export default function HistorialPage() {
   };
 
   const getstudyTypeColor = (type: string) => {
-    const lower = type.toLowerCase();
+    const lower = (type || "").toLowerCase();
+    if (lower.includes("mam")) return "bg-clinical-success-bg text-clinical-success-text border-clinical-success-border/40";
+    if (lower.includes("doppler")) return "bg-purple-500/10 text-purple-400 border-purple-500/30";
     if (lower.includes("eco")) return "bg-clinical-teal/10 text-clinical-teal border-clinical-teal/30";
     if (lower.includes("res") || lower.includes("rm")) return "bg-clinical-info-bg text-clinical-info-text border-clinical-info-border";
     if (lower.includes("rx") || lower.includes("rad")) return "bg-clinical-warning-bg text-clinical-warning-text border-clinical-warning-border/40";
     if (lower.includes("tac") || lower.includes("tom")) return "bg-clinical-danger-bg text-clinical-danger-text border-clinical-danger-border/40";
-    if (lower.includes("mam")) return "bg-clinical-success-bg text-clinical-success-text border-clinical-success-border/40";
     return "bg-clinical-surface text-clinical-text-muted border-clinical-border";
   };
 

@@ -3,6 +3,7 @@ import { db } from '@/services/dbService';
 import { llmService } from '@/services/llmService';
 import { ragService } from '@/services/ragService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
+import { extractReportType } from '@/utils/reportType';
 
 // Timeout de la función serverless (en segundos) — necesario para Vercel Hobby plan (máx 60s)
 // Se exporta directamente en el route.ts porque vercel.json no aplica confiablemente con App Router
@@ -130,10 +131,11 @@ export async function POST(req: NextRequest) {
 
         const aiTypeFormatted = formatAiType(currentAiModel);
         const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
+        const detectedReportType = extractReportType(emptyTemplate, rawText);
 
         const repRes = await db.query(
-          'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-          [rawText, emptyTemplate, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal]
+          'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role, report_type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+          [rawText, emptyTemplate, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal, detectedReportType]
         );
 
         return NextResponse.json({
@@ -141,6 +143,7 @@ export async function POST(req: NextRequest) {
           reportId: repRes.rows[0].id,
           structuredText: emptyTemplate,
           structuredReport: emptyTemplate,
+          reportType: detectedReportType,
           contextUsed: `Plantilla(s) en blanco cargada(s): ${templateDocs.map(d => d.title).join(', ')}`,
           isTemplateLoad: true,
           doctorId: finalDoctorId,
@@ -178,10 +181,11 @@ export async function POST(req: NextRequest) {
 
     const aiTypeFormatted = formatAiType(currentAiModel);
     const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';
+    const detectedReportType = extractReportType(structuredReport, rawText);
 
     const insertRes = await db.query(
-      'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id',
-      [rawText, structuredReport, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal]
+      'INSERT INTO reports (raw_text, structured_text, doctor_id, company_id, ai_type, created_by_role, report_type) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+      [rawText, structuredReport, finalDoctorId, companyIdVal, aiTypeFormatted, createdByRoleVal, detectedReportType]
     );
 
     return NextResponse.json({
@@ -189,6 +193,7 @@ export async function POST(req: NextRequest) {
       reportId: insertRes.rows[0].id,
       structuredText: structuredReport,
       structuredReport,
+      reportType: detectedReportType,
       contextUsed: matchFound ? context : 'No se utilizó contexto.',
       doctorId: finalDoctorId,
       doctorName: doctorProfile?.name || null,

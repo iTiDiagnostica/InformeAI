@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { llmService } from '@/services/llmService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
+import { extractReportType } from '@/utils/reportType';
 
 // Timeout de la función serverless (en segundos) — necesario para Vercel Hobby plan
 export const maxDuration = 60;
@@ -58,11 +59,12 @@ export async function POST(req: NextRequest) {
     currentAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
     const updatedReport = await llmService.correctReport(originalReport, normalizedInstruction, doctorProfile, currentAiModel);
+    const updatedReportType = extractReportType(updatedReport);
 
     if (reportId) {
       await db.query(
-        'UPDATE reports SET structured_text = $1 WHERE id = $2',
-        [updatedReport, parseInt(reportId, 10)]
+        'UPDATE reports SET structured_text = $1, report_type = $2 WHERE id = $3',
+        [updatedReport, updatedReportType, parseInt(reportId, 10)]
       );
     }
 
@@ -70,6 +72,7 @@ export async function POST(req: NextRequest) {
       id: reportId ? parseInt(reportId, 10) : null,
       updatedReport,
       structuredText: updatedReport,
+      reportType: updatedReportType,
       doctorId: docIdNum,
       doctorName: doctorProfile?.name || null,
       doctorSpecialty: doctorProfile?.specialty || null

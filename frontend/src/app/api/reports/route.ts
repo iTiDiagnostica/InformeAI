@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/services/dbService';
 import { authenticate, unauthorizedResponse } from '@/utils/auth';
+import { extractReportType } from '@/utils/reportType';
 
 export async function GET(req: NextRequest) {
   const user = authenticate(req);
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     const companyId = url.searchParams.get('companyId');
     const startDate = url.searchParams.get('startDate');
     const endDate = url.searchParams.get('endDate');
+    const search = url.searchParams.get('search')?.trim();
 
     const offset = (page - 1) * limit;
 
@@ -54,9 +56,20 @@ export async function GET(req: NextRequest) {
       paramIndex++;
     }
 
+    if (search) {
+      conditions.push(`(r.raw_text ILIKE $${paramIndex} OR r.structured_text ILIKE $${paramIndex} OR r.report_type ILIKE $${paramIndex} OR d.name ILIKE $${paramIndex})`);
+      queryParams.push(`%${search}%`);
+      paramIndex++;
+    }
+
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    const countQuery = `SELECT COUNT(*) FROM reports r ${whereClause}`;
+    const countQuery = `
+      SELECT COUNT(*) 
+      FROM reports r 
+      LEFT JOIN doctors d ON r.doctor_id = d.id 
+      ${whereClause}
+    `;
     const countRes = await db.query(countQuery, queryParams);
     const totalItems = parseInt(countRes.rows[0].count, 10);
     const totalPages = Math.ceil(totalItems / limit);
@@ -77,8 +90,23 @@ export async function GET(req: NextRequest) {
 
     const dataRes = await db.query(dataQuery, queryParams);
 
+    // Procesar cada reporte para garantizar que reportType refleje el estudio correcto
+    const processedReports = dataRes.rows.map((row: any) => {
+      let finalReportType = row.reportType;
+      if (!finalReportType || finalReportType.trim() === '' || finalReportType.toLowerCase() === 'informe') {
+        finalReportType = extractReportType(row.structured_text, row.raw_text);
+        
+        // Actualizar asincrónicamente la fila en la base de datos para persistir el tipo correcto
+        db.query('UPDATE reports SET report_type = $1 WHERE id = $2', [finalReportType, row.id]).catch(() => {});
+      }
+      return {
+        ...row,
+        reportType: finalReportType
+      };
+    });
+
     return NextResponse.json({
-      reports: dataRes.rows,
+      reports: processedReports,
       pagination: {
         totalItems,
         totalPages,
