@@ -15,50 +15,50 @@ const convertHtmlToMarkdown = (html: string): string => {
   if (!html) return "";
   let text = html;
   text = text.replace(/\r\n/g, "\n");
-  text = text.replace(/<(p|div)\s+[^>]*style=["']([^"']*)text-align:\s*(center|left|right|justify);?([^"']*)["'][^>]*>(.*?)<\/\1>/gi, '[ALIGN:$3]$5[/ALIGN]\n');
-  text = text.replace(/<(p|div)\s+[^>]*align=["'](center|left|right|justify)["'][^>]*>(.*?)<\/\1>/gi, '[ALIGN:$2]$3[/ALIGN]\n');
+  text = text.replace(/<(p|div)\s+[^>]*style=["']([^"']*)text-align:\s*(center|left|right|justify);?([^"']*)["'][^>]*>([\s\S]*?)<\/\1>/gi, '[ALIGN:$3]$5[/ALIGN]\n');
+  text = text.replace(/<(p|div)\s+[^>]*align=["'](center|left|right|justify)["'][^>]*>([\s\S]*?)<\/\1>/gi, '[ALIGN:$2]$3[/ALIGN]\n');
   text = text.replace(/<div[^>]*>/gi, "");
   text = text.replace(/<\/div>/gi, "\n");
   text = text.replace(/<p[^>]*>/gi, "");
   text = text.replace(/<\/p>/gi, "\n");
   text = text.replace(/<br\s*\/?>/gi, "\n");
-  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)font-style:\s*italic;?([^"']*)["']([^>]*)>(.*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
+  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)font-style:\s*italic;?([^"']*)["']([^>]*)>([\s\S]*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
     const newStyle = (styleBefore + styleAfter).replace(/;+/g, ';').replace(/^;|;$/g, '').trim();
     const styleAttr = newStyle ? `style="${newStyle}"` : '';
     return `<span${beforeAttr} ${styleAttr}${afterAttr}><em>${content}</em></span>`;
   });
-  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)text-decoration:\s*underline;?([^"']*)["']([^>]*)>(.*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
+  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)text-decoration:\s*underline;?([^"']*)["']([^>]*)>([\s\S]*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
     const newStyle = (styleBefore + styleAfter).replace(/;+/g, ';').replace(/^;|;$/g, '').trim();
     const styleAttr = newStyle ? `style="${newStyle}"` : '';
     return `<span${beforeAttr} ${styleAttr}${afterAttr}><u>${content}</u></span>`;
   });
-  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)font-weight:\s*(?:bold|700);?([^"']*)["']([^>]*)>(.*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
+  text = text.replace(/<span(\s+[^>]*)style=["']([^"']*)font-weight:\s*(?:bold|700);?([^"']*)["']([^>]*)>([\s\S]*?)<\/span>/gi, (match, beforeAttr, styleBefore, styleAfter, afterAttr, content) => {
     const newStyle = (styleBefore + styleAfter).replace(/;+/g, ';').replace(/^;|;$/g, '').trim();
     const styleAttr = newStyle ? `style="${newStyle}"` : '';
     return `<span${beforeAttr} ${styleAttr}${afterAttr}><strong>${content}</strong></span>`;
   });
-  text = text.replace(/<strong[^>]*>(.*?)<\/strong>/gi, "**$1**");
-  text = text.replace(/<b[^>]*>(.*?)<\/b>/gi, "**$1**");
-  text = text.replace(/<em[^>]*>(.*?)<\/em>/gi, "*$1*");
-  text = text.replace(/<i[^>]*>(.*?)<\/i>/gi, "*$1*");
+  text = text.replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, "**$1**");
+  text = text.replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, "**$1**");
+  text = text.replace(/<em[^>]*>([\s\S]*?)<\/em>/gi, "*$1*");
+  text = text.replace(/<i[^>]*>([\s\S]*?)<\/i>/gi, "*$1*");
   let previousText;
   do {
     previousText = text;
-    text = text.replace(/<span\s+[^>]*style=["'](?:[^"']*;)*\s*font-size:\s*([^;"'\s]+)[^"']*["'][^>]*>(.*?)<\/span>/gi, '[FONTSIZE:$1]$2[/FONTSIZE]');
+    text = text.replace(/<span\s+[^>]*style=["'](?:[^"']*;)*\s*font-size:\s*([^;"'\s]+)[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi, '[FONTSIZE:$1]$2[/FONTSIZE]');
   } while (text !== previousText);
-  text = text.replace(/<u[^>]*>(.*?)<\/u>/gi, '[UNDERLINE]$1[/UNDERLINE]');
+  text = text.replace(/<u[^>]*>([\s\S]*?)<\/u>/gi, '[UNDERLINE]$1[/UNDERLINE]');
   text = text.replace(/<[^>]+>/g, "");
   do {
     previousText = text;
-    text = text.replace(/\[FONTSIZE:([^\]]+)\](.*?)\[\/FONTSIZE\]/g, '<span style="font-size: $1">$2</span>');
+    text = text.replace(/\[FONTSIZE:([^\]]+)\]([\s\S]*?)\[\/FONTSIZE\]/g, '<span style="font-size: $1">$2</span>');
   } while (text !== previousText);
   do {
     previousText = text;
-    text = text.replace(/\[UNDERLINE\](.*?)\[\/UNDERLINE\]/g, '<u>$1</u>');
+    text = text.replace(/\[UNDERLINE\]([\s\S]*?)\[\/UNDERLINE\]/g, '<u>$1</u>');
   } while (text !== previousText);
   do {
     previousText = text;
-    text = text.replace(/\[ALIGN:([^\]]+)\](.*?)\[\/ALIGN\]/g, '<p style="text-align: $1">$2</p>');
+    text = text.replace(/\[ALIGN:([^\]]+)\]([\s\S]*?)\[\/ALIGN\]/g, '<p style="text-align: $1">$2</p>');
   } while (text !== previousText);
   text = text.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#039;/g, "'");
   text = text.split("\n").map(line => line.trim() === "" ? "" : line).join("\n");
@@ -68,9 +68,27 @@ const convertHtmlToMarkdown = (html: string): string => {
 
 const convertMarkdownToEditorHtml = (text: string): string => {
   if (!text) return "";
-  const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
-  const normalizedText = cleanText.replace(/\r\n/g, "\n");
-  const lines = normalizedText.split("\n");
+
+  // Normalizar marcadores legacy a HTML para soportar datos guardados con el bug
+  let normalizedText = text;
+  let previousText;
+  do {
+    previousText = normalizedText;
+    normalizedText = normalizedText.replace(/\[ALIGN:([^\]]+)\]([\s\S]*?)\[\/ALIGN\]/g, '<p style="text-align: $1">$2</p>');
+  } while (normalizedText !== previousText);
+  do {
+    previousText = normalizedText;
+    normalizedText = normalizedText.replace(/\[UNDERLINE\]([\s\S]*?)\[\/UNDERLINE\]/g, '<u>$1</u>');
+  } while (normalizedText !== previousText);
+  do {
+    previousText = normalizedText;
+    normalizedText = normalizedText.replace(/\[FONTSIZE:([^\]]+)\]([\s\S]*?)\[\/FONTSIZE\]/g, '<span style="font-size: $1">$2</span>');
+  } while (normalizedText !== previousText);
+
+  const cleanText = normalizedText.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
+  if (!cleanText) return "";
+
+  const lines = cleanText.split("\n");
 
   let firstNonEmptyIdx = -1;
   for (let i = 0; i < lines.length; i++) {
@@ -93,6 +111,17 @@ const convertMarkdownToEditorHtml = (text: string): string => {
         resultParagraphs.push(emptyLine);
         lastPushedEmpty = true;
       }
+      return;
+    }
+
+    // Si la línea ya es un bloque HTML (p, div, h1-6, etc.), la dejamos como está
+    const isHtmlBlock = /^<\/?(p|div|h[1-6]|ul|ol|li)\b/i.test(trimmed);
+    if (isHtmlBlock) {
+      let formattedLine = trimmed
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+      resultParagraphs.push(formattedLine);
+      lastPushedEmpty = false;
       return;
     }
 
@@ -270,15 +299,27 @@ export default function TemplatesPage() {
   const convertReportToHtml = (text: string): string => {
     if (!text) return "";
 
-    // Si el texto ya contiene tags HTML significativos, devolver tal cual
-    const trimmedCheck = text.trim();
-    if (trimmedCheck.startsWith("<div") || trimmedCheck.startsWith("<p") || /<(p|div|strong|br|u|em)\b/i.test(trimmedCheck)) {
-      return text;
+    const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
+    if (!cleanText) return "";
+
+    const hasHtmlBlocks = /<(p|div)\b/i.test(cleanText);
+    if (hasHtmlBlocks) {
+      let processedHtml = cleanText
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        
+      if (!processedHtml.startsWith("<div")) {
+        processedHtml = `<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; background-color: #ffffff; line-height: 1.15; padding: 8px; text-align: left;">${processedHtml}</div>`;
+      }
+      return processedHtml;
     }
 
-    const cleanText = text.replace(/```html/g, "").replace(/```/g, "").replace(/\t/g, " ").trim();
     const normalizedText = cleanText.replace(/\r\n/g, "\n");
-    const lines = normalizedText.split("\n");
+    const processedText = normalizedText
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+    const lines = processedText.split("\n");
 
     let firstNonEmptyIdx = -1;
     for (let i = 0; i < lines.length; i++) {
@@ -304,18 +345,18 @@ export default function TemplatesPage() {
         return;
       }
 
-      const isFullyBold = /^\*\*[^*]+\*\*$/.test(trimmed);
+      const isFullyBold = /^<strong>[^<]+<\/strong>$/i.test(trimmed) || /^\*\*[^*]+\*\*$/.test(trimmed);
       const isTitle = idx === firstNonEmptyIdx && isFullyBold;
 
       if (isTitle) {
-        const titleText = trimmed.replace(/^\*\*|\*\*$/g, "");
+        const titleText = trimmed.replace(/^<strong>|<\/strong>$/gi, "").replace(/^\*\*|\*\*$/g, "");
         const titleHtml = `<p align="center" style="text-align: center; font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; margin: 0; padding: 0; background-color: #ffffff;"><u><strong>${titleText}</strong></u></p>`;
         
         resultParagraphs.push(titleHtml);
         resultParagraphs.push(emptyLine);
         lastPushedEmpty = true;
       } else if (isFullyBold) {
-        const headerText = trimmed.replace(/^\*\*|\*\*$/g, "");
+        const headerText = trimmed.replace(/^<strong>|<\/strong>$/gi, "").replace(/^\*\*|\*\*$/g, "");
         const headerHtml = `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;"><strong>${headerText}</strong></p>`;
         
         if (!lastPushedEmpty && resultParagraphs.length > 0) {
@@ -325,10 +366,8 @@ export default function TemplatesPage() {
         resultParagraphs.push(emptyLine);
         lastPushedEmpty = true;
       } else {
-        let formattedLine = trimmed.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-        formattedLine = formattedLine.replace(/\*([^*]+)\*/g, "<em>$1</em>");
         resultParagraphs.push(
-          `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${formattedLine}</p>`
+          `<p style="font-family: Arial, sans-serif; font-size: 11pt; color: #000000; line-height: 1.15; text-align: left; margin: 0; padding: 0; background-color: #ffffff;">${trimmed}</p>`
         );
         lastPushedEmpty = false;
       }
