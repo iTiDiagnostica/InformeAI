@@ -35,6 +35,8 @@ export interface Report {
   reportType?: string;
   createdByRole?: string;
   aiType?: string;
+  rating?: number;
+  isExemplar?: boolean;
 }
 
 export interface DocumentItem {

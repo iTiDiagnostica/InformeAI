@@ -14,6 +14,8 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { MobileNav } from "@/components/MobileNav";
 import { applyTheme } from "@/utils/theme";
 import { extractReportType } from "@/utils/reportType";
+import { ReportFeedbackControls } from "@/components/ReportFeedbackControls";
+
 
 export default function HistorialPage() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -1049,7 +1051,11 @@ export default function HistorialPage() {
                 </div>
               </div>
 
+              {/* Botonera de Feedback (Thumbs Up / Down / Ejemplo Modélico) */}
+              <ReportFeedbackControls reportId={selectedReport.id} />
+
               {/* Visor de Hoja Estructurada */}
+
               <div className="space-y-2">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-clinical-teal font-montserrat">Informe Estructurado Final</span>
                 <div

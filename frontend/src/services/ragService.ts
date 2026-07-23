@@ -211,6 +211,50 @@ export const ragService = {
         matchFound: false
       };
     }
+  },
+
+  /**
+   * Búsqueda RAG de informes modélicos (Thumbs Up / Ejemplares) exclusivos del médico (doctor_id).
+   */
+  searchDoctorExemplars: async (queryText: string, doctorId: number, limit = 2): Promise<string[]> => {
+    if (!doctorId) return [];
+    try {
+      const queryEmbedding = await embeddingService.getEmbedding(queryText);
+      const vectorStr = `[${queryEmbedding.join(',')}]`;
+
+      const query = `
+        SELECT report_type, structured_text, (exemplar_embedding <=> $1::vector) as distance
+        FROM reports
+        WHERE doctor_id = $2 AND is_exemplar = TRUE AND exemplar_embedding IS NOT NULL
+        ORDER BY distance ASC
+        LIMIT $3
+      `;
+      const result = await db.query(query, [vectorStr, doctorId, limit]);
+      return result.rows.map((row: any) => `[Ejemplo Modélico del Médico - ${row.report_type || 'Informe'}]\n${row.structured_text}`);
+    } catch (err) {
+      console.error('Error buscando informes modélicos del médico:', err);
+      return [];
+    }
+  },
+
+  /**
+   * Guarda y genera embedding para un informe modélico (Thumbs Up / Excelente) de un médico.
+   */
+  saveDoctorExemplar: async (reportId: number, doctorId: number): Promise<void> => {
+    try {
+      const repRes = await db.query('SELECT structured_text FROM reports WHERE id = $1 AND doctor_id = $2', [reportId, doctorId]);
+      if (repRes.rows.length === 0) return;
+      const text = repRes.rows[0].structured_text;
+      const embedding = await embeddingService.getEmbedding(text);
+      const vectorStr = `[${embedding.join(',')}]`;
+      await db.query(
+        'UPDATE reports SET is_exemplar = TRUE, rating = 1, exemplar_embedding = $1::vector WHERE id = $2',
+        [vectorStr, reportId]
+      );
+    } catch (err) {
+      console.error('Error guardando informe modélico:', err);
+    }
   }
 };
+
 

@@ -41,12 +41,41 @@ CREATE TABLE IF NOT EXISTS reports (
     report_type VARCHAR(255),
     created_by_role VARCHAR(100) DEFAULT 'Invitado',
     ai_type VARCHAR(100),
+    rating INT DEFAULT 0,
+    is_exemplar BOOLEAN DEFAULT FALSE,
+    exemplar_embedding vector(384),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla para almacenar el feedback explícito del médico (Thumbs Up / Down)
+CREATE TABLE IF NOT EXISTS report_feedback (
+    id SERIAL PRIMARY KEY,
+    report_id INT NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
+    doctor_id INT NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+    rating INT NOT NULL, -- 1 (Thumbs Up) o -1 (Thumbs Down)
+    feedback_tag VARCHAR(100),
+    user_comment TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla para almacenar revisiones y diffs de informes
+CREATE TABLE IF NOT EXISTS report_revisions (
+    id SERIAL PRIMARY KEY,
+    report_id INT NOT NULL REFERENCES reports(id) ON DELETE CASCADE,
+    doctor_id INT NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+    raw_text TEXT NOT NULL,
+    ai_generated_text TEXT NOT NULL,
+    final_edited_text TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Índice para acelerar la búsqueda por similitud de coseno en los embeddings
 CREATE INDEX IF NOT EXISTS document_chunks_embedding_cosine_idx 
 ON document_chunks USING hnsw (embedding vector_cosine_ops);
+
+CREATE INDEX IF NOT EXISTS reports_exemplar_embedding_idx 
+ON reports USING hnsw (exemplar_embedding vector_cosine_ops)
+WHERE is_exemplar = TRUE;
 
 -- Tabla para almacenar configuraciones globales del sistema (ej: active_ai_model)
 CREATE TABLE IF NOT EXISTS system_settings (
@@ -56,4 +85,5 @@ CREATE TABLE IF NOT EXISTS system_settings (
 
 -- Insertar valor por defecto de IA activa (Gemma) si no existe
 INSERT INTO system_settings (key, value) VALUES ('active_ai_model', 'gemma') ON CONFLICT (key) DO NOTHING;
+
 

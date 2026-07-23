@@ -24,6 +24,8 @@ import {
 } from "@/utils/reportHtml";
 import { GeminiLogo, ChatGPTLogo } from "@/components/dictador/AiProviderLogos";
 import { DictadorModals } from "@/components/dictador/DictadorModals";
+import { ReportFeedbackControls } from "@/components/ReportFeedbackControls";
+
 
 export default function DictationPage() {
   const router = useRouter();
@@ -1774,7 +1776,15 @@ export default function DictationPage() {
               </div>
             </div>
 
+            {/* Controles de Feedback del Médico (Thumbs Up / Down / Guardar Ejemplo Modélico) */}
+            {currentReportId && structuredReport && structuredReport.trim().length > 0 && (
+              <div className="mb-3">
+                <ReportFeedbackControls reportId={currentReportId} />
+              </div>
+            )}
+
             {/* Editor del Reporte */}
+
             <div className="flex-1 flex flex-col bg-clinical-surface-inset/40 border border-clinical-border rounded-xl overflow-hidden relative min-h-0">
               {isLoading && (
                 <div className="absolute inset-0 bg-slate-950/70 z-10 flex flex-col items-center justify-center gap-3">

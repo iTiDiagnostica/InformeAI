@@ -164,19 +164,24 @@ export async function POST(req: NextRequest) {
     
     let finalDoctorId = searchDoctorId || detectedDoctorId;
     let doctorProfile: any = null;
+    let doctorExemplars: string[] = [];
     
     if (finalDoctorId) {
       const docRes = await db.query('SELECT * FROM doctors WHERE id = $1', [finalDoctorId]);
       if (docRes.rows.length > 0) {
         doctorProfile = docRes.rows[0];
       }
+
+      // Recuperar ejemplos modélicos (Few-Shot) calificados positivamente por este médico
+      doctorExemplars = await ragService.searchDoctorExemplars(rawText, finalDoctorId, 2);
     }
 
     const settingsRes = await db.query("SELECT value FROM system_settings WHERE key = 'active_ai_model'");
     const activeAiModelVal = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : 'gemini';
     currentAiModel = activeAiModelVal === 'gemma' ? 'gemini' : activeAiModelVal;
 
-    const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, currentAiModel);
+    const structuredReport = await llmService.structureReport(rawText, context, doctorProfile, currentAiModel, doctorExemplars);
+
 
     const aiTypeFormatted = formatAiType(currentAiModel);
     const createdByRoleVal = user.role === 'admin' ? 'Administrador' : user.role === 'doctor' ? 'Médico' : 'Invitado';

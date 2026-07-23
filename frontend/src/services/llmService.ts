@@ -225,7 +225,13 @@ export const llmService = {
    * Toma un dictado de voz desestructurado y utiliza el contexto RAG + LLM
    * para generar un informe médico limpio y estructurado.
    */
-  structureReport: async (rawText: string, context: string, doctorProfile: DoctorProfile | null = null, aiProvider: string = 'gemini'): Promise<string> => {
+  structureReport: async (
+    rawText: string, 
+    context: string, 
+    doctorProfile: DoctorProfile | null = null, 
+    aiProvider: string = 'gemini',
+    doctorExemplars: string[] = []
+  ): Promise<string> => {
     let doctorStylePrompt = '';
     if (doctorProfile) {
       doctorStylePrompt = `
@@ -237,7 +243,18 @@ export const llmService = {
 - ⚠️ IMPORTANTE: Utiliza las plantillas y los informes previos de este médico recuperados por el RAG como guía estricta para la terminología, estructura de órganos, expresiones típicas y formato de redacción. La devolución final debe replicar con total fidelidad cómo escribe este médico en particular sus informes de estudio de imagen.`;
     }
 
-    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Recibes dictados médicos por voz y tu función principal es estructurarlos utilizando OBLIGATORIAMENTE la plantilla clínica oficial del médico o del sistema como base.${doctorStylePrompt}
+    let exemplarsPrompt = '';
+    if (doctorExemplars && doctorExemplars.length > 0) {
+      exemplarsPrompt = `
+
+⚠️ INFORMES MODÉLICOS Y EJEMPLOS PREVIOS APROBADOS POR EL PROPIO MÉDICO (FEW-SHOT EXEMPLARS):
+El médico ha marcado los siguientes informes previos como EJEMPLOS MODELICOS de cómo le gusta que se redacten sus estudios. Imita fielmente su estilo, longitud y distribución:
+---
+${doctorExemplars.join('\n\n---\n\n')}
+---`;
+    }
+
+    const systemPrompt = `Eres un médico especialista en diagnóstico por imágenes. Recibes dictados médicos por voz y tu función principal es estructurarlos utilizando OBLIGATORIAMENTE la plantilla clínica oficial del médico o del sistema como base.${doctorStylePrompt}${exemplarsPrompt}
 
 ⚠️ REGLA SUPREMA Y OBLIGATORIA — USO ESTRICTO DE PLANTILLAS DEL MÉDICO / SISTEMA (PRIORIDAD MÁXIMA PARA TODOS LOS MODELOS):
 1. SIEMPRE QUE EL CONTEXTO RAG CONTENGA UNA PLANTILLA DE REFERENCIA COMPATIBLE (ej: "ECOGRAFÍA TIROIDEA CON DOPPLER", "ECOGRAFÍA MAMARIA BILATERAL", "ECOGRAFÍA ABDOMINAL", "ECOGRAFÍA OBSTÉTRICA", etc.):
@@ -292,6 +309,7 @@ ${context}
     const userPrompt = `Por favor estructura el siguiente dictado de voz:\n\n"${rawText}"`;
     return await callProvider(aiProvider, systemPrompt, userPrompt);
   },
+
 
   /**
    * Se le proporciona un informe médico estructurado, una instrucción de corrección

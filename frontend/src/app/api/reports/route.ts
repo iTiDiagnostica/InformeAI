@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     const totalPages = Math.ceil(totalItems / limit);
 
     const dataQuery = `
-      SELECT r.id, r.raw_text, r.structured_text, r.created_at, 
+      SELECT r.id, r.raw_text, r.structured_text, r.created_at, r.rating, r.is_exemplar as "isExemplar",
              r.doctor_id as "doctorId", d.name as "doctorName", d.specialty as "doctorSpecialty",
              r.report_type as "reportType", r.created_by_role as "createdByRole", r.ai_type as "aiType",
              r.company_id as "companyId", c.name as "companyName"
